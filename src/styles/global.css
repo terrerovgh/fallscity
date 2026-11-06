@@ -2337,12 +2337,39 @@ main {
   }
 
   .skyline--hero {
+    top: 0;
+    bottom: auto;
+    display: block;
+  }
+
+  .skyline--hero .skyline__art > :not(.sky-cloud):not(.sky-balloon) {
     display: none;
   }
 
   .hero {
-    min-height: calc(100svh - var(--hdr-e));
-    padding-block: var(--space-6) var(--space-8);
+    min-height: 0;
+    padding-block: clamp(3.5rem, 8vw, 5rem);
+    background:
+      radial-gradient(42rem 32rem at 82% 44%, rgb(159 216 230 / 0.34), transparent 68%),
+      linear-gradient(125deg, var(--paper-bright), var(--paper) 78%);
+  }
+
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.12fr) minmax(14rem, 0.88fr);
+    gap: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .hero__content {
+    order: -1;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.85rem, 6.4vw, 3.5rem);
+    line-height: 0.96;
+  }
+
+  .hero__copy {
+    font-size: var(--text-base);
   }
 
   .page-hero__grid,
@@ -2414,28 +2441,33 @@ main {
   }
 
   .hero {
-    padding-block: var(--space-5) var(--space-8);
+    padding-block: var(--space-5) var(--space-6);
     background:
-      radial-gradient(28rem 24rem at 8% 14%, rgb(159 216 230 / 0.32), transparent 68%),
+      radial-gradient(28rem 24rem at 92% 82%, rgb(159 216 230 / 0.34), transparent 68%),
       linear-gradient(155deg, var(--paper-bright), var(--paper) 78%);
   }
 
   .hero__grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-3);
+    gap: var(--space-6);
   }
 
   .hero__visual {
-    margin-bottom: var(--space-2);
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    border-top: 1px solid var(--line);
+    margin: 0;
+    padding-top: var(--space-4);
   }
 
   .hero-showcase {
-    width: min(64vw, 15rem);
-    margin: 0 auto;
+    width: min(43vw, 10.5rem);
+    margin: 0;
   }
 
   .hero__content {
-    width: min(100%, 26rem);
+    width: min(100%, 30rem);
     border-left: 0;
     padding-left: 0;
   }
@@ -2447,9 +2479,9 @@ main {
   }
 
   .hero h1 {
-    max-width: 26rem;
+    max-width: 30rem;
     margin-bottom: var(--space-4);
-    font-size: clamp(2.75rem, 12vw, 3.5rem);
+    font-size: clamp(2.625rem, 11.5vw, 3.25rem);
     line-height: 0.96;
   }
 
@@ -2462,9 +2494,9 @@ main {
 
   .hero .button-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     align-items: center;
-    gap: var(--space-3);
+    gap: var(--space-2);
   }
 
   .hero .button {
@@ -2476,8 +2508,9 @@ main {
   }
 
   .hero .text-link {
-    min-height: 3.25rem;
-    padding-inline: var(--space-1);
+    min-height: 2.75rem;
+    justify-self: start;
+    padding-inline: 0;
     font-size: 0.8125rem;
   }
 
