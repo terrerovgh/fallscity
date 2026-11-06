@@ -28,42 +28,7 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
 </header>
 
 <script>
-  const header = document.querySelector<HTMLElement>('.site-header');
   const compact = window.matchMedia('(max-width: 800px)');
-
-  if (header) {
-    let range = 0;
-    let frame = 0;
-
-    const update = () => {
-      frame = 0;
-      const progress = compact.matches ? Math.min(1, Math.max(0, window.scrollY / range)) : 0;
-      header.style.setProperty('--p', progress.toFixed(4));
-      header.toggleAttribute('data-collapsed', progress >= 0.98);
-      header.toggleAttribute('data-scrolled', window.scrollY > 8);
-    };
-
-    const measure = () => {
-      if (!compact.matches) {
-        range = 1;
-        header.style.removeProperty('--p');
-        header.removeAttribute('data-collapsed');
-        header.removeAttribute('data-scrolled');
-        return;
-      }
-      range = Math.max(1, parseFloat(getComputedStyle(header).getPropertyValue('--nav-scroll-range')) || 96);
-      update();
-    };
-
-    window.addEventListener('scroll', () => {
-      if (compact.matches && !frame) frame = requestAnimationFrame(update);
-    }, { passive: true });
-    window.addEventListener('resize', measure);
-    compact.addEventListener('change', measure);
-    document.fonts.ready.then(measure);
-    measure();
-  }
-
   const nav = document.querySelector<HTMLElement>('[data-site-nav]');
   const toggle = nav?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
 

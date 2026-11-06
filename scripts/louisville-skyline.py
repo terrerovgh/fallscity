@@ -94,7 +94,7 @@ raw(f'<path d="M250.9 35.4v1.1m1.2-1.1v1.1" fill="none" stroke="{C["copper"]}" s
 R(250.7, 36.3, 1.6, 1.4, 'copper')
 
 # Buildings behind the bridge
-group()
+group('city-left')
 R(45, 69.5, 10, 30, 'sky')
 R(45, 69.5, 10, 2, 'aqua')
 R(50, 72, 5, 27.5, 'cyan')
@@ -112,7 +112,21 @@ P('M141 101V89.5c0-3.2 2.2-5.6 4.8-5.6s4.8 2.4 4.8 5.6V101z', 'royal')
 P('M145.8 83.9c2.6 0 4.8 2.4 4.8 5.6V101h-4.8z', 'blue')
 vlines(151, 158, 86, 99, 'navy', 2.4, .6)
 
+# Stepped green tower and a narrow orange high-rise behind the arena
+P('M157 101V69h2.5v-5h3v-5h7v5h3v5h2.5v32z', 'teal')
+P('M159.5 69h3v-5h7v5h3v32h-13z', 'green')
+R(162.5, 59, 7, 2, 'lime')
+R(161.5, 64, 9, 1.4, 'lime')
+vlines(161.5, 171, 72, 99, 'lime', 2.4, .65)
+hlines(160, 172, 75, 98, '#2ea866', 4.2, .6)
+R(185, 68, 14, 20, 'gold')
+R(187, 68, 10, 20, 'orange')
+R(186, 66.5, 12, 1.5, 'red')
+hlines(188, 196, 71, 85, 'yellow', 3, .75)
+vlines(189, 196, 70, 85, 'copper', 3.4, .45)
+
 # Waterfront arena
+group('city-arena')
 P('M171.5 107V89c0-3.6 2.6-6 6-6H209v24z', 'ice')
 P('M177.5 83H263v2h-85.5c-2.4 0-4 1-4.6 2.4l-1.9-.4c.8-2.4 3.3-4 6.5-4z', 'aqua')
 R(208.5, 85, 54.5, 22, 'blue')
@@ -136,6 +150,7 @@ vlines(247.2, 255.5, 64.5, 90, 'navy', 2.1, .5)
 R(250.65, 54.5, .7, 3, 'royal')
 
 # Cream tower and rose hotel block
+group('city-center')
 R(271.5, 55.5, 17.5, 46, 'cream')
 windows(272.8, 58, 288, 100, 'steel', 2.4, 2.6, 1.5, 1.4)
 P('M271.5 56c1.4-2.6 4.4-4.1 8.75-4.1S287.6 53.4 289 56z', 'coral')
@@ -159,6 +174,7 @@ R(326, 60.5, 4, 39, '#2ea866')
 vlines(331.5, 340, 63, 98, '#7fe0a8', 2.6, .5)
 
 # Domed magenta tower
+group('city-landmarks')
 R(366, 58.5, 12.5, 41, 'teal')
 hlines(368, 378.5, 60.5, 98, 'aqua', 2.2, .6)
 P('M352.6 38.6c0-5.6 3.4-10 7.9-10s7.9 4.4 7.9 10z', 'gold')
@@ -175,16 +191,24 @@ R(361.8, 66, 1.1, 33, 'ice')
 
 # Tall plum tower and its neighbors
 R(387, 77, 7, 23, 'green')
+R(396.3, 18.5, .65, 6.5, 'coral')
+R(405.2, 17, .65, 8, 'coral')
+R(396.15, 17.9, .95, .7, 'gold')
+R(405.05, 16.4, .95, .7, 'gold')
 R(393, 25, 16.5, 72, 'plum')
 windows(394.4, 32.4, 408.5, 73, 'rose', 2.4, 2.1, 1.6, .9)
 windows(394.4, 80, 408.5, 95, 'rose', 2.4, 2.1, 1.6, .9)
+vlines(395.2, 408, 26, 95, '#9a4776', 3.2, .45)
+R(391.8, 24.2, 18.9, 1.2, 'pink')
 R(393, 25, 16.5, 6, 'royal')
 R(393, 73.6, 16.5, 5, 'royal')
 R(389.5, 95.5, 23.5, 5, 'magenta')
+R(390.5, 95.5, 21.5, .8, 'pink')
 R(414.5, 58, 9, 41, 'aqua')
 R(414.5, 58, 3, 41, 'cyan')
 
 # Orange tower
+group('city-orange')
 R(422.5, 39.5, 29, 61, 'yellow')
 R(425, 44.5, 24, 54, 'orange')
 hlines(426, 448, 63.5, 88, 'gold', 2.2, .8)
@@ -199,6 +223,7 @@ windows(441.6, 88.6, 448.5, 98, 'red', 2.3, 2.6, 1.6, 1.8)
 R(450, 81, 10, 19, 'ice')
 
 # Right-hand low-rise buildings
+group('city-right')
 R(451, 87.5, 19, 13, 'teal')
 P('M451 92.5c2-2.4 5-3.6 8-3.6s6 1.2 8 3.6z', 'aqua')
 R(451, 95, 13, 7, 'royal')
@@ -222,8 +247,8 @@ R(552, 101.5, 23.5, 1.2, 'ice')
 hlines(554, 574, 103.6, 106, 'ink', 2, .5)
 
 # Riverbank and promenade
-group()
-R(14, 99.5, 437, 8.5, 'mist')
+group('riverbank')
+R(-1200, 99.5, 3000, 8.5, 'mist')
 R(14, 99.5, 160, 8.5, 'cream')
 R(45, 100.5, 15, 6, 'sky')
 R(62, 101.5, 10, 5, 'yellow')
@@ -245,20 +270,47 @@ R(350, 99.5, 40, 6.5, 'yellow')
 R(372, 101.5, 10, 4.5, 'gold')
 R(380, 100.5, 71, 7.5, 'royal')
 windows(382, 102, 450, 106.4, 'sky', 3.2, 2.4, 2, 1.2)
-R(14, 106.6, 437, 2.2, 'orange')
-R(14, 108.8, 437, 3.8, 'magenta')
+R(-1200, 106.6, 3000, 2.2, 'orange')
+R(-1200, 108.8, 3000, 3.8, 'magenta')
 windows(16, 109.6, 450, 111.8, 'rose', 6, 4, 3.6, 1.4)
-R(14, 112.6, 437, 2.6, 'pink')
+R(-1200, 112.6, 3000, 2.6, 'pink')
 R(451, 101, 125, 6, 'mist')
 R(451, 106.5, 146, 8.6, 'navy')
 R(451, 109.8, 146, 1.2, 'royal')
 for x in (452, 469.5, 487, 504.5, 522, 539.5, 557, 574.5, 592):
     R(x - 2.2, 105.4, 4.4, 2.2, 'green')
     R(x - 1.5, 107.4, 3, 7.6, 'lime')
-R(451, 115.1, 146, 1.6, 'plum')
-R(14, 115.1, 437, 1.6, 'navy')
+R(-1200, 115.1, 3000, 1.6, 'navy')
+
+# Geometric trees and promenade lights
+for x, y, s, color in [
+    (155, 98.5, .8, 'green'), (181, 101, .7, 'lime'),
+    (201, 100.5, .75, 'green'), (291, 99, .8, 'lime'),
+    (318, 98.5, .85, 'green'), (343, 98, .9, 'lime'),
+    (382, 99.5, .75, 'green'), (416, 99, .85, 'lime'),
+    (464, 100, .75, 'green'), (483, 100, .7, 'lime'),
+    (526, 100, .75, 'green'), (548, 100.5, .65, 'lime'),
+]:
+    R(x - .35 * s, y + 1.8 * s, .7 * s, 4.2 * s, 'copper')
+    P(
+        f'M{f(x)} {f(y - 2.4 * s)}L{f(x + 2.5 * s)} {f(y)}'
+        f'L{f(x + 1.8 * s)} {f(y + 2.8 * s)}H{f(x - 1.8 * s)}'
+        f'L{f(x - 2.5 * s)} {f(y)}z',
+        color,
+    )
+    P(
+        f'M{f(x)} {f(y - 2.4 * s)}L{f(x + 2.5 * s)} {f(y)}'
+        f'L{f(x + 1.8 * s)} {f(y + 2.8 * s)}H{f(x)}z',
+        'green' if color == 'lime' else 'lime',
+    )
+for x in (176, 235, 296, 376, 445, 497):
+    raw(
+        f'<path d="M{x} 101v6m-1.2-6h2.4" fill="none" stroke="{C["ink"]}" stroke-width=".4"/>'
+        f'<circle cx="{x}" cy="100.6" r=".75" fill="{C["yellow"]}"/>'
+    )
 
 # Truss bridge
+group('bridge')
 top = [
     (14.5, 85), (22, 80), (30, 76.4), (37.5, 74.4), (45, 76.2),
     (53, 81.5), (60, 87.2), (106, 87.2), (112, 84), (119.5, 81.6),
@@ -285,6 +337,13 @@ chord = 'M' + 'L'.join(f'{f(x)} {f(y)}' for x, y in top)
 raw(f'<path fill="none" stroke="{C["rose"]}" stroke-width=".55" d="{"".join(truss)}"/>')
 raw(f'<path fill="none" stroke="{C["red"]}" stroke-width="1.5" stroke-linejoin="round" d="{chord}"/>')
 raw(f'<path fill="none" stroke="{C["red"]}" stroke-width=".9" d="M14.5 85V96.5M60 87.2V96.5M106 87.2V96.5"/>')
+raw(f'<path fill="none" stroke="{C["pink"]}" stroke-width=".4" d="M15 93.8H139.5"/>')
+raw(
+    f'<g fill="{C["blush"]}">'
+    + ''.join(f'<circle cx="{f(x)}" cy="{f(y)}" r=".48"/>' for x, y in top)
+    + ''.join(f'<circle cx="{f(x)}" cy="97.2" r=".38"/>' for x in xs)
+    + '</g>'
+)
 R(13.5, 96, 128, 2.6, 'red')
 R(13.5, 98.6, 128, 1.1, 'copper')
 P('M29.5 99.7h14.5l2.6 15.4h-19.7z', 'purple')
@@ -297,6 +356,15 @@ group('river')
 R(-1200, 116.7, 3000, 12.3, 'water')
 R(-1200, 116.7, 3000, 1.1, 'water2')
 R(-1200, 126.4, 3000, 2.6, 'water2')
+for x, w, color in [
+    (177, 27, 'plum'), (213, 46, 'royal'), (273, 14, 'gold'),
+    (302, 23, 'steel'), (352, 17, 'magenta'), (394, 15, 'plum'),
+    (426, 22, 'orange'),
+]:
+    raw(
+        f'<path fill="{C[color]}" opacity=".14" d="M{x} 117.8h{w}v2.4'
+        f'h-{f(w * .18)}v2.2h-{f(w * .5)}v2.8h-{f(w * .32)}z"/>'
+    )
 
 
 def ripple_layer(cls, period, marks, color, height):
