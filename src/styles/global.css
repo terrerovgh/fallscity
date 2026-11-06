@@ -670,75 +670,6 @@ main {
   animation: skyline-rise 1000ms 180ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
 }
 
-.skyline--nav {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  display: block;
-  overflow: hidden;
-}
-
-.skyline--nav .skyline__art {
-  width: 100%;
-  height: 100%;
-}
-
-@media (min-width: 325px) {
-  .skyline--nav {
-    --nav-spread: calc(18.2rem - 89.79vw);
-  }
-
-  .skyline--nav .bridge {
-    translate: var(--nav-spread) 0;
-  }
-
-  .skyline--nav .city-left {
-    translate: calc(var(--nav-spread) * 0.72) 0;
-  }
-
-  .skyline--nav .city-arena {
-    translate: calc(var(--nav-spread) * 0.32) 0;
-  }
-
-  .skyline--nav .city-landmarks {
-    translate: calc(var(--nav-spread) * -0.28) 0;
-  }
-
-  .skyline--nav .city-orange {
-    translate: calc(var(--nav-spread) * -0.55) 0;
-  }
-
-  .skyline--nav .city-right {
-    translate: calc(var(--nav-spread) * -0.85) 0;
-  }
-
-  .skyline--nav .sky-cloud--a {
-    translate: calc(var(--nav-spread) * 0.25) 0;
-  }
-
-  .skyline--nav .sky-cloud--b {
-    translate: calc(var(--nav-spread) * -0.35) 0;
-  }
-
-  .skyline--nav .sky-cloud--c {
-    translate: calc(var(--nav-spread) * 0.75) 0;
-  }
-
-  .skyline--nav .sky-cloud--d {
-    translate: calc(var(--nav-spread) * -0.75) 0;
-  }
-
-  .skyline--nav .sky-balloon {
-    translate: calc(var(--nav-spread) * 0.15) 0;
-  }
-}
-
-@media (min-width: 621px) {
-  .skyline--nav {
-    --nav-spread: calc(18.2rem - 71.85vw);
-  }
-}
-
 .skyline .river-flow--b {
   opacity: 0.6;
 }
@@ -2195,10 +2126,6 @@ main {
   .site-header__inner {
     height: var(--hdr-c);
     min-height: 0;
-  }
-
-  .skyline--nav {
-    display: none;
   }
 
   .brand {

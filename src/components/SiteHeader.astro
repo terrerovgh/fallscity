@@ -1,13 +1,11 @@
 ---
 import { site } from '../config/site';
-import LouisvilleSkyline from './LouisvilleSkyline.astro';
 
 const pathname = Astro.url.pathname;
 const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
 ---
 
 <header class="site-header">
-  <LouisvilleSkyline variant="nav" />
   <div class="container site-header__inner">
     <a class="brand" href="/" aria-label="Falls City Dev Studio, home">
       <img class="brand__logo" src="/brand/fallscity-logo.svg" alt="" width="1259" height="316" fetchpriority="high" />
