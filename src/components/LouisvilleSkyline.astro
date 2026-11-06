@@ -10,7 +10,7 @@ const artwork = skylineSvg
   .replaceAll('skyline-', `skyline-${variant}-`)
   .replace(
     '<svg ',
-    `<svg class="skyline__art" preserveAspectRatio="${variant === 'nav' ? 'none' : 'xMidYMid meet'}" `,
+    '<svg class="skyline__art" preserveAspectRatio="xMidYMid meet" ',
   );
 ---
 

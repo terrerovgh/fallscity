@@ -548,12 +548,8 @@ main {
   overflow: clip;
   min-height: calc(100svh - 4.75rem);
   align-items: center;
-  /*
-   * Reserve the skyline's lower half (bank and river); the towers rise behind the
-   * content and are softened there by .hero__content::before.
-   * Percentages in padding resolve against the width, like the skyline itself.
-   */
-  padding-block: clamp(1.5rem, 3vw, 2.5rem) calc(19.281% * 0.55);
+  /* Reserve the riverbank below the main content; the towers rise behind it. */
+  padding-block: clamp(1.5rem, 3vw, 2.5rem) calc(19.726% * 0.55);
   background:
     radial-gradient(52rem 42rem at 18% 48%, rgb(159 216 230 / 0.3), transparent 66%),
     linear-gradient(115deg, var(--paper-bright), var(--paper) 72%);
@@ -577,27 +573,6 @@ main {
   position: relative;
   border-left: 1px solid var(--line);
   padding-left: clamp(1rem, 3vw, 3rem);
-}
-
-/* Frosted backdrop: whatever part of the skyline rises behind the copy is softly
-   blurred and veiled, with feathered edges so no box outline shows. */
-.hero__content::before {
-  position: absolute;
-  z-index: -1;
-  inset: -1.5rem -2rem -2rem -2rem;
-  background: rgb(251 250 245 / 0.45);
-  content: '';
-  pointer-events: none;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
-  -webkit-mask-image:
-    linear-gradient(to right, transparent, #000 2rem, #000 calc(100% - 2rem), transparent),
-    linear-gradient(to bottom, transparent, #000 1.5rem, #000 calc(100% - 2rem), transparent);
-  mask-image:
-    linear-gradient(to right, transparent, #000 2rem, #000 calc(100% - 2rem), transparent),
-    linear-gradient(to bottom, transparent, #000 1.5rem, #000 calc(100% - 2rem), transparent);
 }
 
 .hero__eyebrow {
@@ -652,7 +627,7 @@ main {
 }
 
 /* --- Louisville skyline ------------------------------------------------- */
-/* The 612 × 118 viewBox stays in sync with scripts/louisville-skyline.py. */
+/* The 583 × 115 viewBox stays in sync with scripts/louisville-skyline.py. */
 .skyline {
   width: 100%;
   pointer-events: none;
@@ -678,6 +653,10 @@ main {
   display: none;
 }
 
+.skyline .river-flow--b {
+  opacity: 0.6;
+}
+
 @keyframes skyline-rise {
   from {
     opacity: 0;
@@ -687,11 +666,11 @@ main {
 
 @keyframes sky-drift {
   from {
-    transform: translateX(-8px);
+    transform: translateX(-6px);
   }
 
   to {
-    transform: translateX(8px);
+    transform: translateX(6px);
   }
 }
 
@@ -706,6 +685,29 @@ main {
 
   100% {
     transform: translate(2px, 1px) rotate(-1deg);
+  }
+}
+
+@keyframes river-flow-a {
+  to {
+    transform: translateX(-96px);
+  }
+}
+
+@keyframes river-flow-b {
+  to {
+    transform: translateX(-64px);
+  }
+}
+
+@keyframes river-glint {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+
+  50% {
+    opacity: 1;
   }
 }
 
@@ -738,6 +740,18 @@ main {
   .skyline .sky-balloon--b {
     animation-delay: -3.5s;
     animation-duration: 10s;
+  }
+
+  .skyline .river-flow--a {
+    animation: river-flow-a 7s linear infinite;
+  }
+
+  .skyline .river-flow--b {
+    animation: river-flow-b 3.6s linear infinite;
+  }
+
+  .skyline .river-glints {
+    animation: river-glint 2.8s ease-in-out infinite;
   }
 }
 
@@ -2071,29 +2085,22 @@ main {
 
 @media (max-width: 800px) {
   :root {
-    --art-h: calc(100vw * 118 / 612);
+    --art-h: min(calc(100vw * 115 / 583), 7rem);
     --hdr-c: 4.5rem;
-    --logo-c: 2.25rem;
-    --logo-e: clamp(2.5rem, 6vw, 3.25rem);
-    --logo-base: 0.38;
-    --sky-top: max(0.5rem, calc(0.75rem + var(--logo-e) - var(--logo-base) * var(--art-h)));
-    --hdr-e: calc(var(--sky-top) + var(--art-h));
+    --logo-h: 2.5rem;
+    --hdr-e: calc(var(--hdr-c) + var(--art-h));
     --nav-scroll-range: clamp(4rem, 12vw, 7rem);
   }
 
   .site-header {
     --header-ease: cubic-bezier(0.22, 0.7, 0.2, 1);
     --hdr-h: calc(var(--hdr-e) + var(--p, 0) * (var(--hdr-c) - var(--hdr-e)));
-    --mid-e: calc(var(--sky-top) + var(--logo-base) * var(--art-h) - var(--logo-e) / 2);
-    --mid-c: calc(var(--hdr-c) / 2);
-    --mid: calc(var(--mid-e) + var(--p, 0) * (var(--mid-c) - var(--mid-e)));
-    --logo-h: calc(var(--logo-e) + var(--p, 0) * (var(--logo-c) - var(--logo-e)));
 
     position: relative;
     isolation: isolate;
     height: var(--hdr-h);
-    border-bottom: 1px solid rgb(255 255 255 / calc(0.2 + 0.45 * var(--p, 0)));
-    background: #d5e8eb;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper-bright);
     transition: box-shadow 220ms ease;
   }
 
@@ -2103,59 +2110,48 @@ main {
   }
 
   .site-header[data-scrolled] {
-    box-shadow: 0 12px 30px -20px rgb(13 25 39 / 0.75);
+    box-shadow: 0 12px 30px -20px rgb(13 25 39 / 0.55);
   }
 
   .site-header[data-collapsed] {
-    box-shadow: 0 14px 32px -20px rgb(13 25 39 / 0.8);
+    box-shadow: 0 14px 32px -22px rgb(13 25 39 / 0.65);
   }
 
   .site-header__inner {
     position: relative;
     z-index: 1;
-    height: 100%;
+    height: var(--hdr-c);
     min-height: 0;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .skyline--nav {
     position: absolute;
     z-index: 0;
-    inset: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     display: block;
-    height: 100%;
+    height: var(--art-h);
     overflow: hidden;
+    clip-path: inset(max(0px, calc(var(--art-h) - var(--hdr-h))) 0 0 0);
   }
 
   .skyline--nav .skyline__art {
     width: 100%;
     max-width: none;
     height: 100%;
+    transform: translate3d(calc(var(--p, 0) * clamp(9.5rem, 36vw, 16rem)), 0, 0);
+    transition: transform 140ms ease-out;
   }
 
   .brand {
     position: relative;
     height: var(--logo-h);
-    transform: translateY(calc(var(--mid) - var(--logo-h) / 2));
-  }
-
-  .brand::before {
-    position: absolute;
-    z-index: -1;
-    inset: -0.55rem -0.85rem;
-    border: 1px solid rgb(255 255 255 / calc(0.08 + 0.28 * var(--p, 0)));
-    border-radius: 0.75rem;
-    background: rgb(251 250 245 / calc(0.26 + 0.5 * var(--p, 0)));
-    box-shadow: 0 10px 24px -18px rgb(13 25 39 / calc(0.2 + 0.5 * var(--p, 0)));
-    content: '';
-    pointer-events: none;
-    -webkit-backdrop-filter: blur(7px) saturate(1.1);
-    backdrop-filter: blur(7px) saturate(1.1);
   }
 
   .brand__logo {
     height: 100%;
-    filter: drop-shadow(0 1px 0 rgb(251 250 245 / 0.9));
   }
 
   .js .nav-toggle {
@@ -2165,14 +2161,9 @@ main {
   .nav-toggle {
     min-width: 3rem;
     min-height: 3rem;
-    border-color: rgb(255 255 255 / 0.55);
-    background: rgb(251 250 245 / 0.72);
-    box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.85) inset,
-      0 10px 24px -14px rgb(13 25 39 / 0.65);
-    transform: translateY(calc(var(--mid) - 1.5rem));
-    -webkit-backdrop-filter: blur(8px) saturate(1.15);
-    backdrop-filter: blur(8px) saturate(1.15);
+    border-color: var(--line);
+    background: var(--paper-bright);
+    box-shadow: none;
     transition:
       background-color 180ms ease,
       border-color 180ms ease,
@@ -2180,11 +2171,9 @@ main {
   }
 
   .nav-toggle:hover {
-    border-color: rgb(255 255 255 / 0.9);
-    background: rgb(251 250 245 / 0.9);
-    box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.9) inset,
-      0 12px 28px -14px rgb(13 25 39 / 0.75);
+    border-color: var(--river);
+    background: #fff;
+    box-shadow: 0 8px 20px -14px rgb(13 25 39 / 0.65);
   }
 
   .site-nav[data-open='true'] .nav-toggle,
@@ -2354,10 +2343,9 @@ main {
     width: min(calc(100% - 2rem), var(--content));
   }
 
-  /* phones: the standard 4rem (64px) bar with a 2rem logo once collapsed */
   :root {
     --hdr-c: 4rem;
-    --logo-c: 2rem;
+    --logo-h: 2rem;
   }
 
   .hero {

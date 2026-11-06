@@ -23,14 +23,15 @@ Run `npm test` (type check, build, and the SEO audit over `dist/`) after meaning
 - Reuse tokens and component patterns in `src/styles/global.css`; keep JavaScript limited to necessary interaction.
 - Preserve semantic HTML, one clear H1 per page, keyboard access, visible focus, reduced-motion support, and responsive behavior at 390px, 768px, and 1440px.
 - Update unique metadata and visible structured-data sources when page content changes. Never add unverified schema properties.
-- SEO conventions (details in `docs/SEO_LOUISVILLE.md`): each indexable URL owns one search intent. `/` targets "web design Louisville"; `/services/web-design/`, `/services/website-maintenance/`, and `/services/seo-foundations/` own their service intents. Do not create neighborhood/ZIP/city pages or guides without substantial owner-verified content. Internal links use trailing slashes. Organization/WebSite JSON-LD live on `/` only; other pages pass `breadcrumbs`/`pageType` to `BaseLayout`. Keep noindex pages out of the sitemap filter in `astro.config.mjs`. Run `npm test` (check, build, `audit:seo`) after content or metadata changes.
+- Each indexable URL owns one search intent. `/` targets "web design Louisville"; `/services/web-design/`, `/services/website-maintenance/`, and `/services/seo-foundations/` own their service intents. Do not create neighborhood/ZIP/city pages or guides without substantial owner-verified content.
+- Internal links use trailing slashes. Organization/WebSite JSON-LD live on `/` only; other pages pass `breadcrumbs`/`pageType` to `BaseLayout`. Keep noindex pages out of the sitemap filter in `astro.config.mjs`.
 - Use American English for public copy. Keep the tone clear, practical, local, and free of exaggerated claims.
 
 ## Business guardrails
 
 The offering is limited to professional website design/development, SEO foundations, domains/hosting/SSL, and website maintenance. Do not position the studio as a broad marketing, advertising, social media, CRM, enterprise software, or AI automation provider.
 
-Do not invent prices, testimonials, reviews, projects, clients, team members, biographies, certifications, achievements, addresses, phone numbers, email addresses, rankings, or guarantees. Existing research Markdown files are background material, not approval to publish their unverified values.
+Do not invent prices, testimonials, reviews, projects, clients, team members, biographies, certifications, achievements, addresses, phone numbers, email addresses, rankings, or guarantees.
 
 The portfolio in `src/data/portfolio.ts` lists live sites supplied by the owner (November 2026). Keep its descriptions limited to what each site itself states; do not add clients, results, or testimonials. Screenshots in `src/assets/portfolio/` are real captures of each homepage. Recapture them when a site changes, and remove an entry if its site goes offline.
 
