@@ -54,7 +54,9 @@ const urlPathFor = (file) => {
 };
 
 const files = walk(DIST);
-const htmlFiles = files.filter((f) => f.endsWith('.html'));
+// Google Search Console verification files (public/google*.html) are not site pages.
+const isVerificationFile = (f) => /^google[0-9a-f]+\.html$/.test(relative(DIST, f));
+const htmlFiles = files.filter((f) => f.endsWith('.html') && !isVerificationFile(f));
 const pages = new Map(); // url path -> { html, ids, indexable, canonical }
 
 for (const file of htmlFiles) {

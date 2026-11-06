@@ -320,5 +320,5 @@ Publish each guide under `/guides/<slug>/`, with a real publication date, a name
 - **Missing real-world facts:** owner identity, contact details, service area, and business registration. These limit trust signals, and they will not be invented.
 - **Portfolio locality:** no Louisville work is shown yet. The copy never claims Louisville clients, and that must stay true.
 - **Possible cannibalization** between `/` and `/services/web-design/`. Monitor it (60–90 days).
-- **Brand namespace:** "Falls City" is crowded locally, and a federal FALLS CITY mark exists in other classes (see `deep-research-report.md`). Branded search data will be noisy, and a trademark review is the owner's decision.
+- **Brand namespace:** "Falls City" is crowded locally, and a federal FALLS CITY mark exists in other classes. Branded search data will be noisy, and a trademark review is the owner's decision.
 - **Lab vs field:** all performance numbers here are Lighthouse lab runs. Judge Core Web Vitals from Search Console and CrUX after real traffic arrives (75th percentile: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1).
