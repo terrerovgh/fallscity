@@ -1,0 +1,118 @@
+---
+import { site } from '../config/site';
+import { absoluteUrl, ids, louisville, type Crumb, type PageType } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  pathname?: string;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  pageType?: PageType;
+  breadcrumbs?: Crumb[];
+  structuredData?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  pathname = Astro.url.pathname,
+  image = '/social-card.png',
+  imageAlt = 'Falls City Dev Studio — Websites for the businesses that make Louisville work',
+  noindex = false,
+  pageType = 'WebPage',
+  breadcrumbs = [],
+  structuredData = [],
+} = Astro.props;
+
+const canonical = absoluteUrl(pathname);
+const socialImage = absoluteUrl(image);
+const isHome = pathname === '/';
+
+// Organization and WebSite are described once, on the homepage (Google's
+// recommendation); every other page refers to them by @id.
+const siteEntities = isHome
+  ? [
+      {
+        '@type': 'Organization',
+        '@id': ids.organization,
+        name: site.name,
+        url: `${site.url}/`,
+        logo: {
+          '@type': 'ImageObject',
+          url: absoluteUrl('/brand/fallscity-logo.png'),
+          width: 1200,
+          height: 301,
+        },
+        description: site.description,
+        areaServed: louisville,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': ids.website,
+        url: `${site.url}/`,
+        name: site.name,
+        publisher: { '@id': ids.organization },
+        inLanguage: 'en-US',
+      },
+    ]
+  : [];
+
+const hasTrail = breadcrumbs.length > 1;
+const graph = noindex
+  ? []
+  : [
+      ...siteEntities,
+      {
+        '@type': pageType,
+        '@id': `${canonical}#webpage`,
+        url: canonical,
+        name: title,
+        description,
+        inLanguage: 'en-US',
+        isPartOf: { '@id': ids.website },
+        ...(isHome ? { about: { '@id': ids.organization } } : {}),
+        ...(hasTrail ? { breadcrumb: { '@id': `${canonical}#breadcrumb` } } : {}),
+      },
+      ...(hasTrail
+        ? [
+            {
+              '@type': 'BreadcrumbList',
+              '@id': `${canonical}#breadcrumb`,
+              itemListElement: breadcrumbs.map((crumb, index) => ({
+                '@type': 'ListItem',
+                position: index + 1,
+                name: crumb.name,
+                item: absoluteUrl(crumb.path),
+              })),
+            },
+          ]
+        : []),
+      ...structuredData,
+    ];
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+{!noindex && <link rel="canonical" href={canonical} />}
+<meta name="robots" content={noindex ? 'noindex' : 'index, follow, max-image-preview:large'} />
+<meta name="theme-color" content="#0d1927" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{!noindex && <meta property="og:url" content={canonical} />}
+<meta property="og:image" content={socialImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={imageAlt} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={socialImage} />
+<meta name="twitter:image:alt" content={imageAlt} />
+{graph.length > 0 && (
+  <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': graph })} />
+)}

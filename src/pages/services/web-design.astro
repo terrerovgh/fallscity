@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import FaqList from '../../components/FaqList.astro';
+import CallToAction from '../../components/CallToAction.astro';
+import { services } from '../../data/services';
+import { homeFaqs, serviceFaqs } from '../../data/faqs';
+import { serviceNode } from '../../lib/seo';
+
+const service = services.find((item) => item.anchor === 'website-design-development')!;
+const path = '/services/web-design/';
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services/' },
+  { name: 'Website Design & Development', path },
+];
+const structuredData = [
+  serviceNode({
+    name: 'Small Business Website Design & Development',
+    serviceType: 'Website design and development',
+    description: service.description,
+    path,
+  }),
+];
+
+const faqs = [
+  serviceFaqs[0]!,
+  {
+    question: 'How much does a small business website cost?',
+    answer:
+      'It depends on the scope: how many pages the site needs, features such as inquiry forms or booking links, how much content has to be prepared, and whether you want ongoing maintenance. After a first conversation, the scope is written up as a proposal with agreed deliverables, so the work is defined before it starts.',
+  },
+  homeFaqs[1]!,
+  {
+    question: 'Can you redesign the website I already have?',
+    answer:
+      'Yes. A redesign starts by reviewing what the current site does well, what is missing, and which pages and addresses already exist, so useful content and links are carried forward or redirected rather than lost.',
+  },
+];
+---
+
+<BaseLayout
+  title="Small Business Website Design in Louisville | Falls City Dev Studio"
+  description="Custom websites and redesigns for Louisville small businesses: planned around your services, built mobile-first and accessible, and launched with SEO foundations in place."
+  pathname={path}
+  breadcrumbs={breadcrumbs}
+  structuredData={structuredData}
+>
+  <PageHero
+    breadcrumbs={breadcrumbs}
+    eyebrow="Website design & development"
+    title="Small business websites, designed and built in Louisville."
+    copy="A new website or a redesign of the one you have, shaped around what your customers need to know and the action you want them to take."
+  >
+    <a class="text-link" href="/contact/">Request a website quote</a>
+  </PageHero>
+
+  <section class="section section--bright" aria-labelledby="included-heading">
+    <div class="container">
+      <SectionHeading
+        id="included-heading"
+        eyebrow="What a project includes"
+        title="Design, development, and launch, handled as one job."
+        copy="Each project is scoped individually, but the core work is the same: a clear structure, a considered design, and a dependable technical build."
+      />
+      <div class="scope-grid">
+        <div class="scope-card">
+          <h3>Planning and design</h3>
+          <ul class="check-list">
+            <li>A page structure built around your actual services and customers</li>
+            <li>Custom page layouts and visual direction that fit your business</li>
+            <li>Clear calls to action: call, book, or send a project inquiry</li>
+            <li>Readable content and accessible navigation</li>
+          </ul>
+        </div>
+        <div class="scope-card">
+          <h3>Development and launch</h3>
+          <ul class="check-list">
+            <li>Mobile-first, responsive implementation</li>
+            <li>Performance-conscious development for phones and slower connections</li>
+            <li>Working contact and inquiry paths, tested before launch</li>
+            <li>SEO foundations built in, not added later</li>
+            <li>Domain, hosting, and HTTPS setup when it is part of the scope</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="new-or-redesign-heading">
+    <div class="container">
+      <SectionHeading
+        id="new-or-redesign-heading"
+        eyebrow="Where you are starting from"
+        title="A first website, or a better version of the one you have."
+      />
+      <div class="service-grid">
+        <article class="service-card service-card--plain">
+          <span class="service-card__number">A</span>
+          <h3>Your first business website</h3>
+          <p>You do not need a technical brief. Bring what you know about your business: the services you offer, the questions customers ask, the area you serve, and any logo, photos, or brand materials you already have.</p>
+        </article>
+        <article class="service-card service-card--plain">
+          <span class="service-card__number">B</span>
+          <h3>Replacing an outdated site</h3>
+          <p>A redesign starts with what exists. The current pages, content, and addresses are reviewed so that useful material is kept, weak pages are improved or combined, and links people and search engines already know are carried forward or redirected.</p>
+        </article>
+        <article class="service-card service-card--plain">
+          <span class="service-card__number">C</span>
+          <h3>A site that is hard to use on phones</h3>
+          <p>Layouts, navigation, and contact paths are designed for small screens first, then adapted for larger ones, so a customer on a phone can find what they need and get in touch.</p>
+        </article>
+        <article class="service-card service-card--plain">
+          <span class="service-card__number">D</span>
+          <h3>A site you cannot easily explain</h3>
+          <p>If visitors leave unsure what you do or how to hire you, the fix is usually structure and wording, not decoration. Clear service pages and next steps come first.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ink" aria-labelledby="how-heading">
+    <div class="container split-feature">
+      <div>
+        <p class="eyebrow">How it works</p>
+        <h2 class="display" id="how-heading">A defined scope, real progress, and a checked launch.</h2>
+      </div>
+      <div>
+        <p class="lede">Projects move from a first conversation to a written scope, then design and build, review on the working site, and launch checks for the domain, HTTPS, metadata, and key user paths.</p>
+        <p class="lede">The accounts and services your website relies on are documented before launch, so you know what is running and who manages it.</p>
+        <a class="text-link" href="/process/">See the full website design process</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="related-heading">
+    <div class="container">
+      <SectionHeading
+        id="related-heading"
+        eyebrow="Related services"
+        title="What usually goes with a new website."
+      />
+      <div class="service-grid">
+        <article class="service-card service-card--plain">
+          <h3>SEO foundations</h3>
+          <p>The technical and on-page groundwork that helps search engines discover and understand your pages.</p>
+          <a class="text-link" href="/services/seo-foundations/">What SEO foundations include</a>
+        </article>
+        <article class="service-card service-card--plain">
+          <h3>Domains, hosting & SSL</h3>
+          <p>Connecting your domain, setting up hosting and deployment, and serving the site securely over HTTPS.</p>
+          <a class="text-link" href="/services/#domains-hosting-ssl">Domain and hosting setup</a>
+        </article>
+        <article class="service-card service-card--plain">
+          <h3>Website maintenance</h3>
+          <p>Agreed updates, fixes, and technical care after launch, so the site does not drift out of date.</p>
+          <a class="text-link" href="/services/website-maintenance/">Website maintenance in Louisville</a>
+        </article>
+        <article class="service-card service-card--plain">
+          <h3>Selected work</h3>
+          <p>Live websites designed and built by the studio, each with a link to the real site.</p>
+          <a class="text-link" href="/#work">See websites we have built</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="design-faq-heading">
+    <div class="container faq-layout">
+      <div class="faq-layout__intro">
+        <p class="eyebrow">Questions before you start</p>
+        <h2 class="display" id="design-faq-heading">What business owners ask about a new website.</h2>
+        <a class="text-link" href="/contact/">Ask about your project</a>
+      </div>
+      <FaqList faqs={faqs} />
+    </div>
+  </section>
+
+  <CallToAction
+    title="Tell us about the website your business needs."
+    copy="Share what you do, who you serve in and around Louisville, and whether you have a site today. That is enough to scope a useful first conversation."
+  />
+</BaseLayout>

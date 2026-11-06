@@ -1,0 +1,24 @@
+---
+import type { Service } from '../data/services';
+import Icon, { type IconName } from './Icon.astro';
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+const icons: Record<string, IconName> = { '01': 'layout', '02': 'search', '03': 'shield', '04': 'tools' };
+---
+
+<article class="service-card reveal-on-scroll">
+  <div class="service-card__top">
+    <span class="service-card__icon"><Icon name={icons[service.number] ?? 'layout'} /></span>
+    <span class="service-card__number">{service.number}</span>
+  </div>
+  <h3>{service.title}</h3>
+  <p>{service.summary}</p>
+  <ul class="service-card__tags" aria-label={`${service.title} can include`}>
+    {service.details.slice(0, 3).map((item) => <li>{item}</li>)}
+  </ul>
+  <a class="text-link" href={service.href}>Explore this service<span class="sr-only">: {service.title}</span></a>
+</article>

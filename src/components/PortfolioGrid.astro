@@ -1,0 +1,42 @@
+---
+import { Picture } from 'astro:assets';
+import { projects } from '../data/portfolio';
+---
+
+<div class="work">
+  <ul class="work-grid" role="list">
+    {projects.map((project) => (
+      <li class="work-card reveal-on-scroll">
+        <div class="work-card__media" aria-hidden="true">
+          <div class="work-card__window">
+            <span class="shot__bar"><i></i><i></i><i></i><span>{project.domain}</span></span>
+            <Picture
+              src={project.desktop}
+              formats={['avif', 'webp']}
+              widths={[320, 480, 720]}
+              sizes="(min-width: 1101px) 280px, (min-width: 621px) 45vw, 80vw"
+              alt=""
+              loading="lazy"
+            />
+          </div>
+          {/* The real mobile homepage; shown on small screens only. */}
+          <div class="work-card__phone">
+            <Picture src={project.mobile} formats={['avif', 'webp']} widths={[160, 240]} sizes="5.5rem" alt="" loading="lazy" />
+          </div>
+        </div>
+        <div class="work-card__body">
+          <p class="work-card__category">{project.category}</p>
+          <h3>{project.name}</h3>
+          <p class="work-card__description">{project.description}</p>
+          <a class="work-card__link" href={project.url} target="_blank" rel="noopener">
+            {project.domain}<span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </div>
+      </li>
+    ))}
+  </ul>
+  <p class="work__hint" aria-hidden="true">
+    <span>Swipe to see all {projects.length} sites</span>
+    <span class="work__progress"><i></i></span>
+  </p>
+</div>

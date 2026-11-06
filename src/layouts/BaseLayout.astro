@@ -1,0 +1,50 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/public-sans';
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import type { Crumb, PageType } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+  pathname?: string;
+  pageType?: PageType;
+  breadcrumbs?: Crumb[];
+  structuredData?: Record<string, unknown>[];
+}
+
+const { title, description, noindex = false, pathname, pageType, breadcrumbs, structuredData = [] } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <SEO
+      title={title}
+      description={description}
+      noindex={noindex}
+      pathname={pathname}
+      pageType={pageType}
+      breadcrumbs={breadcrumbs}
+      structuredData={structuredData}
+    />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <SiteHeader />
+    <main id="main-content">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

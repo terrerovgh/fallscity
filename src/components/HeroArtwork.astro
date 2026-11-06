@@ -1,0 +1,43 @@
+<div class="hero-showcase">
+  <figure class="hero-logo" aria-label="Falls City Dev Studio logo mark in 3D: three city buildings with waterfalls pouring from them">
+    <div class="hero-logo__stage" data-logo3d>
+      <img class="hero-logo__poster" src="/brand/fallscity-mark.svg" alt="" width="406" height="406" fetchpriority="high" />
+    </div>
+  </figure>
+</div>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('[data-logo3d]');
+
+  // Require hardware-accelerated WebGL: software rendering (no GPU) makes the
+  // scene block the main thread for seconds, so those devices keep the poster.
+  const hasWebGL = () => {
+    try {
+      const canvas = document.createElement('canvas');
+      const options: WebGLContextAttributes = { failIfMajorPerformanceCaveat: true };
+      const gl: WebGLRenderingContext | WebGL2RenderingContext | null =
+        canvas.getContext('webgl2', options) ?? canvas.getContext('webgl', options);
+      if (!gl) return false;
+      const info = gl.getExtension('WEBGL_debug_renderer_info');
+      const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      return !/swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer);
+    } catch {
+      return false;
+    }
+  };
+
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+
+  if (stage && !saveData && hasWebGL()) {
+    const start = () => {
+      import('../scripts/logo3d')
+        .then(({ mountLogo3D }) => mountLogo3D(stage))
+        .catch(() => {
+          // Keep the static poster if the 3D scene cannot start.
+        });
+    };
+    if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 1200 });
+    else setTimeout(start, 200);
+  }
+</script>

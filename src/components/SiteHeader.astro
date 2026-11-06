@@ -1,0 +1,56 @@
+---
+import { site } from '../config/site';
+
+const pathname = Astro.url.pathname;
+const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label="Falls City Dev Studio, home">
+      <img class="brand__logo" src="/brand/fallscity-logo.svg" alt="" width="1259" height="316" fetchpriority="high" />
+    </a>
+
+    <nav class="site-nav" aria-label="Main navigation" data-site-nav>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label="Open navigation" data-nav-toggle>
+        <span class="nav-toggle__icon" aria-hidden="true"></span>
+      </button>
+      <div class="site-nav__links" id="navigation-links">
+        {site.navigation.map((item) => (
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+        ))}
+        <a class="button" href="/contact/">Get a Website Quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-site-nav]');
+  const toggle = nav?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+
+  if (nav && toggle) {
+    const setOpen = (open: boolean) => {
+      nav.dataset.open = String(open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    };
+
+    toggle.addEventListener('click', () => setOpen(nav.dataset.open !== 'true'));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && nav.dataset.open === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (nav.dataset.open === 'true' && !nav.contains(event.target as Node)) setOpen(false);
+    });
+
+    window.matchMedia('(min-width: 801px)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>

@@ -1,0 +1,27 @@
+---
+import Breadcrumbs from './Breadcrumbs.astro';
+import type { Crumb } from '../lib/seo';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  copy: string;
+  breadcrumbs?: Crumb[];
+}
+
+const { eyebrow, title, copy, breadcrumbs = [] } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="container page-hero__grid">
+    <div class="reveal">
+      {breadcrumbs.length > 1 && <Breadcrumbs items={breadcrumbs} />}
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+    </div>
+    <div class="page-hero__aside reveal reveal--delay">
+      <p>{copy}</p>
+      <slot />
+    </div>
+  </div>
+</section>

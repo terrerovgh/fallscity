@@ -1,0 +1,41 @@
+---
+import { site } from '../config/site';
+import { services } from '../data/services';
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <a class="brand" href="/" aria-label="Falls City Dev Studio, home">
+          <img class="brand__logo brand__logo--lg" src="/brand/fallscity-logo.svg" alt="" width="1259" height="316" loading="lazy" />
+        </a>
+        <p class="site-footer__statement">Professional websites, thoughtful technical foundations, and practical support for Louisville businesses.</p>
+      </div>
+      <div>
+        <h2 class="site-footer__heading">Explore</h2>
+        <div class="site-footer__links">
+          {site.navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+        </div>
+      </div>
+      <div>
+        <h2 class="site-footer__heading">Services</h2>
+        <div class="site-footer__links">
+          {services.map((service) => <a href={service.href}>{service.shortTitle}</a>)}
+        </div>
+      </div>
+      <div>
+        <h2 class="site-footer__heading">Studio</h2>
+        <div class="site-footer__links">
+          <a href="/contact/">Get a Website Quote</a>
+          <a href="/privacy/">Privacy Notice</a>
+          <a href="/sitemap-index.xml">Sitemap</a>
+        </div>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <span>© {new Date().getFullYear()} Falls City Dev Studio</span>
+      <span>Louisville, Kentucky · Built with care by the Ohio</span>
+    </div>
+  </div>
+</footer>

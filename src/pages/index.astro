@@ -1,0 +1,165 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroArtwork from '../components/HeroArtwork.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import ProcessPreview from '../components/ProcessPreview.astro';
+import FaqList from '../components/FaqList.astro';
+import CallToAction from '../components/CallToAction.astro';
+import { services } from '../data/services';
+import { homeFaqs } from '../data/faqs';
+import CapabilityArtwork from '../components/CapabilityArtwork.astro';
+import PortfolioGrid from '../components/PortfolioGrid.astro';
+
+---
+
+<BaseLayout
+  title="Web Design in Louisville, KY | Falls City Dev Studio"
+  description="Custom websites for Louisville small businesses and independent professionals: design and development, SEO foundations, domain, hosting and SSL setup, and ongoing maintenance."
+>
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__visual reveal">
+        <HeroArtwork />
+      </div>
+      <div class="hero__content">
+        <p class="eyebrow hero__eyebrow reveal">Web design · Louisville, Kentucky</p>
+        <h1 class="reveal reveal--delay">A better website for the business <em>you’ve built.</em></h1>
+        <p class="hero__copy reveal reveal--delay">Professional website design and development for Louisville small businesses—custom designed, carefully built, and ready to help customers find and contact you.</p>
+        <div class="button-row reveal reveal--late">
+          <a class="button" href="/contact/">Get a Quote</a>
+          <a class="text-link" href="/services/">Explore Services</a>
+        </div>
+        <p class="hero__note reveal reveal--late">Custom design. Clean development. Ongoing care.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="capabilities" id="capabilities" aria-label="Website project capabilities">
+    <div class="container capabilities__grid">
+      <article class="capability">
+        <CapabilityArtwork variant="business" />
+        <div class="capability__body">
+          <h2>Built for your business</h2>
+          <p>Custom presentation, clear next steps</p>
+        </div>
+      </article>
+      <article class="capability">
+        <CapabilityArtwork variant="devices" />
+        <div class="capability__body">
+          <h2>Designed for every screen</h2>
+          <p>Mobile-first, accessible experiences</p>
+        </div>
+      </article>
+      <article class="capability">
+        <CapabilityArtwork variant="search" />
+        <div class="capability__body">
+          <h2>Prepared for search</h2>
+          <p>Sound technical SEO from the start</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section--bright section--work" id="work" aria-labelledby="work-heading">
+    <div class="container">
+      <SectionHeading
+        id="work-heading"
+        eyebrow="Selected work"
+        title="Real websites, live today."
+        copy="A selection of sites we’ve designed and built: local businesses, a documentation site, and a few personal projects. Each link opens the live site."
+      />
+      <PortfolioGrid />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="services-heading">
+    <div class="container">
+      <SectionHeading
+        id="services-heading"
+        eyebrow="What we do"
+        title="Everything your business website needs. Nothing it doesn’t."
+        copy="From the first layout to the technical details behind launch, each part of the project has a clear job to do."
+      />
+      <div class="service-grid">
+        {services.map((service) => <ServiceCard service={service} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="why-heading">
+    <div class="container split-feature">
+      <div class="split-feature__sticky">
+        <p class="eyebrow">Why Falls City</p>
+        <h2 class="display" id="why-heading">A focused studio for a more thoughtful website.</h2>
+        <p class="lede">You do not need a sprawling agency or a package full of services you will never use. You need a website that represents your business well and a clear process for getting it right.</p>
+        <a class="text-link" href="/about/">How the studio works</a>
+      </div>
+      <ol class="principle-list">
+        <li class="principle reveal-on-scroll">
+          <span class="principle__number">01</span>
+          <div><h3>Clarity before decoration</h3><p>Your services, value, and next steps come first. Design supports the message instead of getting in its way.</p></div>
+        </li>
+        <li class="principle reveal-on-scroll">
+          <span class="principle__number">02</span>
+          <div><h3>Quality in the details</h3><p>Responsive layouts, semantic code, accessible interactions, and performance-conscious decisions are part of the build.</p></div>
+        </li>
+        <li class="principle reveal-on-scroll">
+          <span class="principle__number">03</span>
+          <div><h3>Plain-English communication</h3><p>You should understand what is being built, what is needed from you, and how the technical pieces fit together.</p></div>
+        </li>
+        <li class="principle reveal-on-scroll">
+          <span class="principle__number">04</span>
+          <div><h3>A useful long-term foundation</h3><p>The goal is not a launch-day impression alone. It is a dependable website you can continue to use and maintain.</p></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--ink" aria-labelledby="process-heading">
+    <div class="container">
+      <SectionHeading
+        id="process-heading"
+        eyebrow="A straightforward process"
+        title="From first conversation to confident launch."
+        copy="A clear sequence keeps the project understandable. You review real progress, know what comes next, and see how decisions connect to your goals."
+      />
+      <ProcessPreview />
+      <a class="text-link" href="/process/">See the full project process</a>
+    </div>
+  </section>
+
+  <section class="section section--river" aria-labelledby="local-heading">
+    <svg class="local-panel__waves" viewBox="0 0 1200 400" fill="none" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 80c150-60 250 60 400 0s250-60 400 0 250 60 400 0" stroke="currentColor" stroke-width="1.5" />
+      <path d="M0 160c150-60 250 60 400 0s250-60 400 0 250 60 400 0" stroke="currentColor" stroke-width="1.5" />
+      <path d="M0 240c150-60 250 60 400 0s250-60 400 0 250 60 400 0" stroke="currentColor" stroke-width="1.5" />
+      <path d="M0 320c150-60 250 60 400 0s250-60 400 0 250 60 400 0" stroke="currentColor" stroke-width="1.5" />
+    </svg>
+    <div class="container local-panel">
+      <div>
+        <p class="eyebrow">Area code 502</p>
+        <h2 class="local-panel__title" id="local-heading">Louisville is not just our service area. <em>It’s our point of view.</em></h2>
+      </div>
+      <div class="local-panel__copy">
+        <p>Local businesses need more than a nice-looking page. Your website should help a neighbor understand what you do, feel confident in your business, and take the next step without friction.</p>
+        <p>Falls City Dev Studio brings that local context together with careful design and modern web development, whether you need a <a href="/services/web-design/">first website or a redesign</a>, the <a href="/services/seo-foundations/">SEO foundations</a> behind it, or <a href="/services/website-maintenance/">ongoing maintenance</a> after launch.</p>
+        <a class="text-link" href="/contact/">Talk about your Louisville business</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-heading">
+    <div class="container faq-layout">
+      <div class="faq-layout__intro">
+        <p class="eyebrow">Common questions</p>
+        <h2 class="display" id="faq-heading">Useful answers, without the sales pitch.</h2>
+        <p class="lede">A good project starts with a shared understanding of the work. Here are a few things business owners often want to know.</p>
+        <a class="text-link" href="/contact/">Ask your own question</a>
+      </div>
+      <FaqList faqs={homeFaqs} />
+    </div>
+  </section>
+
+  <CallToAction />
+</BaseLayout>

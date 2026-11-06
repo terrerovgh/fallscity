@@ -1,0 +1,13 @@
+---
+import { processSteps } from '../data/process';
+---
+
+<ol class="process-preview">
+  {processSteps.map((step) => (
+    <li class="process-preview__step reveal-on-scroll">
+      <span class="process-preview__number">{step.number}</span>
+      <strong>{step.title}</strong>
+      <p>{step.summary}</p>
+    </li>
+  ))}
+</ol>

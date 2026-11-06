@@ -1,0 +1,27 @@
+---
+interface Props {
+  title?: string;
+  copy?: string;
+}
+
+const {
+  title = 'Ready for a website that works as hard as you do?',
+  copy = 'Tell us about your business and what you need your website to do. We’ll start with a clear, practical conversation.',
+} = Astro.props;
+---
+
+<section class="section--ink cta" aria-labelledby="closing-cta">
+  <svg class="cta__waves" viewBox="0 0 1200 240" fill="none" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 60c150-50 250 50 400 0s250-50 400 0 250 50 400 0" stroke="currentColor" stroke-width="1.5" />
+    <path d="M0 120c150-50 250 50 400 0s250-50 400 0 250 50 400 0" stroke="currentColor" stroke-width="1.5" />
+    <path d="M0 180c150-50 250 50 400 0s250-50 400 0 250 50 400 0" stroke="currentColor" stroke-width="1.5" />
+  </svg>
+  <div class="container cta__inner">
+    <div>
+      <p class="eyebrow">Start a project</p>
+      <h2 id="closing-cta">{title}</h2>
+      <p>{copy}</p>
+    </div>
+    <a class="button button--light button--lg" href="/contact/">Let’s Discuss Your Project</a>
+  </div>
+</section>

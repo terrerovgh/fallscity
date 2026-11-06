@@ -1,0 +1,210 @@
+---
+import { isFormConfigured, site } from '../config/site';
+---
+
+<form class="inquiry-form" id="inquiry-form" action="/api/inquiry" method="post" data-inquiry-form>
+  <div class="inquiry-form__intro">
+    <p class="eyebrow">Project inquiry</p>
+    <h2>Tell us what you have in mind.</h2>
+    <p class="muted small">Required fields are marked “required.” Please avoid including sensitive information.</p>
+  </div>
+
+  {!isFormConfigured && (
+    <p class="form-notice" data-type="error">
+      <strong>Online inquiries are not configured yet.</strong> No message can be sent from this page right now. The form will be enabled after the site owner completes the secure form-provider setup.
+    </p>
+  )}
+
+  <fieldset disabled={!isFormConfigured}>
+    <legend class="sr-only">Project inquiry details</legend>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="name">Name <span>(required)</span></label>
+        <input id="name" name="name" type="text" autocomplete="name" maxlength="80" required aria-describedby="name-error" />
+        <span class="form-field__error" id="name-error" data-error-for="name"></span>
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email <span>(required)</span></label>
+        <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="email-error" />
+        <span class="form-field__error" id="email-error" data-error-for="email"></span>
+      </div>
+
+      <div class="form-field">
+        <label for="business">Business name <span>(optional)</span></label>
+        <input id="business" name="business" type="text" autocomplete="organization" maxlength="120" aria-describedby="business-error" />
+        <span class="form-field__error" id="business-error" data-error-for="business"></span>
+      </div>
+
+      <div class="form-field">
+        <label for="service">What can we help with? <span>(required)</span></label>
+        <select id="service" name="service" required aria-describedby="service-error">
+          <option value="">Choose a service</option>
+          <option value="new-website">A new business website</option>
+          <option value="website-redesign">An existing website redesign</option>
+          <option value="seo-foundations">SEO foundations</option>
+          <option value="domain-hosting-ssl">Domain, hosting, or SSL setup</option>
+          <option value="maintenance">Website maintenance</option>
+          <option value="not-sure">Not sure yet</option>
+        </select>
+        <span class="form-field__error" id="service-error" data-error-for="service"></span>
+      </div>
+
+      <div class="form-field form-field--full">
+        <label for="details">Project details <span>(required)</span></label>
+        <textarea id="details" name="details" minlength="30" maxlength="3000" required aria-describedby="details-hint details-error"></textarea>
+        <span class="form-field__hint" id="details-hint">What does your business do, what do you need, and is there an existing website? Please use at least 30 characters.</span>
+        <span class="form-field__error" id="details-error" data-error-for="details"></span>
+      </div>
+
+      <div class="honeypot" aria-hidden="true">
+        <label for="company-website">Leave this field empty</label>
+        <input id="company-website" name="companyWebsite" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <input type="hidden" name="startedAt" value="" data-started-at />
+
+      <div class="form-field form-field--full">
+        <label class="form-consent">
+          <input id="privacy-consent" name="privacyConsent" type="checkbox" value="yes" required aria-describedby="privacyConsent-error" />
+          <span>I have read the <a href="/privacy/">privacy notice</a> and agree that Falls City Dev Studio may use these details to respond to my inquiry. <span>(required)</span></span>
+        </label>
+        <span class="form-field__error" id="privacyConsent-error" data-error-for="privacyConsent"></span>
+      </div>
+    </div>
+
+    {isFormConfigured && (
+      <div class="cf-turnstile" data-sitekey={site.turnstileSiteKey} data-theme="light"></div>
+    )}
+
+    <div class="form-footer">
+      <p class="small muted">Your details are used to respond to your inquiry—not added to a marketing list.</p>
+      <button class="button" type="submit" data-submit-button>Send Project Inquiry</button>
+    </div>
+  </fieldset>
+
+  <p class="form-status" role="status" aria-live="polite" tabindex="-1" hidden data-form-status></p>
+</form>
+
+{isFormConfigured && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+
+<script>
+  declare global {
+    interface Window {
+      turnstile?: { reset: () => void };
+    }
+  }
+
+  const form = document.querySelector<HTMLFormElement>('[data-inquiry-form]');
+
+  if (form && !form.querySelector<HTMLFieldSetElement>('fieldset')?.disabled) {
+    const submitButton = form.querySelector<HTMLButtonElement>('[data-submit-button]');
+    const status = form.querySelector<HTMLParagraphElement>('[data-form-status]');
+    const startedAt = form.querySelector<HTMLInputElement>('[data-started-at]');
+    const fields = ['name', 'email', 'business', 'service', 'details', 'privacyConsent'] as const;
+
+    form.noValidate = true;
+    if (startedAt) startedAt.value = String(Date.now());
+
+    const setStatus = (message: string, type: 'success' | 'error' | 'progress') => {
+      if (!status) return;
+      status.hidden = false;
+      status.textContent = message;
+      status.dataset.type = type;
+      status.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    };
+
+    const inquiryResult = new URLSearchParams(window.location.search).get('inquiry');
+    if (inquiryResult === 'success') {
+      setStatus('Thank you. Your project inquiry has been sent to Falls City Dev Studio.', 'success');
+    } else if (inquiryResult === 'error') {
+      setStatus('Your inquiry could not be sent. Please review your entries and try again.', 'error');
+    }
+
+    const setError = (name: string, message: string) => {
+      const field = form.elements.namedItem(name);
+      const control = field instanceof RadioNodeList ? null : field;
+      const error = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+      if (control instanceof HTMLElement) control.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (error) error.textContent = message;
+    };
+
+    const validate = (data: FormData) => {
+      let valid = true;
+      const name = String(data.get('name') ?? '').trim();
+      const email = String(data.get('email') ?? '').trim();
+      const service = String(data.get('service') ?? '');
+      const details = String(data.get('details') ?? '').trim();
+
+      fields.forEach((field) => setError(field, ''));
+
+      if (name.length < 2 || name.length > 80) {
+        setError('name', 'Enter your name using 2 to 80 characters.');
+        valid = false;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
+        setError('email', 'Enter a valid email address.');
+        valid = false;
+      }
+      if (!service) {
+        setError('service', 'Choose the service that best fits your project.');
+        valid = false;
+      }
+      if (details.length < 30 || details.length > 3000) {
+        setError('details', 'Enter between 30 and 3,000 characters about your project.');
+        valid = false;
+      }
+      if (data.get('privacyConsent') !== 'yes') {
+        setError('privacyConsent', 'Please agree to the privacy notice before sending.');
+        valid = false;
+      }
+      if (!String(data.get('cf-turnstile-response') ?? '')) {
+        setStatus('Please complete the spam-protection check before sending.', 'error');
+        valid = false;
+      }
+
+      if (!valid) {
+        const firstInvalid = form.querySelector<HTMLElement>('[aria-invalid="true"]');
+        firstInvalid?.focus();
+      }
+      return valid;
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      if (!validate(data) || !submitButton) return;
+
+      submitButton.disabled = true;
+      submitButton.textContent = 'Sending…';
+      setStatus('Sending your inquiry securely…', 'progress');
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { Accept: 'application/json' },
+        });
+        const result = await response.json() as { message?: string; errors?: Record<string, string> };
+
+        Object.entries(result.errors ?? {}).forEach(([name, message]) => setError(name, message));
+
+        if (!response.ok) {
+          setStatus(result.message ?? 'Your inquiry could not be sent. Please review the form and try again.', 'error');
+          window.turnstile?.reset();
+          return;
+        }
+
+        form.reset();
+        window.turnstile?.reset();
+        if (startedAt) startedAt.value = String(Date.now());
+        setStatus(result.message ?? 'Thank you. Your project inquiry has been sent.', 'success');
+        status?.focus();
+      } catch {
+        setStatus('The inquiry could not be sent because of a network or server problem. Your entries are still here; please try again.', 'error');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send Project Inquiry';
+      }
+    });
+  }
+</script>

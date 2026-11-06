@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import CallToAction from '../components/CallToAction.astro';
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about/' },
+];
+---
+
+<BaseLayout
+  title="About Our Louisville Web Studio | Falls City Dev Studio"
+  description="Falls City Dev Studio is a Louisville-based web development studio focused on clear, professional, fast websites and practical support for local small businesses."
+  pageType="AboutPage"
+  breadcrumbs={breadcrumbs}
+>
+  <PageHero
+    breadcrumbs={breadcrumbs}
+    eyebrow="About the studio"
+    title="Local understanding. Modern web craft."
+    copy="Falls City Dev Studio is a Louisville-based development studio for small businesses, independent professionals, and service providers that need their website to do a better job."
+  >
+    <a class="text-link" href="/services/">Explore our services</a>
+  </PageHero>
+
+  <section class="section section--bright" aria-labelledby="studio-statement">
+    <div class="container">
+      <p class="eyebrow">A focused point of view</p>
+      <h2 class="about-statement" id="studio-statement">Your website should make your business easier to <em>understand, trust, and contact.</em> Everything in the design and technical foundation should support that job.</h2>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-heading">
+    <div class="container">
+      <SectionHeading
+        id="values-heading"
+        eyebrow="How the work is approached"
+        title="Professional standards, practical decisions."
+        copy="The measure of a good business website is not how much technology it uses. It is how well the whole experience serves the business and its customers."
+      />
+      <div class="values-grid">
+        <article class="value-card reveal-on-scroll">
+          <span class="value-card__number">01</span>
+          <h3>Purpose before trends</h3>
+          <p>Layouts and interactions earn their place by helping visitors find information and take action. Visual personality should never come at the cost of usability.</p>
+        </article>
+        <article class="value-card reveal-on-scroll">
+          <span class="value-card__number">02</span>
+          <h3>Foundations matter</h3>
+          <p>Semantic structure, accessibility, responsive behavior, performance, and search fundamentals are treated as core requirements rather than optional extras.</p>
+        </article>
+        <article class="value-card reveal-on-scroll">
+          <span class="value-card__number">03</span>
+          <h3>Honest scope</h3>
+          <p>The studio focuses on websites and the technical work around them. Recommendations should be clear about what is included, what is not, and where a promise cannot responsibly be made.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ink" aria-labelledby="local-context-heading">
+    <div class="container split-feature">
+      <div>
+        <p class="eyebrow">Built in Falls City</p>
+        <h2 class="display" id="local-context-heading">Websites shaped for the way local businesses work.</h2>
+      </div>
+      <div>
+        <p class="lede">A small business website often has a direct job: explain the service, establish confidence, and help a potential customer get in touch. That calls for clarity, not enterprise complexity.</p>
+        <p class="lede">Falls City Dev Studio brings a local perspective to that work while applying modern design and development practices to every page.</p>
+        <a class="text-link" href="/process/">See what working together looks like</a>
+      </div>
+    </div>
+  </section>
+
+  <CallToAction title="Your business deserves a clear, capable website." copy="Tell us what you do, who you serve, and where your online presence needs to improve. That is enough to start a useful conversation." />
+</BaseLayout>

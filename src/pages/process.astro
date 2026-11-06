@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CallToAction from '../components/CallToAction.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { processSteps } from '../data/process';
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Process', path: '/process/' },
+];
+---
+
+<BaseLayout
+  title="Our Website Design Process | Falls City Dev Studio"
+  description="See how Falls City Dev Studio takes Louisville business websites from an initial conversation through scope, design, development, review, launch, and support."
+  breadcrumbs={breadcrumbs}
+>
+  <PageHero
+    breadcrumbs={breadcrumbs}
+    eyebrow="The process"
+    title="A clear path from idea to working website."
+    copy="The process is designed to keep decisions visible and expectations practical. Each stage has a purpose, and your role is explained along the way."
+  >
+    <a class="text-link" href="/contact/">Start with a conversation</a>
+  </PageHero>
+
+  <section class="section--bright" aria-label="Project steps">
+    <div class="container">
+      <ol class="process-list">
+        {processSteps.map((step) => (
+          <li class="process-step reveal-on-scroll">
+            <span class="process-step__number" aria-hidden="true">{step.number}</span>
+            <div>
+              <h2>{step.title}</h2>
+              <p class="lede">{step.summary}</p>
+              <p class="process-step__description">{step.description}</p>
+            </div>
+            <div class="process-step__role">
+              <h3>Your part</h3>
+              <p>{step.clientRole}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="collaboration-heading">
+    <div class="container">
+      <SectionHeading
+        id="collaboration-heading"
+        eyebrow="Good collaboration"
+        title="A smoother project starts on both sides."
+        copy="The studio handles the design and technical execution. A few simple habits help keep the work aligned with your business."
+      />
+      <div class="service-grid">
+        <article class="service-card service-card--plain reveal-on-scroll">
+          <span class="service-card__number">A</span>
+          <h3>Specific input beats guesswork</h3>
+          <p>Real service details, customer questions, and examples from your business lead to a more useful website than generic industry copy.</p>
+        </article>
+        <article class="service-card service-card--plain reveal-on-scroll">
+          <span class="service-card__number">B</span>
+          <h3>Consolidated feedback keeps things clear</h3>
+          <p>Gather input from the relevant decision-makers and share it together. That makes revisions easier to understand and act on.</p>
+        </article>
+        <article class="service-card service-card--plain reveal-on-scroll">
+          <span class="service-card__number">C</span>
+          <h3>Scope changes should be visible</h3>
+          <p>If a new idea changes the work, it should be discussed and agreed rather than quietly absorbed into an unclear project.</p>
+        </article>
+        <article class="service-card service-card--plain reveal-on-scroll">
+          <span class="service-card__number">D</span>
+          <h3>Launch is a checkpoint, not the finish line</h3>
+          <p>A website benefits from periodic review. Ongoing support can be included when your business needs a clear place to turn for updates.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <CallToAction title="Bring the business knowledge. We’ll bring the web expertise." copy="You do not need a finished brief to begin. A useful first conversation can help clarify what your website needs to accomplish." />
+</BaseLayout>

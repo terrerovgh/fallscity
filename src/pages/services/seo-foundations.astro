@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import FaqList from '../../components/FaqList.astro';
+import CallToAction from '../../components/CallToAction.astro';
+import { services } from '../../data/services';
+import { homeFaqs, serviceFaqs } from '../../data/faqs';
+import { serviceNode } from '../../lib/seo';
+
+const service = services.find((item) => item.anchor === 'seo-foundations')!;
+const path = '/services/seo-foundations/';
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Services', path: '/services/' },
+  { name: 'SEO Foundations', path },
+];
+const structuredData = [
+  serviceNode({
+    name: 'SEO Foundations for Small Business Websites',
+    serviceType: 'Technical and on-page SEO setup',
+    description: service.description,
+    path,
+  }),
+];
+
+const foundations = [
+  {
+    title: 'Pages that match what people search for',
+    copy: 'Each important service gets a clear page with a descriptive heading and plain-language content, so the words customers use appear where they expect them.',
+  },
+  {
+    title: 'Unique titles and descriptions',
+    copy: 'Every indexable page gets its own title and meta description, written for the person deciding whether to click, not stuffed with keywords.',
+  },
+  {
+    title: 'Semantic HTML and logical headings',
+    copy: 'One main heading per page and a sensible outline beneath it help both search engines and assistive technology understand the content.',
+  },
+  {
+    title: 'Canonical URLs, XML sitemap, and robots.txt',
+    copy: 'One preferred address per page, a sitemap that lists only real, indexable pages, and crawler rules that do not block what should be found.',
+  },
+  {
+    title: 'Structured data from verified facts',
+    copy: 'Schema markup describes your business using only information you have confirmed. No invented addresses, hours, ratings, or reviews.',
+  },
+  {
+    title: 'Crawlable links and fast, mobile-first pages',
+    copy: 'Descriptive internal links, content present in the HTML rather than hidden behind scripts, and pages built to load quickly on phones.',
+  },
+];
+
+const faqs = [homeFaqs[3]!, serviceFaqs[1]!];
+---
+
+<BaseLayout
+  title="Small Business SEO Foundations in Louisville | Falls City Dev Studio"
+  description="The technical and on-page SEO groundwork built into every website: titles, headings, canonical URLs, sitemaps, structured data, and indexing readiness. Clearly scoped, with no ranking guarantees."
+  pathname={path}
+  breadcrumbs={breadcrumbs}
+  structuredData={structuredData}
+>
+  <PageHero
+    breadcrumbs={breadcrumbs}
+    eyebrow="SEO foundations"
+    title="The technical groundwork search engines need."
+    copy="Search visibility starts with a website that is useful, understandable, and technically sound. These foundations are built into the project from the start."
+  >
+    <a class="text-link" href="/contact/">Discuss your website</a>
+  </PageHero>
+
+  <section class="section section--bright" aria-labelledby="foundations-heading">
+    <div class="container">
+      <SectionHeading
+        id="foundations-heading"
+        eyebrow="What is included"
+        title="Six foundations, done properly."
+        copy="These are the pieces that help search engines discover your pages and understand what your business offers."
+      />
+      <div class="service-grid">
+        {foundations.map((item, index) => (
+          <article class="service-card service-card--plain">
+            <span class="service-card__number">{String(index + 1).padStart(2, '0')}</span>
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="scope-heading">
+    <div class="container">
+      <SectionHeading
+        id="scope-heading"
+        eyebrow="Honest scope"
+        title="A foundation, not a marketing campaign."
+        copy="SEO foundations make a website ready to be found. They are not a promise of where it will rank."
+      />
+      <div class="scope-grid">
+        <div class="scope-card">
+          <h3>Included in SEO foundations</h3>
+          <ul class="check-list">{service.details.map((item) => <li>{item}</li>)}</ul>
+        </div>
+        <div class="scope-card scope-card--muted">
+          <h3>Not included or implied</h3>
+          <ul class="check-list check-list--no">
+            <li>Guaranteed rankings or a guaranteed first-page position</li>
+            <li>Ongoing content strategy or regular blog publishing</li>
+            <li>Link building or link buying</li>
+            <li>Paid search or broad marketing campaigns</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ink" aria-labelledby="local-heading">
+    <div class="container split-feature">
+      <div>
+        <p class="eyebrow">Local search in Louisville</p>
+        <h2 class="display" id="local-heading">Your website is one part of local visibility.</h2>
+      </div>
+      <div>
+        <p class="lede">Google describes local results as depending mainly on relevance, distance, and prominence. A clear website helps with relevance: it states what you do and where you serve.</p>
+        <p class="lede">Map listings are a separate system. They rely on a Google Business Profile, which has its own eligibility rules and should be owned and managed by your business.</p>
+        <a class="text-link" href="/services/web-design/">How websites are planned and built</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="seo-faq-heading">
+    <div class="container faq-layout">
+      <div class="faq-layout__intro">
+        <p class="eyebrow">SEO questions</p>
+        <h2 class="display" id="seo-faq-heading">Clear answers about search.</h2>
+        <a class="text-link" href="/contact/">Ask your own question</a>
+      </div>
+      <FaqList faqs={faqs} />
+    </div>
+  </section>
+
+  <CallToAction
+    title="Start with a website that is ready to be found."
+    copy="Tell us about your business and your current site. We will explain what the foundations would involve for your project."
+  />
+</BaseLayout>

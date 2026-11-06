@@ -1,0 +1,21 @@
+---
+interface Faq {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  faqs: Faq[];
+}
+
+const { faqs } = Astro.props;
+---
+
+<div class="faq-list">
+  {faqs.map((faq) => (
+    <details>
+      <summary>{faq.question}</summary>
+      <div class="faq-list__answer"><p>{faq.answer}</p></div>
+    </details>
+  ))}
+</div>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page Not Found | Falls City Dev Studio"
+  description="The requested page could not be found. Explore Falls City Dev Studio services or return to the homepage."
+  noindex={true}
+>
+  <section class="not-found">
+    <div class="container">
+      <div class="not-found__code" aria-hidden="true">404</div>
+      <div class="not-found__content">
+        <p class="eyebrow">Wrong turn</p>
+        <h1>This page didn’t make it across the river.</h1>
+        <p class="lede">The address may be outdated or mistyped. Head back to the homepage or explore the studio’s website services.</p>
+        <div class="button-row">
+          <a class="button" href="/">Return Home</a>
+          <a class="text-link" href="/services/">Explore Services</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

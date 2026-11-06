@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import ContactForm from '../components/ContactForm.astro';
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Contact', path: '/contact/' },
+];
+---
+
+<BaseLayout
+  title="Request a Website Quote in Louisville | Falls City Dev Studio"
+  description="Tell Falls City Dev Studio about your Louisville business website, redesign, SEO foundations, domain, hosting, SSL, or maintenance project."
+  pageType="ContactPage"
+  breadcrumbs={breadcrumbs}
+>
+  <PageHero
+    breadcrumbs={breadcrumbs}
+    eyebrow="Start a project"
+    title="Let’s talk about what your website needs to do."
+    copy="Share a few details about your business and project. Useful context now makes the first conversation more productive—no technical brief required."
+  />
+
+  <section class="section section--bright" aria-labelledby="inquiry-heading">
+    <div class="container contact-layout">
+      <aside class="contact-aside" aria-label="Before you inquire">
+        <div class="contact-aside__block">
+          <h2>What to include</h2>
+          <p>What your business does, whether you have a website now, and what a better result would look like.</p>
+        </div>
+        <div class="contact-aside__block">
+          <h2>What happens next</h2>
+          <p>Your project details provide the starting point for a conversation about fit, scope, and the practical next steps.</p>
+        </div>
+        <div class="contact-aside__block">
+          <h2>A focused service</h2>
+          <p>Website design and development, SEO foundations, domain and hosting setup, SSL, and website maintenance.</p>
+        </div>
+      </aside>
+      <div>
+        <h2 class="sr-only" id="inquiry-heading">Project inquiry form</h2>
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
