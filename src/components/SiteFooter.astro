@@ -1,6 +1,7 @@
 ---
 import { site } from '../config/site';
 import { services } from '../data/services';
+import LouisvilleSkyline from './LouisvilleSkyline.astro';
 ---
 
 <footer class="site-footer">
@@ -33,7 +34,10 @@ import { services } from '../data/services';
         </div>
       </div>
     </div>
-    <div class="site-footer__bottom">
+  </div>
+  <LouisvilleSkyline variant="footer" />
+  <div class="site-footer__river">
+    <div class="container site-footer__bottom">
       <span>© {new Date().getFullYear()} Falls City Dev Studio</span>
       <span>Louisville, Kentucky · Built with care by the Ohio</span>
     </div>

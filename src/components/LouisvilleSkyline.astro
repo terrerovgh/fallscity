@@ -1,0 +1,15 @@
+---
+// Flat-color Louisville riverfront (redrawn from public/brand/louisville-state-of-kentucky-in-colorful-abstract.webp
+// by scripts/louisville-skyline.py). Decorative only: hidden from assistive technology.
+import Skyline from '../assets/brand/louisville-skyline.svg';
+
+interface Props {
+  variant: 'hero' | 'footer';
+}
+
+const { variant } = Astro.props;
+---
+
+<div class:list={['skyline', `skyline--${variant}`]} aria-hidden="true">
+  <Skyline class="skyline__art" aria-hidden="true" focusable="false" />
+</div>
