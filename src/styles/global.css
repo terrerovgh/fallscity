@@ -1,4 +1,7 @@
 :root {
+  /* Arrow glyphs drawn as SVG masks so they look the same in every browser and font. */
+  --arrow-up-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 11.5 11.5 4.5M5.5 4.5h6v6'/%3E%3C/svg%3E");
+  --arrow-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23000' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 8h11M9 3.5 13.5 8 9 12.5'/%3E%3C/svg%3E");
   --paper: #f2efe6;
   --paper-bright: #fbfaf5;
   --ink: #0d1927;
@@ -262,9 +265,14 @@ main {
 }
 
 .text-link::after {
-  content: '↗';
+  width: 0.8em;
+  height: 0.8em;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  -webkit-mask: var(--arrow-up-right) center / contain no-repeat;
+  mask: var(--arrow-up-right) center / contain no-repeat;
+  content: '';
   color: var(--copper);
-  font-size: 1.15em;
   transition: transform 180ms ease;
 }
 
@@ -311,8 +319,13 @@ main {
 }
 
 .button::after {
-  content: '↗';
-  font-size: 1.05rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  -webkit-mask: var(--arrow-up-right) center / contain no-repeat;
+  mask: var(--arrow-up-right) center / contain no-repeat;
+  content: '';
 }
 
 .button:hover {
@@ -515,6 +528,20 @@ main {
   transform: rotate(-45deg);
 }
 
+@keyframes nav-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+}
+
+@keyframes nav-item {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+}
+
 .hero {
   position: relative;
   display: grid;
@@ -526,7 +553,7 @@ main {
    * content and are softened there by .hero__content::before.
    * Percentages in padding resolve against the width, like the skyline itself.
    */
-  padding-block: clamp(1.5rem, 3vw, 2.5rem) calc(19.73% * 0.55);
+  padding-block: clamp(1.5rem, 3vw, 2.5rem) calc(19.281% * 0.55);
   background:
     radial-gradient(52rem 42rem at 18% 48%, rgb(159 216 230 / 0.3), transparent 66%),
     linear-gradient(115deg, var(--paper-bright), var(--paper) 72%);
@@ -613,13 +640,6 @@ main {
   white-space: nowrap;
 }
 
-.hero__note {
-  margin: clamp(1rem, 2vw, 1.5rem) 0 0;
-  color: var(--ink-soft);
-  font-size: clamp(0.7rem, 1vw, 0.8125rem);
-  line-height: 1.5;
-}
-
 .hero-showcase {
   position: relative;
   display: grid;
@@ -632,11 +652,7 @@ main {
 }
 
 /* --- Louisville skyline ------------------------------------------------- */
-/*
- * Full-bleed at every width. The art's viewBox is 583 × 115, so its height is
- * 19.73% of the screen width (keep in sync with scripts/louisville-skyline.py).
- * Transforms inside the SVG use px, which map to viewBox units there.
- */
+/* The 612 × 118 viewBox stays in sync with scripts/louisville-skyline.py. */
 .skyline {
   width: 100%;
   pointer-events: none;
@@ -647,7 +663,6 @@ main {
   display: block;
   width: 100%;
   height: auto;
-  /* the river runs past the art's edges; the parent clips it */
   overflow: visible;
 }
 
@@ -656,7 +671,11 @@ main {
   z-index: 0;
   bottom: 0;
   left: 0;
-  animation: skyline-rise 900ms 260ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+  animation: skyline-rise 1000ms 180ms cubic-bezier(0.2, 0.65, 0.3, 1) both;
+}
+
+.skyline--nav {
+  display: none;
 }
 
 @keyframes skyline-rise {
@@ -666,106 +685,59 @@ main {
   }
 }
 
-.skyline .river-flow--b {
-  opacity: 0.6;
-}
-
-/* Clouds sail across a good part of the sky and back. */
 @keyframes sky-drift {
   from {
-    transform: translateX(-28px);
+    transform: translateX(-8px);
   }
 
   to {
-    transform: translateX(28px);
+    transform: translateX(8px);
   }
 }
 
-/* Balloons rise, sway on their basket, and drift with the wind. */
 @keyframes sky-float {
   0% {
-    transform: translate(-6px, 3px) rotate(-4deg);
+    transform: translate(-2px, 1px) rotate(-2deg);
   }
 
   50% {
-    transform: translate(0, -5px) rotate(3deg);
+    transform: translate(0, -2px) rotate(1deg);
   }
 
   100% {
-    transform: translate(6px, 2px) rotate(-3deg);
-  }
-}
-
-/* Each ripple layer moves exactly one pattern period, so the loop is seamless. */
-@keyframes river-flow-a {
-  to {
-    transform: translateX(-96px);
-  }
-}
-
-@keyframes river-flow-b {
-  to {
-    transform: translateX(-64px);
-  }
-}
-
-@keyframes river-glint {
-  0%,
-  100% {
-    opacity: 0.15;
-  }
-
-  50% {
-    opacity: 1;
+    transform: translate(2px, 1px) rotate(-1deg);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .skyline .sky-cloud {
-    animation: sky-drift 24s ease-in-out infinite alternate;
+    animation: sky-drift 30s ease-in-out infinite alternate;
   }
 
   .skyline .sky-cloud--b {
     animation-delay: -9s;
-    animation-duration: 30s;
+    animation-duration: 38s;
   }
 
   .skyline .sky-cloud--c {
     animation-delay: -4s;
-    animation-duration: 19s;
+    animation-duration: 25s;
   }
 
   .skyline .sky-cloud--d {
     animation-delay: -12s;
-    animation-duration: 22s;
-  }
-
-  .skyline .sky-cloud--e {
-    animation-delay: -6s;
-    animation-duration: 27s;
+    animation-duration: 29s;
   }
 
   .skyline .sky-balloon {
     transform-box: fill-box;
     transform-origin: 50% 100%;
-    animation: sky-float 7s ease-in-out infinite alternate;
+    animation: sky-float 8s ease-in-out infinite alternate;
   }
 
   .skyline .sky-balloon--b {
     animation-delay: -3.5s;
-    animation-duration: 9s;
-  }
-
-  .skyline .river-flow--a {
-    animation: river-flow-a 7s linear infinite;
-  }
-
-  .skyline .river-flow--b {
-    animation: river-flow-b 3.6s linear infinite;
-  }
-
-  .skyline .river-glints {
-    animation: river-glint 2.8s ease-in-out infinite;
+    animation-duration: 10s;
   }
 }
 
@@ -895,8 +867,14 @@ main {
 }
 
 .work-card__link::after {
+  width: 0.8em;
+  height: 0.8em;
+  flex: 0 0 auto;
+  background-color: currentColor;
+  -webkit-mask: var(--arrow-up-right) center / contain no-repeat;
+  mask: var(--arrow-up-right) center / contain no-repeat;
+  content: '';
   color: var(--copper);
-  content: '↗';
   transition: transform 180ms ease;
 }
 
@@ -1200,32 +1178,8 @@ main {
   transform: rotate(-4deg);
 }
 
-.service-card__number {
-  color: var(--copper);
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
-}
-
-.service-card--plain .service-card__number {
-  margin-bottom: var(--space-6);
-}
-
-.service-card__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0 0 var(--space-5);
-  padding: 0;
-  list-style: none;
-}
-
-.service-card__tags li {
-  border: 1px solid var(--line);
-  border-radius: 0.75rem;
-  padding: 0.2rem 0.65rem;
-  color: var(--ink-soft);
-  font-size: var(--text-xs);
-  font-weight: 600;
+.service-card--plain {
+  min-height: 0;
 }
 
 .service-card h3 {
@@ -1264,21 +1218,12 @@ main {
 }
 
 .principle {
-  display: grid;
-  grid-template-columns: 3rem 1fr;
-  gap: var(--space-5);
   border-top: 1px solid var(--line);
   padding-block: var(--space-6);
 }
 
 .principle:last-child {
   border-bottom: 1px solid var(--line);
-}
-
-.principle__number {
-  color: var(--copper);
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
 }
 
 .principle h3 {
@@ -1653,18 +1598,9 @@ main {
 }
 
 .service-detail {
-  display: grid;
-  grid-template-columns: 0.18fr 0.82fr;
-  gap: var(--space-7);
   border-bottom: 1px solid var(--line);
   padding-block: clamp(3.5rem, 7vw, 6rem);
   scroll-margin-top: 1rem;
-}
-
-.service-detail__number {
-  color: var(--copper);
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
 }
 
 .service-detail__header {
@@ -1802,17 +1738,8 @@ main {
 }
 
 .value-card {
-  min-height: 20rem;
   padding: clamp(1.5rem, 3vw, 2.5rem);
   background: var(--paper-bright);
-}
-
-.value-card__number {
-  display: block;
-  margin-bottom: var(--space-8);
-  color: var(--copper);
-  font-family: var(--font-display);
-  font-size: var(--text-lg);
 }
 
 .value-card h3 {
@@ -2143,31 +2070,193 @@ main {
 }
 
 @media (max-width: 800px) {
+  :root {
+    --art-h: calc(100vw * 118 / 612);
+    --hdr-c: 4.5rem;
+    --logo-c: 2.25rem;
+    --logo-e: clamp(2.5rem, 6vw, 3.25rem);
+    --logo-base: 0.38;
+    --sky-top: max(0.5rem, calc(0.75rem + var(--logo-e) - var(--logo-base) * var(--art-h)));
+    --hdr-e: calc(var(--sky-top) + var(--art-h));
+    --nav-scroll-range: clamp(4rem, 12vw, 7rem);
+  }
+
+  .site-header {
+    --header-ease: cubic-bezier(0.22, 0.7, 0.2, 1);
+    --hdr-h: calc(var(--hdr-e) + var(--p, 0) * (var(--hdr-c) - var(--hdr-e)));
+    --mid-e: calc(var(--sky-top) + var(--logo-base) * var(--art-h) - var(--logo-e) / 2);
+    --mid-c: calc(var(--hdr-c) / 2);
+    --mid: calc(var(--mid-e) + var(--p, 0) * (var(--mid-c) - var(--mid-e)));
+    --logo-h: calc(var(--logo-e) + var(--p, 0) * (var(--logo-c) - var(--logo-e)));
+
+    position: relative;
+    isolation: isolate;
+    height: var(--hdr-h);
+    border-bottom: 1px solid rgb(255 255 255 / calc(0.2 + 0.45 * var(--p, 0)));
+    background: #d5e8eb;
+    transition: box-shadow 220ms ease;
+  }
+
+  .js .site-header {
+    position: sticky;
+    top: 0;
+  }
+
+  .site-header[data-scrolled] {
+    box-shadow: 0 12px 30px -20px rgb(13 25 39 / 0.75);
+  }
+
+  .site-header[data-collapsed] {
+    box-shadow: 0 14px 32px -20px rgb(13 25 39 / 0.8);
+  }
+
+  .site-header__inner {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    min-height: 0;
+    align-items: flex-start;
+  }
+
+  .skyline--nav {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .skyline--nav .skyline__art {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+  }
+
+  .brand {
+    position: relative;
+    height: var(--logo-h);
+    transform: translateY(calc(var(--mid) - var(--logo-h) / 2));
+  }
+
+  .brand::before {
+    position: absolute;
+    z-index: -1;
+    inset: -0.55rem -0.85rem;
+    border: 1px solid rgb(255 255 255 / calc(0.08 + 0.28 * var(--p, 0)));
+    border-radius: 0.75rem;
+    background: rgb(251 250 245 / calc(0.26 + 0.5 * var(--p, 0)));
+    box-shadow: 0 10px 24px -18px rgb(13 25 39 / calc(0.2 + 0.5 * var(--p, 0)));
+    content: '';
+    pointer-events: none;
+    -webkit-backdrop-filter: blur(7px) saturate(1.1);
+    backdrop-filter: blur(7px) saturate(1.1);
+  }
+
+  .brand__logo {
+    height: 100%;
+    filter: drop-shadow(0 1px 0 rgb(251 250 245 / 0.9));
+  }
+
   .js .nav-toggle {
     display: inline-flex;
   }
 
+  .nav-toggle {
+    min-width: 3rem;
+    min-height: 3rem;
+    border-color: rgb(255 255 255 / 0.55);
+    background: rgb(251 250 245 / 0.72);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.85) inset,
+      0 10px 24px -14px rgb(13 25 39 / 0.65);
+    transform: translateY(calc(var(--mid) - 1.5rem));
+    -webkit-backdrop-filter: blur(8px) saturate(1.15);
+    backdrop-filter: blur(8px) saturate(1.15);
+    transition:
+      background-color 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .nav-toggle:hover {
+    border-color: rgb(255 255 255 / 0.9);
+    background: rgb(251 250 245 / 0.9);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.9) inset,
+      0 12px 28px -14px rgb(13 25 39 / 0.75);
+  }
+
+  .site-nav[data-open='true'] .nav-toggle,
+  .site-nav[data-open='true'] .nav-toggle:hover {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+
+  .site-nav[data-open='true'] .nav-toggle__icon::before,
+  .site-nav[data-open='true'] .nav-toggle__icon::after {
+    background: var(--paper-bright);
+  }
+
   .site-nav__links {
     position: absolute;
-    top: calc(100% + 1px);
-    right: 0;
-    left: 0;
+    top: calc(100% + 0.5rem);
+    right: max(1rem, calc((100% - 36rem) / 2));
+    left: max(1rem, calc((100% - 36rem) / 2));
     display: flex;
     align-items: stretch;
     flex-direction: column;
     gap: 0;
-    border-bottom: 1px solid var(--line);
-    padding: 0.75rem 1.25rem 1.25rem;
-    background: var(--paper-bright);
-    box-shadow: var(--shadow);
+    border: 1px solid rgb(255 255 255 / 0.75);
+    border-radius: 1rem;
+    padding: 0.5rem 1.25rem 1.25rem;
+    background: rgb(251 250 245 / 0.94);
+    box-shadow: 0 28px 60px -22px rgb(13 25 39 / 0.42);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    backdrop-filter: blur(18px) saturate(1.2);
   }
 
   .js .site-nav__links {
-    display: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-0.65rem) scale(0.985);
+    transform-origin: top;
+    transition:
+      opacity 180ms ease,
+      visibility 180ms ease,
+      transform 240ms var(--header-ease);
   }
 
   .js .site-nav[data-open='true'] .site-nav__links {
-    display: flex;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  .js .site-nav[data-open='true'] .site-nav__links > * {
+    animation: nav-item 360ms var(--header-ease) both;
+  }
+
+  .js .site-nav[data-open='true'] .site-nav__links > :nth-child(2) {
+    animation-delay: 40ms;
+  }
+
+  .js .site-nav[data-open='true'] .site-nav__links > :nth-child(3) {
+    animation-delay: 80ms;
+  }
+
+  .js .site-nav[data-open='true'] .site-nav__links > :nth-child(4) {
+    animation-delay: 120ms;
+  }
+
+  .js .site-nav[data-open='true'] .site-nav__links > :nth-child(5) {
+    animation-delay: 160ms;
+  }
+
+  .js .site-nav[data-open='true'] .site-nav__links > :nth-child(n + 6) {
+    animation-delay: 200ms;
   }
 
   .site-nav__links a {
@@ -2178,8 +2267,28 @@ main {
     display: none;
   }
 
+  .site-nav__links a:not(.button) {
+    border-bottom: 1px solid rgb(201 201 187 / 0.55);
+    font-family: var(--font-display);
+    font-size: 1.375rem;
+    font-weight: 450;
+  }
+
+  .site-nav__links a[aria-current='page']:not(.button) {
+    color: var(--river);
+  }
+
   .site-nav__links .button {
     margin-top: 0.75rem;
+  }
+
+  .skyline--hero {
+    display: none;
+  }
+
+  .hero {
+    min-height: calc(100svh - var(--hdr-e));
+    padding-block: var(--space-6) var(--space-8);
   }
 
   .page-hero__grid,
@@ -2211,11 +2320,6 @@ main {
     max-width: 38rem;
   }
 
-  .service-detail {
-    grid-template-columns: 3rem 1fr;
-    gap: var(--space-4);
-  }
-
   .process-step {
     grid-template-columns: 3rem 1fr;
     gap: var(--space-4);
@@ -2227,14 +2331,6 @@ main {
 
   .values-grid {
     grid-template-columns: 1fr;
-  }
-
-  .value-card {
-    min-height: 0;
-  }
-
-  .value-card__number {
-    margin-bottom: var(--space-5);
   }
 
   .contact-aside {
@@ -2258,13 +2354,14 @@ main {
     width: min(calc(100% - 2rem), var(--content));
   }
 
-  .site-header__inner {
-    min-height: 4.75rem;
+  /* phones: the standard 4rem (64px) bar with a 2rem logo once collapsed */
+  :root {
+    --hdr-c: 4rem;
+    --logo-c: 2rem;
   }
 
   .hero {
-    min-height: calc(100svh - 4.75rem);
-    padding-block: var(--space-5) calc(19.73% * 0.7);
+    padding-block: var(--space-5) var(--space-8);
     background:
       radial-gradient(28rem 24rem at 8% 14%, rgb(159 216 230 / 0.32), transparent 68%),
       linear-gradient(155deg, var(--paper-bright), var(--paper) 78%);
@@ -2329,13 +2426,6 @@ main {
     min-height: 3.25rem;
     padding-inline: var(--space-1);
     font-size: 0.8125rem;
-  }
-
-  .hero__note {
-    border-top: 1px solid var(--line);
-    margin-top: var(--space-5);
-    padding-top: var(--space-4);
-    font-size: var(--text-xs);
   }
 
   /* Selected work becomes a swipeable row; the next card peeks in from the edge. */
@@ -2430,9 +2520,16 @@ main {
   }
 
   .work__hint > span:first-child::after {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
     margin-left: 0.4rem;
+    background-color: currentColor;
     color: var(--copper);
-    content: '→';
+    vertical-align: -0.12em;
+    -webkit-mask: var(--arrow-right) center / contain no-repeat;
+    mask: var(--arrow-right) center / contain no-repeat;
+    content: '';
   }
 
   .work__progress {
@@ -2518,10 +2615,6 @@ main {
   .service-detail__header,
   .service-detail__body {
     grid-template-columns: 1fr;
-  }
-
-  .service-detail__number {
-    font-size: var(--text-lg);
   }
 
   .page-hero__aside {

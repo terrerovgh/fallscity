@@ -24,14 +24,13 @@ import LouisvilleSkyline from '../components/LouisvilleSkyline.astro';
         <HeroArtwork />
       </div>
       <div class="hero__content">
-        <p class="eyebrow hero__eyebrow reveal">Web design · Louisville, Kentucky</p>
+        <p class="eyebrow hero__eyebrow reveal">Web design in Louisville, Kentucky</p>
         <h1 class="reveal reveal--delay">A better website for the business <em>you’ve built.</em></h1>
-        <p class="hero__copy reveal reveal--delay">Professional website design and development for Louisville small businesses—custom designed, carefully built, and ready to help customers find and contact you.</p>
+        <p class="hero__copy reveal reveal--delay">We design and build websites for small businesses in Louisville. Each site is made for your business and set up so customers can find you and get in touch.</p>
         <div class="button-row reveal reveal--late">
           <a class="button" href="/contact/">Get a Quote</a>
           <a class="text-link" href="/services/">Explore Services</a>
         </div>
-        <p class="hero__note reveal reveal--late">Custom design. Clean development. Ongoing care.</p>
       </div>
     </div>
     <LouisvilleSkyline variant="hero" />
@@ -42,22 +41,22 @@ import LouisvilleSkyline from '../components/LouisvilleSkyline.astro';
       <article class="capability">
         <CapabilityArtwork variant="business" />
         <div class="capability__body">
-          <h2>Built for your business</h2>
-          <p>Custom presentation, clear next steps</p>
+          <h2>Made for your business</h2>
+          <p>Designed around your services</p>
         </div>
       </article>
       <article class="capability">
         <CapabilityArtwork variant="devices" />
         <div class="capability__body">
-          <h2>Designed for every screen</h2>
-          <p>Mobile-first, accessible experiences</p>
+          <h2>Works on every screen</h2>
+          <p>Built mobile-first and accessible</p>
         </div>
       </article>
       <article class="capability">
         <CapabilityArtwork variant="search" />
         <div class="capability__body">
-          <h2>Prepared for search</h2>
-          <p>Sound technical SEO from the start</p>
+          <h2>Ready for search</h2>
+          <p>Technical SEO from day one</p>
         </div>
       </article>
     </div>
@@ -69,7 +68,7 @@ import LouisvilleSkyline from '../components/LouisvilleSkyline.astro';
         id="work-heading"
         eyebrow="Selected work"
         title="Real websites, live today."
-        copy="A selection of sites we’ve designed and built: local businesses, a documentation site, and a few personal projects. Each link opens the live site."
+        copy="Some of the sites we’ve designed and built. Most are for small businesses, one is a documentation site, and a couple are personal projects. Each link opens the live site."
       />
       <PortfolioGrid />
     </div>
@@ -80,8 +79,8 @@ import LouisvilleSkyline from '../components/LouisvilleSkyline.astro';
       <SectionHeading
         id="services-heading"
         eyebrow="What we do"
-        title="Everything your business website needs. Nothing it doesn’t."
-        copy="From the first layout to the technical details behind launch, each part of the project has a clear job to do."
+        title="What we can do for your website."
+        copy="Most projects use some or all of these four services. We’ll help you work out which ones you need."
       />
       <div class="service-grid">
         {services.map((service) => <ServiceCard service={service} />)}
@@ -93,28 +92,28 @@ import LouisvilleSkyline from '../components/LouisvilleSkyline.astro';
     <div class="container split-feature">
       <div class="split-feature__sticky">
         <p class="eyebrow">Why Falls City</p>
-        <h2 class="display" id="why-heading">A focused studio for a more thoughtful website.</h2>
-        <p class="lede">You do not need a sprawling agency or a package full of services you will never use. You need a website that represents your business well and a clear process for getting it right.</p>
+        <h2 class="display" id="why-heading">A small studio that only does websites.</h2>
+        <p class="lede">You don’t need a large agency or a package of services you’ll never use. You need a website that represents your business well, and someone who explains the work as it happens.</p>
         <a class="text-link" href="/about/">How the studio works</a>
       </div>
-      <ol class="principle-list">
-        <li class="principle reveal-on-scroll">
-          <span class="principle__number">01</span>
-          <div><h3>Clarity before decoration</h3><p>Your services, value, and next steps come first. Design supports the message instead of getting in its way.</p></div>
-        </li>
-        <li class="principle reveal-on-scroll">
-          <span class="principle__number">02</span>
-          <div><h3>Quality in the details</h3><p>Responsive layouts, semantic code, accessible interactions, and performance-conscious decisions are part of the build.</p></div>
-        </li>
-        <li class="principle reveal-on-scroll">
-          <span class="principle__number">03</span>
-          <div><h3>Plain-English communication</h3><p>You should understand what is being built, what is needed from you, and how the technical pieces fit together.</p></div>
-        </li>
-        <li class="principle reveal-on-scroll">
-          <span class="principle__number">04</span>
-          <div><h3>A useful long-term foundation</h3><p>The goal is not a launch-day impression alone. It is a dependable website you can continue to use and maintain.</p></div>
-        </li>
-      </ol>
+      <div class="principle-list">
+        <div class="principle reveal-on-scroll">
+          <h3>Your message comes first</h3>
+          <p>Visitors should be able to tell what you do and how to reach you within a few seconds. The design is there to support that.</p>
+        </div>
+        <div class="principle reveal-on-scroll">
+          <h3>The details are handled</h3>
+          <p>Pages adjust to any screen, the code is clean, the site works with a keyboard and screen readers, and it loads quickly.</p>
+        </div>
+        <div class="principle reveal-on-scroll">
+          <h3>Explained in plain English</h3>
+          <p>You’ll know what is being built, what we need from you, and how the technical parts fit together.</p>
+        </div>
+        <div class="principle reveal-on-scroll">
+          <h3>Built to last past launch</h3>
+          <p>A website should keep working for years and be easy to update when your business changes.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -122,9 +121,9 @@ import LouisvilleSkyline from '../components/LouisvilleSkyline.astro';
     <div class="container">
       <SectionHeading
         id="process-heading"
-        eyebrow="A straightforward process"
-        title="From first conversation to confident launch."
-        copy="A clear sequence keeps the project understandable. You review real progress, know what comes next, and see how decisions connect to your goals."
+        eyebrow="How a project runs"
+        title="From the first conversation to launch."
+        copy="Every project follows the same five steps. You review the real site as it takes shape and always know what happens next."
       />
       <ProcessPreview />
       <a class="text-link" href="/process/">See the full project process</a>
@@ -141,11 +140,11 @@ import LouisvilleSkyline from '../components/LouisvilleSkyline.astro';
     <div class="container local-panel">
       <div>
         <p class="eyebrow">Area code 502</p>
-        <h2 class="local-panel__title" id="local-heading">Louisville is not just our service area. <em>It’s our point of view.</em></h2>
+        <h2 class="local-panel__title" id="local-heading">We work in Louisville, <em>for Louisville businesses.</em></h2>
       </div>
       <div class="local-panel__copy">
-        <p>Local businesses need more than a nice-looking page. Your website should help a neighbor understand what you do, feel confident in your business, and take the next step without friction.</p>
-        <p>Falls City Dev Studio brings that local context together with careful design and modern web development, whether you need a <a href="/services/web-design/">first website or a redesign</a>, the <a href="/services/seo-foundations/">SEO foundations</a> behind it, or <a href="/services/website-maintenance/">ongoing maintenance</a> after launch.</p>
+        <p>A good-looking page isn’t enough for a local business. Your website should help a neighbor understand what you do, trust you, and get in touch without hunting for a phone number.</p>
+        <p>We can help whether you need a <a href="/services/web-design/">first website or a redesign</a>, the <a href="/services/seo-foundations/">SEO foundations</a> behind it, or <a href="/services/website-maintenance/">ongoing maintenance</a> after launch.</p>
         <a class="text-link" href="/contact/">Talk about your Louisville business</a>
       </div>
     </div>
@@ -155,8 +154,8 @@ import LouisvilleSkyline from '../components/LouisvilleSkyline.astro';
     <div class="container faq-layout">
       <div class="faq-layout__intro">
         <p class="eyebrow">Common questions</p>
-        <h2 class="display" id="faq-heading">Useful answers, without the sales pitch.</h2>
-        <p class="lede">A good project starts with a shared understanding of the work. Here are a few things business owners often want to know.</p>
+        <h2 class="display" id="faq-heading">What people usually ask first.</h2>
+        <p class="lede">A few things business owners tend to want to know before starting a project.</p>
         <a class="text-link" href="/contact/">Ask your own question</a>
       </div>
       <FaqList faqs={homeFaqs} />

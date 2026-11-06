@@ -1,11 +1,13 @@
 ---
 import { site } from '../config/site';
+import LouisvilleSkyline from './LouisvilleSkyline.astro';
 
 const pathname = Astro.url.pathname;
 const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
 ---
 
 <header class="site-header">
+  <LouisvilleSkyline variant="nav" />
   <div class="container site-header__inner">
     <a class="brand" href="/" aria-label="Falls City Dev Studio, home">
       <img class="brand__logo" src="/brand/fallscity-logo.svg" alt="" width="1259" height="316" fetchpriority="high" />
@@ -26,6 +28,42 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
 </header>
 
 <script>
+  const header = document.querySelector<HTMLElement>('.site-header');
+  const compact = window.matchMedia('(max-width: 800px)');
+
+  if (header) {
+    let range = 0;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const progress = compact.matches ? Math.min(1, Math.max(0, window.scrollY / range)) : 0;
+      header.style.setProperty('--p', progress.toFixed(4));
+      header.toggleAttribute('data-collapsed', progress >= 0.98);
+      header.toggleAttribute('data-scrolled', window.scrollY > 8);
+    };
+
+    const measure = () => {
+      if (!compact.matches) {
+        range = 1;
+        header.style.removeProperty('--p');
+        header.removeAttribute('data-collapsed');
+        header.removeAttribute('data-scrolled');
+        return;
+      }
+      range = Math.max(1, parseFloat(getComputedStyle(header).getPropertyValue('--nav-scroll-range')) || 96);
+      update();
+    };
+
+    window.addEventListener('scroll', () => {
+      if (compact.matches && !frame) frame = requestAnimationFrame(update);
+    }, { passive: true });
+    window.addEventListener('resize', measure);
+    compact.addEventListener('change', measure);
+    document.fonts.ready.then(measure);
+    measure();
+  }
+
   const nav = document.querySelector<HTMLElement>('[data-site-nav]');
   const toggle = nav?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
 
@@ -37,6 +75,7 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
     };
 
     toggle.addEventListener('click', () => setOpen(nav.dataset.open !== 'true'));
+    nav.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && nav.dataset.open === 'true') {
@@ -49,8 +88,8 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
       if (nav.dataset.open === 'true' && !nav.contains(event.target as Node)) setOpen(false);
     });
 
-    window.matchMedia('(min-width: 801px)').addEventListener('change', (event) => {
-      if (event.matches) setOpen(false);
+    compact.addEventListener('change', (event) => {
+      if (!event.matches) setOpen(false);
     });
   }
 </script>

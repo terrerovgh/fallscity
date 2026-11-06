@@ -31,7 +31,7 @@ const foundations = [
   },
   {
     title: 'Unique titles and descriptions',
-    copy: 'Every indexable page gets its own title and meta description, written for the person deciding whether to click, not stuffed with keywords.',
+    copy: 'Every indexable page gets its own title and meta description, written for the person deciding whether to click instead of stuffed with keywords.',
   },
   {
     title: 'Semantic HTML and logical headings',
@@ -43,7 +43,7 @@ const foundations = [
   },
   {
     title: 'Structured data from verified facts',
-    copy: 'Schema markup describes your business using only information you have confirmed. No invented addresses, hours, ratings, or reviews.',
+    copy: 'Schema markup describes your business using only information you have confirmed. We never add addresses, hours, ratings, or reviews that aren’t real.',
   },
   {
     title: 'Crawlable links and fast, mobile-first pages',
@@ -75,13 +75,12 @@ const faqs = [homeFaqs[3]!, serviceFaqs[1]!];
       <SectionHeading
         id="foundations-heading"
         eyebrow="What is included"
-        title="Six foundations, done properly."
+        title="What we set up on every site."
         copy="These are the pieces that help search engines discover your pages and understand what your business offers."
       />
       <div class="service-grid">
-        {foundations.map((item, index) => (
+        {foundations.map((item) => (
           <article class="service-card service-card--plain">
-            <span class="service-card__number">{String(index + 1).padStart(2, '0')}</span>
             <h3>{item.title}</h3>
             <p>{item.copy}</p>
           </article>
@@ -94,25 +93,10 @@ const faqs = [homeFaqs[3]!, serviceFaqs[1]!];
     <div class="container">
       <SectionHeading
         id="scope-heading"
-        eyebrow="Honest scope"
-        title="A foundation, not a marketing campaign."
-        copy="SEO foundations make a website ready to be found. They are not a promise of where it will rank."
+        eyebrow="Scope"
+        title="What this service doesn’t cover."
+        copy="SEO foundations get your website ready to be found, but nobody can guarantee where it will rank. Ongoing blog content, link building, and paid search are separate work and aren’t part of this service."
       />
-      <div class="scope-grid">
-        <div class="scope-card">
-          <h3>Included in SEO foundations</h3>
-          <ul class="check-list">{service.details.map((item) => <li>{item}</li>)}</ul>
-        </div>
-        <div class="scope-card scope-card--muted">
-          <h3>Not included or implied</h3>
-          <ul class="check-list check-list--no">
-            <li>Guaranteed rankings or a guaranteed first-page position</li>
-            <li>Ongoing content strategy or regular blog publishing</li>
-            <li>Link building or link buying</li>
-            <li>Paid search or broad marketing campaigns</li>
-          </ul>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -134,7 +118,7 @@ const faqs = [homeFaqs[3]!, serviceFaqs[1]!];
     <div class="container faq-layout">
       <div class="faq-layout__intro">
         <p class="eyebrow">SEO questions</p>
-        <h2 class="display" id="seo-faq-heading">Clear answers about search.</h2>
+        <h2 class="display" id="seo-faq-heading">Questions about search.</h2>
         <a class="text-link" href="/contact/">Ask your own question</a>
       </div>
       <FaqList faqs={faqs} />
@@ -143,6 +127,6 @@ const faqs = [homeFaqs[3]!, serviceFaqs[1]!];
 
   <CallToAction
     title="Start with a website that is ready to be found."
-    copy="Tell us about your business and your current site. We will explain what the foundations would involve for your project."
+    copy="Tell us about your business and your current site, and we’ll explain what the foundations would involve for your project."
   />
 </BaseLayout>

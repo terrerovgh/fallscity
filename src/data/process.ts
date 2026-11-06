@@ -28,7 +28,7 @@ export const processSteps: ProcessStep[] = [
     title: 'Design and build',
     summary: 'Shape the content and visual direction, then implement the website with care.',
     description:
-      'The studio develops the page structure, design, and working website around the agreed scope. Decisions about layout, mobile behavior, accessibility, and performance are handled as part of the build—not deferred to the end.',
+      'The studio develops the page structure, design, and working website around the agreed scope. Decisions about layout, mobile behavior, accessibility, and performance are made during the build instead of being left for the end.',
     clientRole: 'Provide the agreed business information, copy input, images, and timely feedback needed for the project.',
   },
   {

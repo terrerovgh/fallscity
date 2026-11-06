@@ -17,7 +17,7 @@ export const homeFaqs = [
   {
     question: 'Do you guarantee first-page Google rankings?',
     answer:
-      'No. Search rankings depend on many factors and cannot be honestly guaranteed. The studio implements sound on-page and technical SEO foundations so search engines can discover and understand your website.',
+      'No. Rankings depend on many things outside anyone’s control, so no one can honestly guarantee them. What we do is set up solid on-page and technical SEO so search engines can find and understand your website.',
   },
   {
     question: 'Can you update the website after it launches?',
@@ -30,7 +30,7 @@ export const serviceFaqs = [
   {
     question: 'Is this a template or a custom website?',
     answer:
-      'The design is shaped around your business and content rather than dropping your logo into a generic agency theme. Reusable technical patterns may be used where sensible, but the page structure, presentation, and implementation respond to the agreed project needs.',
+      'Custom. We don’t drop your logo into a generic theme. Some technical building blocks get reused between projects where it makes sense, but the page structure, design, and build are made for your project.',
   },
   {
     question: 'Is ongoing SEO included?',
