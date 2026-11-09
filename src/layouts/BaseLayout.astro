@@ -7,6 +7,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import type { Crumb, PageType } from '../lib/seo';
 import { alternatesFor, langFromPath, langTag, ui } from '../i18n';
+import { site } from '../config/site';
 
 interface Props {
   title: string;
@@ -37,6 +38,16 @@ const alternates = noindex ? [] : alternatesFor(pathname ?? Astro.url.pathname);
 <!doctype html>
 <html lang={langTag[lang]}>
   <head>
+    {import.meta.env.PROD && (
+      <Fragment>
+        <script is:inline async src={`https://www.googletagmanager.com/gtm.js?id=${site.googleTagId}`}></script>
+        <script is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        </script>
+      </Fragment>
+    )}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
