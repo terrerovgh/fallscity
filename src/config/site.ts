@@ -8,6 +8,8 @@ export const site = {
   description:
     'Professional website design, development, SEO foundations, and ongoing care for Louisville small businesses.',
   turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '',
+  /** Bing Webmaster Tools ownership code; also in public/BingSiteAuth.xml. Public by design. */
+  bingSiteVerification: 'CEA9010A7EE9ED39FF47824909791585',
 } as const;
 
 export const isFormConfigured = site.turnstileSiteKey.length > 0;

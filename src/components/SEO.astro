@@ -119,6 +119,7 @@ const graph = noindex
 {!noindex && alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={absoluteUrl(alt.path)} />)}
 <meta name="robots" content={noindex ? 'noindex' : 'index, follow, max-image-preview:large'} />
 <meta name="theme-color" content="#0d1927" />
+{isHome && <meta name="msvalidate.01" content={site.bingSiteVerification} />}
 <meta property="og:locale" content={ogLocale} />
 {ogAlternateLocales.map((l) => <meta property="og:locale:alternate" content={l.replace('-', '_')} />)}
 <meta property="og:type" content="website" />
