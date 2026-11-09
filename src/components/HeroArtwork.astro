@@ -29,15 +29,26 @@
 
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
 
+  // Phones hide the artwork (see the 620px breakpoint in global.css), so the
+  // scene only boots once the artwork is actually visible.
+  const visible = window.matchMedia('(min-width: 621px)');
+
   if (stage && !saveData && hasWebGL()) {
+    let started = false;
     const start = () => {
+      if (started) return;
+      started = true;
       import('../scripts/logo3d')
         .then(({ mountLogo3D }) => mountLogo3D(stage))
         .catch(() => {
           // Keep the static poster if the 3D scene cannot start.
         });
     };
-    if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 1200 });
-    else setTimeout(start, 200);
+    const schedule = () => {
+      if ('requestIdleCallback' in window) window.requestIdleCallback(start, { timeout: 1200 });
+      else setTimeout(start, 200);
+    };
+    if (visible.matches) schedule();
+    else visible.addEventListener('change', (event) => event.matches && schedule());
   }
 </script>

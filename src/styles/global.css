@@ -2367,30 +2367,38 @@ main {
     --logo-h: 2.75rem;
   }
 
+  /* Night-time hero: the copy sits on the dark sky and the full Louisville
+     skyline anchors the bottom edge, scaled up so the downtown towers read. */
   .hero {
-    padding-block: var(--space-5) var(--space-6);
+    --skyline-scale: 1.7;
+    padding-block: clamp(2rem, 7vw, 2.75rem)
+      calc(var(--skyline-scale) * 100% * 115 / 583 + var(--space-5));
     background:
-      radial-gradient(28rem 24rem at 92% 82%, rgb(159 216 230 / 0.34), transparent 68%),
-      linear-gradient(155deg, var(--paper-bright), var(--paper) 78%);
+      radial-gradient(30rem 16rem at 58% 100%, rgb(0 150 184 / 0.32), transparent 70%),
+      radial-gradient(28rem 22rem at 100% 0%, rgb(0 150 184 / 0.18), transparent 72%),
+      linear-gradient(170deg, #142b3d, var(--ink) 62%, #10283b);
+    color: var(--paper-bright);
+  }
+
+  .skyline--hero {
+    top: auto;
+    bottom: 0;
+    /* Center the crop on downtown, between the bridge and the tallest towers. */
+    left: calc((1 - var(--skyline-scale)) * 56%);
+    width: calc(var(--skyline-scale) * 100%);
+  }
+
+  .skyline--hero .skyline__art > :not(.sky-cloud):not(.sky-balloon) {
+    display: inline;
   }
 
   .hero__grid {
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-6);
   }
 
+  /* The header already carries the mark, so the logo artwork steps aside here. */
   .hero__visual {
-    display: flex;
-    width: 100%;
-    justify-content: flex-end;
-    border-top: 1px solid var(--line);
-    margin: 0;
-    padding-top: var(--space-4);
-  }
-
-  .hero-showcase {
-    width: min(43vw, 10.5rem);
-    margin: 0;
+    display: none;
   }
 
   .hero__content {
@@ -2401,44 +2409,88 @@ main {
 
   .hero__eyebrow {
     margin-bottom: var(--space-4);
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
+    color: var(--river-light);
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
   }
 
   .hero h1 {
     max-width: 30rem;
     margin-bottom: var(--space-4);
-    font-size: clamp(2.625rem, 11.5vw, 3.25rem);
+    color: var(--paper-bright);
+    font-size: clamp(2.7rem, 12vw, 3.35rem);
     line-height: 0.96;
+  }
+
+  .hero h1 em {
+    color: var(--river-light);
   }
 
   .hero__copy {
     max-width: 34rem;
     margin-bottom: var(--space-5);
+    color: #c3cfdb;
     font-size: var(--text-base);
     line-height: 1.55;
   }
 
   .hero .button-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    align-items: center;
-    gap: var(--space-2);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .hero .button,
+  .hero .text-link {
+    justify-content: center;
   }
 
   .hero .button {
     width: 100%;
     min-height: 3.25rem;
     gap: var(--space-2);
+    border-color: var(--paper-bright);
     padding-inline: var(--space-4);
+    background: var(--paper-bright);
+    color: var(--ink);
     font-size: 0.8125rem;
   }
 
+  .hero .button:hover {
+    border-color: var(--river-light);
+    background: var(--river-light);
+    color: var(--ink);
+  }
+
   .hero .text-link {
-    min-height: 2.75rem;
-    justify-self: start;
-    padding-inline: 0;
+    min-height: 3.25rem;
+    border: 1px solid rgb(251 250 245 / 0.32);
+    border-radius: 999px;
+    padding-inline: var(--space-4);
+    background: none;
+    color: var(--paper-bright);
     font-size: 0.8125rem;
+    transition: border-color 160ms ease, background-color 160ms ease;
+  }
+
+  .hero .text-link::after {
+    color: var(--river-light);
+  }
+
+  @media (max-width: 359px) {
+    .hero .button-row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .hero .text-link:hover {
+    border-color: var(--river-light);
+    background: rgb(159 216 230 / 0.08);
+  }
+
+  .hero :focus-visible {
+    outline-color: var(--paper-bright);
   }
 
   /* Selected work becomes a swipeable row; the next card peeks in from the edge. */
