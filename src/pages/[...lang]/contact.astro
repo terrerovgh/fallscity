@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import { site } from '../../config/site';
+import { langPaths, localizePath, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const { lang } = Astro.props as { lang: Lang };
+const lp = (path: string) => localizePath(path, lang);
+
+const copy = {
+  en: {
+    title: 'Request a Website Quote in Louisville | Falls City Dev Studio',
+    description:
+      'Tell Falls City Dev Studio about your Louisville business website, redesign, SEO foundations, domain, hosting, SSL, or maintenance project.',
+    crumbHome: 'Home',
+    crumb: 'Contact',
+    eyebrow: 'Start a project',
+    heroTitle: 'Let’s talk about what your website needs to do.',
+    heroCopy: 'Share a few details about your business and project. You don’t need a technical brief, and any context you add makes the first conversation more useful.',
+    asideLabel: 'Before you inquire',
+    blocks: [
+      { title: 'What to include', copy: 'What your business does, whether you have a website now, and what a better result would look like.' },
+      { title: 'What happens next', copy: 'We read your details and get back to you to talk about whether we’re a good fit and what the project would involve.' },
+    ],
+    emailTitle: 'Prefer email?',
+    emailBefore: 'Write to',
+    emailAfter: 'We work with businesses in Louisville and remotely across Kentucky, in English or Spanish.',
+    offerTitle: 'What we offer',
+    offerCopy: 'Website design and development, SEO foundations, domain and hosting setup, SSL, and website maintenance.',
+    formHeading: 'Project inquiry form',
+  },
+  es: {
+    title: 'Pida una Cotización de Página Web en Louisville | Falls City Dev Studio',
+    description:
+      'Cuéntele a Falls City Dev Studio sobre la página web, el rediseño, las bases de SEO, el dominio, el hosting, el SSL o el mantenimiento que necesita su negocio en Louisville.',
+    crumbHome: 'Inicio',
+    crumb: 'Contacto',
+    eyebrow: 'Empiece un proyecto',
+    heroTitle: 'Hablemos de lo que su página web necesita hacer.',
+    heroCopy: 'Comparta algunos detalles de su negocio y su proyecto. No necesita un documento técnico, y cualquier contexto que agregue hace más útil la primera conversación.',
+    asideLabel: 'Antes de escribirnos',
+    blocks: [
+      { title: 'Qué incluir', copy: 'Qué hace su negocio, si ya tiene una página web y cómo se vería un mejor resultado.' },
+      { title: 'Qué pasa después', copy: 'Leemos sus datos y le respondemos para hablar de si somos una buena opción y de qué implicaría el proyecto.' },
+    ],
+    emailTitle: '¿Prefiere el correo?',
+    emailBefore: 'Escríbanos a',
+    emailAfter: 'Trabajamos con negocios de Louisville y, a distancia, de todo Kentucky, en inglés o en español.',
+    offerTitle: 'Lo que ofrecemos',
+    offerCopy: 'Diseño y desarrollo web, bases de SEO, configuración de dominio y hosting, SSL y mantenimiento web.',
+    formHeading: 'Formulario de consulta',
+  },
+}[lang];
+
+const breadcrumbs = [
+  { name: copy.crumbHome, path: lp('/') },
+  { name: copy.crumb, path: lp('/contact/') },
+];
+---
+
+<BaseLayout title={copy.title} description={copy.description} pageType="ContactPage" breadcrumbs={breadcrumbs}>
+  <PageHero breadcrumbs={breadcrumbs} eyebrow={copy.eyebrow} title={copy.heroTitle} copy={copy.heroCopy} />
+
+  <section class="section section--bright" aria-labelledby="inquiry-heading">
+    <div class="container contact-layout">
+      <aside class="contact-aside" aria-label={copy.asideLabel}>
+        {copy.blocks.map((block) => (
+          <div class="contact-aside__block">
+            <h2>{block.title}</h2>
+            <p>{block.copy}</p>
+          </div>
+        ))}
+        <div class="contact-aside__block">
+          <h2>{copy.emailTitle}</h2>
+          <p>{copy.emailBefore} <a href={`mailto:${site.email}`}>{site.email}</a>. {copy.emailAfter}</p>
+        </div>
+        <div class="contact-aside__block">
+          <h2>{copy.offerTitle}</h2>
+          <p>{copy.offerCopy}</p>
+        </div>
+      </aside>
+      <div>
+        <h2 class="sr-only" id="inquiry-heading">{copy.formHeading}</h2>
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

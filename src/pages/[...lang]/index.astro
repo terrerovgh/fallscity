@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroArtwork from '../../components/HeroArtwork.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import ProcessPreview from '../../components/ProcessPreview.astro';
+import FaqList from '../../components/FaqList.astro';
+import CallToAction from '../../components/CallToAction.astro';
+import CapabilityArtwork from '../../components/CapabilityArtwork.astro';
+import PortfolioGrid from '../../components/PortfolioGrid.astro';
+import LouisvilleSkyline from '../../components/LouisvilleSkyline.astro';
+import { services } from '../../data/services';
+import { homeFaqKeys, pickFaqs } from '../../data/faqs';
+import { langPaths, localizePath, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const { lang } = Astro.props as { lang: Lang };
+const lp = (path: string) => localizePath(path, lang);
+
+const copy = {
+  en: {
+    title: 'Web Design in Louisville, KY | Falls City Dev Studio',
+    description:
+      'Custom websites for Louisville and Kentucky small businesses: design and development, SEO foundations, domain, hosting and SSL setup, and ongoing maintenance.',
+    heroEyebrow: 'Web design in Louisville, Kentucky',
+    heroTitle: 'A better website for the business',
+    heroTitleEm: 'you’ve built.',
+    heroCopy:
+      'We design and build websites for small businesses in Louisville. Each site is made for your business and set up so customers can find you and get in touch.',
+    heroCta: 'Get a Quote',
+    heroLink: 'Explore Services',
+    capabilitiesLabel: 'Website project capabilities',
+    capabilities: [
+      { variant: 'business', title: 'Made for your business', copy: 'Designed around your services' },
+      { variant: 'devices', title: 'Works on every screen', copy: 'Built mobile-first and accessible' },
+      { variant: 'search', title: 'Ready for search', copy: 'Technical SEO from day one' },
+    ],
+    workEyebrow: 'Selected work',
+    workTitle: 'Real websites, live today.',
+    workCopy:
+      'Some of the sites we’ve designed and built. Most are for small businesses, one is a documentation site, and a couple are personal projects. Each link opens the live site.',
+    servicesEyebrow: 'What we do',
+    servicesTitle: 'What we can do for your website.',
+    servicesCopy: 'Most projects use some or all of these four services. We’ll help you work out which ones you need.',
+    whyEyebrow: 'Why Falls City',
+    whyTitle: 'A small studio that only does websites.',
+    whyCopy:
+      'You don’t need a large agency or a package of services you’ll never use. You need a website that represents your business well, and someone who explains the work as it happens.',
+    whyLink: 'How the studio works',
+    principles: [
+      { title: 'Your message comes first', copy: 'Visitors should be able to tell what you do and how to reach you within a few seconds. The design is there to support that.' },
+      { title: 'The details are handled', copy: 'Pages adjust to any screen, the code is clean, the site works with a keyboard and screen readers, and it loads quickly.' },
+      { title: 'Explained in plain English', copy: 'You’ll know what is being built, what we need from you, and how the technical parts fit together.' },
+      { title: 'Built to last past launch', copy: 'A website should keep working for years and be easy to update when your business changes.' },
+    ],
+    processEyebrow: 'How a project runs',
+    processTitle: 'From the first conversation to launch.',
+    processCopy: 'Every project follows the same five steps. You review the real site as it takes shape and always know what happens next.',
+    processLink: 'See the full project process',
+    localEyebrow: 'Area code 502',
+    localTitle: 'We work in Louisville,',
+    localTitleEm: 'for Louisville businesses.',
+    localCopy:
+      'A good-looking page isn’t enough for a local business. Your website should help a neighbor understand what you do, trust you, and get in touch without hunting for a phone number.',
+    localKentucky: 'Outside Louisville? We also work remotely with small businesses anywhere in Kentucky, by phone, video, and email. And everything can be done in English or Spanish.',
+    localServicesBefore: 'We can help whether you need a',
+    localServicesDesign: 'first website or a redesign',
+    localServicesMid: ', the',
+    localServicesSeo: 'SEO foundations',
+    localServicesMid2: 'behind it, or',
+    localServicesMaint: 'ongoing maintenance',
+    localServicesAfter: 'after launch.',
+    localLink: 'Talk about your Louisville business',
+    faqEyebrow: 'Common questions',
+    faqTitle: 'What people usually ask first.',
+    faqCopy: 'A few things business owners tend to want to know before starting a project.',
+    faqLink: 'Ask your own question',
+  },
+  es: {
+    title: 'Diseño de Páginas Web en Louisville, KY | Falls City Dev Studio',
+    description:
+      'Páginas web a la medida para pequeños negocios de Louisville y Kentucky: diseño y desarrollo, bases de SEO, dominio, hosting, SSL y mantenimiento.',
+    heroEyebrow: 'Diseño web en Louisville, Kentucky',
+    heroTitle: 'Una mejor página web para',
+    heroTitleEm: 'su negocio.',
+    heroCopy:
+      'Diseñamos y construimos páginas web para pequeños negocios de Louisville. Cada página se hace para su negocio y se prepara para que sus clientes le encuentren y le contacten.',
+    heroCta: 'Pida una cotización',
+    heroLink: 'Ver servicios',
+    capabilitiesLabel: 'Qué incluye un proyecto web',
+    capabilities: [
+      { variant: 'business', title: 'Hecha para su negocio', copy: 'Diseñada alrededor de sus servicios' },
+      { variant: 'devices', title: 'Funciona en cualquier pantalla', copy: 'Pensada para el teléfono y accesible' },
+      { variant: 'search', title: 'Lista para Google', copy: 'SEO técnico desde el primer día' },
+    ],
+    workEyebrow: 'Trabajos',
+    workTitle: 'Páginas reales, en línea hoy.',
+    workCopy:
+      'Algunas de las páginas que hemos diseñado y construido. La mayoría son de pequeños negocios, una es un sitio de documentación y un par son proyectos personales. Cada enlace abre la página real.',
+    servicesEyebrow: 'Lo que hacemos',
+    servicesTitle: 'Lo que podemos hacer por su página web.',
+    servicesCopy: 'La mayoría de los proyectos usan algunos o todos estos cuatro servicios. Le ayudamos a ver cuáles necesita.',
+    whyEyebrow: 'Por qué Falls City',
+    whyTitle: 'Un estudio pequeño que solo hace páginas web.',
+    whyCopy:
+      'No necesita una agencia grande ni un paquete de servicios que nunca va a usar. Necesita una página que represente bien su negocio y alguien que le explique el trabajo mientras se hace.',
+    whyLink: 'Cómo trabaja el estudio',
+    principles: [
+      { title: 'Su mensaje primero', copy: 'Quien visita su página debe entender en pocos segundos qué hace usted y cómo contactarle. El diseño está para apoyar eso.' },
+      { title: 'Los detalles, resueltos', copy: 'Las páginas se adaptan a cualquier pantalla, el código está limpio, el sitio funciona con teclado y lectores de pantalla, y carga rápido.' },
+      { title: 'Explicado en palabras simples', copy: 'Sabrá qué se está construyendo, qué necesitamos de usted y cómo encajan las partes técnicas.' },
+      { title: 'Hecha para durar', copy: 'Una página web debe seguir funcionando por años y ser fácil de actualizar cuando su negocio cambie.' },
+    ],
+    processEyebrow: 'Cómo va un proyecto',
+    processTitle: 'De la primera conversación a la publicación.',
+    processCopy: 'Cada proyecto sigue los mismos cinco pasos. Usted revisa la página real mientras toma forma y siempre sabe qué sigue.',
+    processLink: 'Ver el proceso completo',
+    localEyebrow: 'Código de área 502',
+    localTitle: 'Trabajamos en Louisville,',
+    localTitleEm: 'para negocios de Louisville.',
+    localCopy:
+      'Para un negocio local no basta con una página bonita. Su página debe ayudar a un vecino a entender qué hace usted, confiar en usted y contactarle sin tener que buscar un número de teléfono.',
+    localKentucky: '¿Está fuera de Louisville? También trabajamos a distancia con pequeños negocios de cualquier parte de Kentucky, por teléfono, videollamada y correo. Y todo se puede hacer en inglés o en español.',
+    localServicesBefore: 'Le ayudamos si necesita una',
+    localServicesDesign: 'primera página o un rediseño',
+    localServicesMid: ', las',
+    localServicesSeo: 'bases de SEO',
+    localServicesMid2: 'detrás de ella, o',
+    localServicesMaint: 'mantenimiento continuo',
+    localServicesAfter: 'después de publicarla.',
+    localLink: 'Hablemos de su negocio en Louisville',
+    faqEyebrow: 'Preguntas frecuentes',
+    faqTitle: 'Lo que la gente suele preguntar primero.',
+    faqCopy: 'Algunas cosas que los dueños de negocios suelen querer saber antes de empezar un proyecto.',
+    faqLink: 'Haga su propia pregunta',
+  },
+}[lang];
+---
+
+<BaseLayout title={copy.title} description={copy.description}>
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__visual reveal">
+        <HeroArtwork />
+      </div>
+      <div class="hero__content">
+        {/* The eyebrow sits inside the H1 so the heading names the service and place. */}
+        <h1 class="reveal"><span class="eyebrow hero__eyebrow">{copy.heroEyebrow}</span> {copy.heroTitle} <em>{copy.heroTitleEm}</em></h1>
+        <p class="hero__copy reveal reveal--delay">{copy.heroCopy}</p>
+        <div class="button-row reveal reveal--late">
+          <a class="button" href={lp('/contact/')}>{copy.heroCta}</a>
+          <a class="text-link" href={lp('/services/')}>{copy.heroLink}</a>
+        </div>
+      </div>
+    </div>
+    <LouisvilleSkyline variant="hero" />
+  </section>
+
+  <section class="capabilities" id="capabilities" aria-label={copy.capabilitiesLabel}>
+    <div class="container capabilities__grid">
+      {copy.capabilities.map((item) => (
+        <article class="capability">
+          <CapabilityArtwork variant={item.variant as 'business' | 'devices' | 'search'} />
+          <div class="capability__body">
+            <h2>{item.title}</h2>
+            <p>{item.copy}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--bright section--work" id="work" aria-labelledby="work-heading">
+    <div class="container">
+      <SectionHeading id="work-heading" eyebrow={copy.workEyebrow} title={copy.workTitle} copy={copy.workCopy} />
+      <PortfolioGrid />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="services-heading">
+    <div class="container">
+      <SectionHeading id="services-heading" eyebrow={copy.servicesEyebrow} title={copy.servicesTitle} copy={copy.servicesCopy} />
+      <div class="service-grid">
+        {services[lang].map((service) => <ServiceCard service={service} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="why-heading">
+    <div class="container split-feature">
+      <div class="split-feature__sticky">
+        <p class="eyebrow">{copy.whyEyebrow}</p>
+        <h2 class="display" id="why-heading">{copy.whyTitle}</h2>
+        <p class="lede">{copy.whyCopy}</p>
+        <a class="text-link" href={lp('/about/')}>{copy.whyLink}</a>
+      </div>
+      <div class="principle-list">
+        {copy.principles.map((item) => (
+          <div class="principle reveal-on-scroll">
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ink" aria-labelledby="process-heading">
+    <div class="container">
+      <SectionHeading id="process-heading" eyebrow={copy.processEyebrow} title={copy.processTitle} copy={copy.processCopy} />
+      <ProcessPreview />
+      <a class="text-link" href={lp('/process/')}>{copy.processLink}</a>
+    </div>
+  </section>
+
+  <section class="section section--river" aria-labelledby="local-heading">
+    <svg class="local-panel__waves" viewBox="0 0 1200 400" fill="none" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 80c150-60 250 60 400 0s250-60 400 0 250 60 400 0" stroke="currentColor" stroke-width="1.5" />
+      <path d="M0 160c150-60 250 60 400 0s250-60 400 0 250 60 400 0" stroke="currentColor" stroke-width="1.5" />
+      <path d="M0 240c150-60 250 60 400 0s250-60 400 0 250 60 400 0" stroke="currentColor" stroke-width="1.5" />
+      <path d="M0 320c150-60 250 60 400 0s250-60 400 0 250 60 400 0" stroke="currentColor" stroke-width="1.5" />
+    </svg>
+    <div class="container local-panel">
+      <div>
+        <p class="eyebrow">{copy.localEyebrow}</p>
+        <h2 class="local-panel__title" id="local-heading">{copy.localTitle} <em>{copy.localTitleEm}</em></h2>
+      </div>
+      <div class="local-panel__copy">
+        <p>{copy.localCopy}</p>
+        <p>{copy.localKentucky}</p>
+        <p>
+          {copy.localServicesBefore} <a href={lp('/services/web-design/')}>{copy.localServicesDesign}</a>{copy.localServicesMid}
+          <a href={lp('/services/seo-foundations/')}>{copy.localServicesSeo}</a> {copy.localServicesMid2}
+          <a href={lp('/services/website-maintenance/')}>{copy.localServicesMaint}</a> {copy.localServicesAfter}
+        </p>
+        <a class="text-link" href={lp('/contact/')}>{copy.localLink}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-heading">
+    <div class="container faq-layout">
+      <div class="faq-layout__intro">
+        <p class="eyebrow">{copy.faqEyebrow}</p>
+        <h2 class="display" id="faq-heading">{copy.faqTitle}</h2>
+        <p class="lede">{copy.faqCopy}</p>
+        <a class="text-link" href={lp('/contact/')}>{copy.faqLink}</a>
+      </div>
+      <FaqList faqs={pickFaqs(lang, homeFaqKeys)} />
+    </div>
+  </section>
+
+  <CallToAction />
+</BaseLayout>

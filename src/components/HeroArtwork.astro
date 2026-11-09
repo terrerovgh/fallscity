@@ -1,5 +1,11 @@
+---
+import { langFromPath, ui } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+---
+
 <div class="hero-showcase">
-  <figure class="hero-logo" aria-label="Falls City Dev Studio logo mark in 3D: three city buildings with waterfalls pouring from them">
+  <figure class="hero-logo" aria-label={ui[lang].heroLogoLabel}>
     <div class="hero-logo__stage" data-logo3d>
       <img class="hero-logo__poster" src="/brand/fallscity-mark.svg" alt="" width="406" height="406" fetchpriority="high" />
     </div>

@@ -5,17 +5,8 @@ export const site = {
   location: 'Louisville, Kentucky',
   /** Public contact address. Keep identical on Google Business Profile and directory listings. */
   email: 'info@fallscity.dev',
-  /** Owner-confirmed service area (2026-11-09): based in Louisville, remote work statewide. */
-  areaServedText: 'Louisville and remotely across Kentucky',
   description:
     'Professional website design, development, SEO foundations, and ongoing care for Louisville small businesses.',
-  navigation: [
-    { label: 'Work', href: '/#work' },
-    { label: 'Services', href: '/services/' },
-    { label: 'Process', href: '/process/' },
-    { label: 'About', href: '/about/' },
-    { label: 'Contact', href: '/contact/' },
-  ],
   turnstileSiteKey: import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '',
 } as const;
 

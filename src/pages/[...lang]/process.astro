@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CallToAction from '../../components/CallToAction.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import { processSteps } from '../../data/process';
+import { langPaths, localizePath, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const { lang } = Astro.props as { lang: Lang };
+const lp = (path: string) => localizePath(path, lang);
+
+const copy = {
+  en: {
+    title: 'Our Website Design Process | Falls City Dev Studio',
+    description:
+      'See how Falls City Dev Studio takes Louisville business websites from an initial conversation through scope, design, development, review, launch, and support.',
+    crumbHome: 'Home',
+    crumb: 'Process',
+    eyebrow: 'The process',
+    heroTitle: 'A clear path from idea to working website.',
+    heroCopy: 'Every project goes through the same five stages. At each one you’ll know what we’re working on and what we need from you.',
+    heroLink: 'Start with a conversation',
+    stepsLabel: 'Project steps',
+    yourPart: 'Your part',
+    togetherEyebrow: 'Working together',
+    togetherTitle: 'What helps a project go smoothly.',
+    togetherCopy: 'We handle the design and technical work. A few habits on your side make it easier to keep the site in line with your business.',
+    tips: [
+      { title: 'Share real details', copy: 'Real service details, customer questions, and examples from your business lead to a more useful website than generic industry copy.' },
+      { title: 'Send feedback together', copy: 'Collect comments from everyone who has a say and send them in one go. Revisions move faster when the feedback doesn’t conflict.' },
+      { title: 'Talk about scope changes', copy: 'If a new idea changes the work, we’ll discuss it and agree on it before it gets added.' },
+      { title: 'Plan for after launch', copy: 'Websites need occasional updates. Ongoing support can be added if you want someone to handle them for you.' },
+    ],
+    ctaTitle: 'Ready to start a conversation?',
+    ctaCopy: 'You don’t need a finished brief. A first conversation is usually enough to work out what your website needs to do.',
+  },
+  es: {
+    title: 'Nuestro Proceso de Diseño Web | Falls City Dev Studio',
+    description:
+      'Vea cómo Falls City Dev Studio lleva las páginas web de negocios de Louisville desde la primera conversación hasta el alcance, el diseño, el desarrollo, la revisión, la publicación y el soporte.',
+    crumbHome: 'Inicio',
+    crumb: 'Proceso',
+    eyebrow: 'El proceso',
+    heroTitle: 'Un camino claro de la idea a la página funcionando.',
+    heroCopy: 'Cada proyecto pasa por las mismas cinco etapas. En cada una sabrá en qué estamos trabajando y qué necesitamos de usted.',
+    heroLink: 'Empiece con una conversación',
+    stepsLabel: 'Pasos del proyecto',
+    yourPart: 'Su parte',
+    togetherEyebrow: 'Trabajar juntos',
+    togetherTitle: 'Lo que ayuda a que un proyecto avance bien.',
+    togetherCopy: 'Nosotros nos encargamos del diseño y del trabajo técnico. Algunos hábitos de su lado hacen más fácil que la página refleje bien su negocio.',
+    tips: [
+      { title: 'Comparta detalles reales', copy: 'Los detalles reales de sus servicios, las preguntas de sus clientes y ejemplos de su negocio dan una página más útil que un texto genérico del sector.' },
+      { title: 'Envíe los comentarios juntos', copy: 'Reúna los comentarios de todos los que opinan y envíelos de una sola vez. Los cambios avanzan más rápido cuando los comentarios no se contradicen.' },
+      { title: 'Hablemos de los cambios de alcance', copy: 'Si una idea nueva cambia el trabajo, la conversamos y la acordamos antes de agregarla.' },
+      { title: 'Piense en después de publicar', copy: 'Las páginas web necesitan actualizaciones de vez en cuando. Puede agregar soporte continuo si quiere que alguien se encargue por usted.' },
+    ],
+    ctaTitle: '¿Listo para conversar?',
+    ctaCopy: 'No necesita un documento terminado. Una primera conversación suele bastar para entender qué debe hacer su página web.',
+  },
+}[lang];
+
+const breadcrumbs = [
+  { name: copy.crumbHome, path: lp('/') },
+  { name: copy.crumb, path: lp('/process/') },
+];
+---
+
+<BaseLayout title={copy.title} description={copy.description} breadcrumbs={breadcrumbs}>
+  <PageHero breadcrumbs={breadcrumbs} eyebrow={copy.eyebrow} title={copy.heroTitle} copy={copy.heroCopy}>
+    <a class="text-link" href={lp('/contact/')}>{copy.heroLink}</a>
+  </PageHero>
+
+  <section class="section--bright" aria-label={copy.stepsLabel}>
+    <div class="container">
+      <ol class="process-list">
+        {processSteps[lang].map((step) => (
+          <li class="process-step reveal-on-scroll">
+            <span class="process-step__number" aria-hidden="true">{step.number}</span>
+            <div>
+              <h2>{step.title}</h2>
+              <p class="lede">{step.summary}</p>
+              <p class="process-step__description">{step.description}</p>
+            </div>
+            <div class="process-step__role">
+              <h3>{copy.yourPart}</h3>
+              <p>{step.clientRole}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="collaboration-heading">
+    <div class="container">
+      <SectionHeading id="collaboration-heading" eyebrow={copy.togetherEyebrow} title={copy.togetherTitle} copy={copy.togetherCopy} />
+      <div class="service-grid">
+        {copy.tips.map((item) => (
+          <article class="service-card service-card--plain reveal-on-scroll">
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CallToAction title={copy.ctaTitle} copy={copy.ctaCopy} />
+</BaseLayout>

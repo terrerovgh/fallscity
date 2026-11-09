@@ -1,31 +1,46 @@
 ---
-import { site } from '../config/site';
+import { counterpartPath, langFromPath, langTag, localizePath, ui } from '../i18n';
 
 const pathname = Astro.url.pathname;
-const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
+const lang = langFromPath(pathname);
+const t = ui[lang];
+const otherLang = lang === 'en' ? 'es' : 'en';
+const isActive = (href: string) => pathname === href || (!href.endsWith('/#work') && href !== localizePath('/', lang) && pathname.startsWith(href));
+// The same page in the other language; 404 and other unmapped pages fall back to that language's home.
+const switchHref = counterpartPath(pathname, otherLang);
 ---
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="brand" href="/" aria-label="Falls City Dev Studio, home">
+    <a class="brand" href={localizePath('/', lang)} aria-label={t.homeLabel}>
       <img class="brand__logo" src="/brand/fallscity-logo.svg" alt="" width="1259" height="316" fetchpriority="high" />
     </a>
 
-    <nav class="site-nav" aria-label="Main navigation" data-site-nav>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label="Open navigation" data-nav-toggle>
+    <nav class="site-nav" aria-label={t.mainNav} data-site-nav data-open-label={t.openNav} data-close-label={t.closeNav}>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="navigation-links" aria-label={t.openNav} data-nav-toggle>
         <span class="nav-toggle__icon" aria-hidden="true"></span>
       </button>
       <div class="site-nav__links" id="navigation-links">
-        {site.navigation.map((item) => (
-          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
-        ))}
-        <a class="button" href="/contact/">Get a Website Quote</a>
+        {t.nav.map((item) => {
+          const href = localizePath(item.href, lang);
+          return <a href={href} aria-current={isActive(href) ? 'page' : undefined}>{item.label}</a>;
+        })}
+        <a class="site-nav__lang" href={switchHref} hreflang={langTag[otherLang]} lang={langTag[otherLang]} aria-label={t.switchAria} data-lang-switch={otherLang}>{t.switchLabel}</a>
+        <a class="button" href={localizePath('/contact/', lang)}>{t.quoteButton}</a>
       </div>
     </nav>
   </div>
 </header>
 
 <script>
+  // Remember an explicit language choice so the edge middleware stops
+  // redirecting by browser language (see functions/_middleware.ts).
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((link) =>
+    link.addEventListener('click', () => {
+      document.cookie = `lang=${link.dataset.langSwitch}; path=/; max-age=31536000; SameSite=Lax; Secure`;
+    }),
+  );
+
   const compact = window.matchMedia('(max-width: 800px)');
   const nav = document.querySelector<HTMLElement>('[data-site-nav]');
   const toggle = nav?.querySelector<HTMLButtonElement>('[data-nav-toggle]');
@@ -34,7 +49,7 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
     const setOpen = (open: boolean) => {
       nav.dataset.open = String(open);
       toggle.setAttribute('aria-expanded', String(open));
-      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      toggle.setAttribute('aria-label', (open ? nav.dataset.closeLabel : nav.dataset.openLabel) ?? '');
     };
 
     toggle.addEventListener('click', () => setOpen(nav.dataset.open !== 'true'));

@@ -5,7 +5,8 @@ import '../styles/global.css';
 import SEO from '../components/SEO.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import type { Alternate, Crumb, PageType } from '../lib/seo';
+import type { Crumb, PageType } from '../lib/seo';
+import { alternatesFor, langFromPath, langTag, ui } from '../i18n';
 
 interface Props {
   title: string;
@@ -15,8 +16,6 @@ interface Props {
   pageType?: PageType;
   breadcrumbs?: Crumb[];
   structuredData?: Record<string, unknown>[];
-  lang?: string;
-  alternates?: Alternate[];
 }
 
 const {
@@ -27,13 +26,16 @@ const {
   pageType,
   breadcrumbs,
   structuredData = [],
-  lang = 'en-US',
-  alternates = [],
 } = Astro.props;
+
+// The language comes from the URL (/es/... is Spanish). Every indexable page
+// exists in both languages, so each one declares both as hreflang alternates.
+const lang = langFromPath(Astro.url.pathname);
+const alternates = noindex ? [] : alternatesFor(pathname ?? Astro.url.pathname);
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={langTag[lang]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,13 +50,14 @@ const {
       pageType={pageType}
       breadcrumbs={breadcrumbs}
       structuredData={structuredData}
-      lang={lang}
+      lang={langTag[lang]}
+      imageAlt={ui[lang].socialImageAlt}
       alternates={alternates}
     />
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
   <body>
-    <a class="skip-link" href="#main-content">{lang.startsWith('es') ? 'Saltar al contenido principal' : 'Skip to main content'}</a>
+    <a class="skip-link" href="#main-content">{ui[lang].skipLink}</a>
     <SiteHeader />
     <main id="main-content">
       <slot />

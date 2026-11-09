@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+// Cloudflare Pages serves this one file for every missing URL, in either language.
 ---
 
 <BaseLayout
@@ -17,6 +18,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <div class="button-row">
           <a class="button" href="/">Return Home</a>
           <a class="text-link" href="/services/">Explore Services</a>
+        </div>
+        <p class="lede" lang="es-US">Esta página no existe o cambió de dirección.</p>
+        <div class="button-row" lang="es-US">
+          <a class="button" href="/es/" hreflang="es-US">Volver al inicio</a>
+          <a class="text-link" href="/es/services/" hreflang="es-US">Ver servicios</a>
         </div>
       </div>
     </div>

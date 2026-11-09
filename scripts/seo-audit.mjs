@@ -168,7 +168,7 @@ for (const [path, page] of pages) {
     if (url.hash && targetPage && !targetPage.ids.has(decodeURIComponent(url.hash.slice(1)))) {
       fail(label, `link to missing fragment: ${href}`);
     }
-    if (targetPage && !targetPage.indexable && page.indexable && !target.startsWith('/privacy/')) {
+    if (targetPage && !targetPage.indexable && page.indexable && !/^\/(es\/)?privacy\//.test(target)) {
       warn(label, `links to noindex page ${target}`);
     }
   }

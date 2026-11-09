@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import CallToAction from '../../components/CallToAction.astro';
+import { langPaths, localizePath, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const { lang } = Astro.props as { lang: Lang };
+const lp = (path: string) => localizePath(path, lang);
+
+const copy = {
+  en: {
+    title: 'About Our Louisville Web Studio | Falls City Dev Studio',
+    description:
+      'Falls City Dev Studio is a Louisville-based web development studio focused on clear, professional, fast websites and practical support for local small businesses.',
+    crumbHome: 'Home',
+    crumb: 'About',
+    eyebrow: 'About the studio',
+    heroTitle: 'A Louisville web studio for small businesses.',
+    heroCopy:
+      'Falls City Dev Studio designs and builds websites for small businesses, independent professionals, and service providers who need a site that does more for them. We’re based in Louisville and work remotely with clients across Kentucky, in English or Spanish.',
+    heroLink: 'Explore our services',
+    statementEyebrow: 'What we design for',
+    statement: 'A good website makes your business easier to',
+    statementEm: 'understand, trust, and contact.',
+    statementAfter: 'Every design and technical decision should help with that.',
+    valuesEyebrow: 'How we work',
+    valuesTitle: 'How we make decisions on a project.',
+    valuesCopy: 'Adding more technology doesn’t make a business website better. What matters is whether it works for you and for your customers.',
+    values: [
+      { title: 'Useful over trendy', copy: 'A layout or animation stays only if it helps visitors find information or take action. Style should never make the site harder to use.' },
+      { title: 'The basics are required', copy: 'Clean structure, accessibility, layouts that work on any screen, fast pages, and search fundamentals are part of every build from the first day.' },
+      { title: 'Clear about scope', copy: 'We focus on websites and the technical work around them. You’ll know what is included, what isn’t, and when something can’t be promised.' },
+    ],
+    localEyebrow: 'Built in Falls City',
+    localTitle: 'Websites shaped for the way local businesses work.',
+    localCopy1:
+      'A small business website usually has a simple job. It explains the service, gives people a reason to trust you, and makes it easy to get in touch. That takes clear writing and good structure more than complex software.',
+    localCopy2: 'We know the area, and we use current design and development practices on every page we build.',
+    localLink: 'See what working together looks like',
+    ctaTitle: 'Let’s talk about your website.',
+    ctaCopy: 'Tell us what you do, who your customers are, and what isn’t working online right now. That’s enough to get started.',
+  },
+  es: {
+    title: 'Sobre Nuestro Estudio Web en Louisville | Falls City Dev Studio',
+    description:
+      'Falls City Dev Studio es un estudio de desarrollo web en Louisville enfocado en páginas claras, profesionales y rápidas, y en soporte práctico para pequeños negocios locales.',
+    crumbHome: 'Inicio',
+    crumb: 'Nosotros',
+    eyebrow: 'Sobre el estudio',
+    heroTitle: 'Un estudio web de Louisville para pequeños negocios.',
+    heroCopy:
+      'Falls City Dev Studio diseña y construye páginas web para pequeños negocios, profesionales independientes y proveedores de servicios que necesitan una página que haga más por ellos. Estamos en Louisville y trabajamos a distancia con clientes de todo Kentucky, en inglés o en español.',
+    heroLink: 'Ver nuestros servicios',
+    statementEyebrow: 'Para qué diseñamos',
+    statement: 'Una buena página web hace que su negocio sea más fácil de',
+    statementEm: 'entender, de confiar y de contactar.',
+    statementAfter: 'Cada decisión de diseño y técnica debe ayudar a eso.',
+    valuesEyebrow: 'Cómo trabajamos',
+    valuesTitle: 'Cómo tomamos decisiones en un proyecto.',
+    valuesCopy: 'Agregar más tecnología no hace mejor una página de negocio. Lo que importa es que funcione para usted y para sus clientes.',
+    values: [
+      { title: 'Útil antes que de moda', copy: 'Un diseño o una animación se queda solo si ayuda a los visitantes a encontrar información o a actuar. El estilo nunca debe hacer el sitio más difícil de usar.' },
+      { title: 'Lo básico es obligatorio', copy: 'Estructura limpia, accesibilidad, diseños que funcionan en cualquier pantalla, páginas rápidas y bases de SEO forman parte de cada proyecto desde el primer día.' },
+      { title: 'Claros con el alcance', copy: 'Nos enfocamos en páginas web y el trabajo técnico que las rodea. Sabrá qué está incluido, qué no, y cuándo algo no se puede prometer.' },
+    ],
+    localEyebrow: 'Hecho en Falls City',
+    localTitle: 'Páginas pensadas para cómo trabajan los negocios locales.',
+    localCopy1:
+      'La página de un pequeño negocio suele tener un trabajo sencillo: explicar el servicio, dar razones para confiar en usted y facilitar el contacto. Para eso hacen falta textos claros y buena estructura, más que software complicado.',
+    localCopy2: 'Conocemos la zona y usamos prácticas actuales de diseño y desarrollo en cada página que construimos.',
+    localLink: 'Vea cómo es trabajar juntos',
+    ctaTitle: 'Hablemos de su página web.',
+    ctaCopy: 'Cuéntenos qué hace, quiénes son sus clientes y qué no está funcionando hoy en internet. Con eso basta para empezar.',
+  },
+}[lang];
+
+const breadcrumbs = [
+  { name: copy.crumbHome, path: lp('/') },
+  { name: copy.crumb, path: lp('/about/') },
+];
+---
+
+<BaseLayout title={copy.title} description={copy.description} pageType="AboutPage" breadcrumbs={breadcrumbs}>
+  <PageHero breadcrumbs={breadcrumbs} eyebrow={copy.eyebrow} title={copy.heroTitle} copy={copy.heroCopy}>
+    <a class="text-link" href={lp('/services/')}>{copy.heroLink}</a>
+  </PageHero>
+
+  <section class="section section--bright" aria-labelledby="studio-statement">
+    <div class="container">
+      <p class="eyebrow">{copy.statementEyebrow}</p>
+      <h2 class="about-statement" id="studio-statement">{copy.statement} <em>{copy.statementEm}</em> {copy.statementAfter}</h2>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="values-heading">
+    <div class="container">
+      <SectionHeading id="values-heading" eyebrow={copy.valuesEyebrow} title={copy.valuesTitle} copy={copy.valuesCopy} />
+      <div class="values-grid">
+        {copy.values.map((item) => (
+          <article class="value-card reveal-on-scroll">
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ink" aria-labelledby="local-context-heading">
+    <div class="container split-feature">
+      <div>
+        <p class="eyebrow">{copy.localEyebrow}</p>
+        <h2 class="display" id="local-context-heading">{copy.localTitle}</h2>
+      </div>
+      <div>
+        <p class="lede">{copy.localCopy1}</p>
+        <p class="lede">{copy.localCopy2}</p>
+        <a class="text-link" href={lp('/process/')}>{copy.localLink}</a>
+      </div>
+    </div>
+  </section>
+
+  <CallToAction title={copy.ctaTitle} copy={copy.ctaCopy} />
+</BaseLayout>

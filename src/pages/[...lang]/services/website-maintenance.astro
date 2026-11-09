@@ -1,0 +1,163 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import FaqList from '../../../components/FaqList.astro';
+import CallToAction from '../../../components/CallToAction.astro';
+import { getService } from '../../../data/services';
+import { pickFaqs } from '../../../data/faqs';
+import { serviceNode } from '../../../lib/seo';
+import { langPaths, localizePath, type Lang } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+const { lang } = Astro.props as { lang: Lang };
+const lp = (path: string) => localizePath(path, lang);
+
+const copy = {
+  en: {
+    title: 'Website Maintenance in Louisville, KY | Falls City Dev Studio',
+    description:
+      'Ongoing website maintenance for Louisville small businesses: agreed updates, fixes, performance and reliability checks, and basic technical support, with the scope set before work begins.',
+    crumbs: ['Home', 'Services', 'Website Maintenance'],
+    schemaType: 'Website maintenance and support',
+    eyebrow: 'Website maintenance',
+    heroTitle: 'Website maintenance with the scope agreed up front.',
+    heroCopy: 'Ongoing technical care for your business website, so updates get made, problems get fixed, and you have a clear place to turn when something needs attention.',
+    heroLink: 'Ask about website maintenance',
+    coversEyebrow: 'What maintenance can cover',
+    coversTitle: 'Routine care, defined in writing.',
+    canInclude: 'Work that can be included',
+    agreedTitle: 'Agreed before it starts',
+    agreedCopy: 'Before maintenance starts, we agree in writing on which updates and fixes are covered, how you send requests, how extra work gets quoted, and which accounts each of us manages.',
+    whyEyebrow: 'Why it matters',
+    whyTitle: 'Websites drift when nobody is looking after them.',
+    whyCopy: 'Most problems on small business websites are small ones that go unnoticed and quietly cost you inquiries.',
+    reasons: [
+      { title: 'Out-of-date business details', copy: 'Old hours, retired services, or a changed phone number send customers the wrong message. Content updates keep what visitors read accurate.' },
+      { title: 'Broken forms and links', copy: 'An inquiry form that stops delivering, or a link to a page that no longer exists, can go unnoticed for months. Periodic checks catch these early.' },
+      { title: 'Domains and certificates', copy: 'A lapsed domain or an HTTPS problem can take a site offline or put a browser warning in front of customers. Keeping track of renewals and certificates avoids that.' },
+      { title: 'Dependencies and platforms', copy: 'The software behind a website changes over time. Keeping it current, where applicable, protects reliability and performance.' },
+    ],
+    hostingEyebrow: 'Hosting and launch support',
+    hostingTitle: 'Maintenance works best when the setup is documented.',
+    hostingCopy: 'When the studio sets up your domain connection, hosting, deployment, and HTTPS, the services in use are documented, so ongoing care starts from a clear baseline.',
+    hostingLink: 'Domain, hosting, and SSL setup',
+    designLink: 'Small business website design',
+    faqEyebrow: 'Maintenance questions',
+    faqTitle: 'Questions about maintenance.',
+    faqLink: 'Ask your own question',
+    ctaTitle: 'Need a dependable place to turn for website updates?',
+    ctaCopy: 'Tell us about your website, what keeps going wrong, and what you would like handled. We will start by defining a practical scope.',
+  },
+  es: {
+    title: 'Mantenimiento de Páginas Web en Louisville, KY | Falls City Dev Studio',
+    description:
+      'Mantenimiento web continuo para pequeños negocios de Louisville: actualizaciones y arreglos acordados, revisiones de velocidad y funcionamiento, y soporte técnico básico, con el alcance definido antes de empezar.',
+    crumbs: ['Inicio', 'Servicios', 'Mantenimiento web'],
+    schemaType: 'Mantenimiento y soporte de páginas web',
+    eyebrow: 'Mantenimiento web',
+    heroTitle: 'Mantenimiento web con el alcance acordado desde el inicio.',
+    heroCopy: 'Cuidado técnico continuo para la página de su negocio, para que los cambios se hagan, los problemas se arreglen y tenga a quién acudir cuando algo necesite atención.',
+    heroLink: 'Pregunte por el mantenimiento web',
+    coversEyebrow: 'Qué puede cubrir el mantenimiento',
+    coversTitle: 'Cuidado de rutina, definido por escrito.',
+    canInclude: 'Trabajo que puede incluirse',
+    agreedTitle: 'Acordado antes de empezar',
+    agreedCopy: 'Antes de empezar el mantenimiento, acordamos por escrito qué cambios y arreglos están cubiertos, cómo nos envía sus pedidos, cómo se cotiza el trabajo adicional y qué cuentas administra cada uno.',
+    whyEyebrow: 'Por qué importa',
+    whyTitle: 'Las páginas se deterioran cuando nadie las cuida.',
+    whyCopy: 'La mayoría de los problemas en las páginas de pequeños negocios son detalles que pasan desapercibidos y, sin hacer ruido, le cuestan consultas.',
+    reasons: [
+      { title: 'Datos del negocio desactualizados', copy: 'Un horario viejo, servicios que ya no ofrece o un teléfono que cambió le dan a sus clientes información equivocada. Las actualizaciones de contenido mantienen la información correcta.' },
+      { title: 'Formularios y enlaces rotos', copy: 'Un formulario que deja de enviar o un enlace a una página que ya no existe puede pasar meses sin que nadie lo note. Las revisiones periódicas lo detectan a tiempo.' },
+      { title: 'Dominios y certificados', copy: 'Un dominio vencido o un problema de HTTPS puede dejar el sitio fuera de línea o mostrar una advertencia del navegador a sus clientes. Dar seguimiento a las renovaciones y certificados lo evita.' },
+      { title: 'Dependencias y plataformas', copy: 'El software detrás de una página cambia con el tiempo. Mantenerlo al día, cuando aplica, protege el funcionamiento y la velocidad.' },
+    ],
+    hostingEyebrow: 'Hosting y apoyo al publicar',
+    hostingTitle: 'El mantenimiento funciona mejor cuando la configuración está documentada.',
+    hostingCopy: 'Cuando el estudio configura la conexión de su dominio, el hosting, la publicación y el HTTPS, deja documentados los servicios que se usan, para que el cuidado continuo empiece desde una base clara.',
+    hostingLink: 'Configuración de dominio, hosting y SSL',
+    designLink: 'Diseño web para pequeños negocios',
+    faqEyebrow: 'Preguntas sobre mantenimiento',
+    faqTitle: 'Preguntas sobre el mantenimiento.',
+    faqLink: 'Haga su propia pregunta',
+    ctaTitle: '¿Necesita a alguien de confianza para los cambios de su página?',
+    ctaCopy: 'Cuéntenos de su página, qué falla una y otra vez y qué le gustaría que nos encarguemos. Empezamos definiendo un alcance práctico.',
+  },
+}[lang];
+
+const service = getService(lang, 'website-maintenance');
+const path = lp('/services/website-maintenance/');
+const breadcrumbs = [
+  { name: copy.crumbs[0]!, path: lp('/') },
+  { name: copy.crumbs[1]!, path: lp('/services/') },
+  { name: copy.crumbs[2]!, path },
+];
+const structuredData = [
+  serviceNode({ name: service.title, serviceType: copy.schemaType, description: service.description, path }),
+];
+const faqs = pickFaqs(lang, ['maintenanceCovers', 'afterLaunch', 'otherBuilder', 'ongoingSeo']);
+---
+
+<BaseLayout title={copy.title} description={copy.description} pathname={path} breadcrumbs={breadcrumbs} structuredData={structuredData}>
+  <PageHero breadcrumbs={breadcrumbs} eyebrow={copy.eyebrow} title={copy.heroTitle} copy={copy.heroCopy}>
+    <a class="text-link" href={lp('/contact/')}>{copy.heroLink}</a>
+  </PageHero>
+
+  <section class="section section--bright" aria-labelledby="covers-heading">
+    <div class="container">
+      <SectionHeading id="covers-heading" eyebrow={copy.coversEyebrow} title={copy.coversTitle} copy={service.description} />
+      <div class="scope-grid">
+        <div class="scope-card">
+          <h3>{copy.canInclude}</h3>
+          <ul class="check-list">{service.details.map((item) => <li>{item}</li>)}</ul>
+        </div>
+        <div class="scope-card scope-card--muted">
+          <h3>{copy.agreedTitle}</h3>
+          <p>{copy.agreedCopy}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="why-heading">
+    <div class="container">
+      <SectionHeading id="why-heading" eyebrow={copy.whyEyebrow} title={copy.whyTitle} copy={copy.whyCopy} />
+      <div class="service-grid">
+        {copy.reasons.map((item) => (
+          <article class="service-card service-card--plain">
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--ink" aria-labelledby="hosting-heading">
+    <div class="container split-feature">
+      <div>
+        <p class="eyebrow">{copy.hostingEyebrow}</p>
+        <h2 class="display" id="hosting-heading">{copy.hostingTitle}</h2>
+      </div>
+      <div>
+        <p class="lede">{copy.hostingCopy}</p>
+        <a class="text-link" href={lp('/services/#domains-hosting-ssl')}>{copy.hostingLink}</a>
+        <a class="text-link" href={lp('/services/web-design/')}>{copy.designLink}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="maintenance-faq-heading">
+    <div class="container faq-layout">
+      <div class="faq-layout__intro">
+        <p class="eyebrow">{copy.faqEyebrow}</p>
+        <h2 class="display" id="maintenance-faq-heading">{copy.faqTitle}</h2>
+        <a class="text-link" href={lp('/contact/')}>{copy.faqLink}</a>
+      </div>
+      <FaqList faqs={faqs} />
+    </div>
+  </section>
+
+  <CallToAction title={copy.ctaTitle} copy={copy.ctaCopy} />
+</BaseLayout>

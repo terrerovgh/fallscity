@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import { privacyIsDraft } from '../../config/site';
+import { langPaths, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const { lang } = Astro.props as { lang: Lang };
+
+// Draft notice: the Spanish version must be reviewed together with the English one.
+const copy = {
+  en: {
+    title: 'Privacy Notice | Falls City Dev Studio',
+    description: 'Draft privacy notice for the Falls City Dev Studio website and project inquiry form.',
+    eyebrow: 'Privacy',
+    heroTitle: 'A plain-English privacy notice.',
+    heroCopy: 'This page explains what information this website is designed to collect and why. It must be reviewed and completed by the site owner before launch.',
+    draftStrong: 'Owner review required:',
+    draft: 'This is a working draft, not finalized legal advice. Before publishing, the owner must verify provider names, retention practices, contact instructions, and any legal obligations that apply to the business.',
+    sections: [
+      {
+        heading: 'Information you choose to provide',
+        paragraphs: [
+          'When the project inquiry form is configured and available, you can submit your name, email address, business name if you choose, the type of service you are interested in, and details about your project. Falls City Dev Studio uses this information to review and respond to your inquiry and to take follow-up steps you request.',
+          'Please do not include passwords, payment card details, Social Security numbers, health information, or other sensitive information in the project details field.',
+        ],
+      },
+      {
+        heading: 'Form processing and spam protection',
+        paragraphs: [
+          'The intended inquiry setup uses Cloudflare Turnstile to help prevent automated spam and Resend to deliver the inquiry by email. When you use the configured form, information and technical request data may be processed by those providers according to their own terms and privacy policies.',
+          'The website code does not intentionally store inquiry submissions in a website database. The final retention practices for delivered email and provider logs must be confirmed and documented by the owner before launch.',
+        ],
+      },
+      {
+        heading: 'Technical information',
+        paragraphs: [
+          'Hosting and security providers may process standard request information such as IP address, browser type, requested pages, and timestamps to deliver and protect the website. No analytics service is enabled in the initial website implementation.',
+        ],
+      },
+      {
+        heading: 'Cookies',
+        paragraphs: [
+          'The website does not set advertising or analytics cookies. If you switch languages, a small “lang” cookie remembers your choice. Cloudflare Turnstile may use necessary browser storage or similar technology when the inquiry form is enabled. This section must be updated if the site’s providers or measurement tools change.',
+        ],
+      },
+      {
+        heading: 'How information is used',
+        paragraphs: [
+          'Inquiry information is used to review and answer website project inquiries, to communicate about a project or service you asked about, and to protect the form and the website from abuse so they keep running securely.',
+          'The studio should not sell personal information collected through this website. Any service providers used should receive only the information needed to perform their function.',
+        ],
+      },
+      {
+        heading: 'Retention and your choices',
+        paragraphs: [
+          'Inquiry information should be kept only as long as reasonably needed for communication, business records, security, and applicable obligations. The owner must define and verify the actual retention period before this notice is treated as final.',
+          'You may ask what information you have submitted or request that the studio correct or delete it, subject to applicable recordkeeping requirements. A verified privacy contact method must be added here before launch.',
+        ],
+      },
+      {
+        heading: 'Changes to this notice',
+        paragraphs: [
+          'This notice should be reviewed when the form, hosting, analytics, or other data-processing practices change. The published version should include a verified effective date after owner review.',
+        ],
+      },
+    ],
+  },
+  es: {
+    title: 'Aviso de Privacidad | Falls City Dev Studio',
+    description: 'Borrador del aviso de privacidad del sitio de Falls City Dev Studio y de su formulario de consulta.',
+    eyebrow: 'Privacidad',
+    heroTitle: 'Un aviso de privacidad en palabras simples.',
+    heroCopy: 'Esta página explica qué información está pensado para recoger este sitio y por qué. El dueño del sitio debe revisarla y completarla antes del lanzamiento.',
+    draftStrong: 'Requiere revisión del dueño:',
+    draft: 'Este es un borrador de trabajo, no asesoría legal definitiva. Antes de publicarlo, el dueño debe verificar los nombres de los proveedores, las prácticas de conservación de datos, las instrucciones de contacto y las obligaciones legales que apliquen al negocio. La versión en inglés y esta traducción deben revisarse juntas.',
+    sections: [
+      {
+        heading: 'Información que usted decide darnos',
+        paragraphs: [
+          'Cuando el formulario de consulta esté configurado y disponible, podrá enviar su nombre, su correo electrónico, el nombre de su negocio si lo desea, el tipo de servicio que le interesa y detalles sobre su proyecto. Falls City Dev Studio usa esta información para revisar y responder su consulta, y para dar los siguientes pasos que usted pida.',
+          'Por favor no incluya contraseñas, datos de tarjetas de pago, números de Seguro Social, información de salud ni otra información sensible en el campo de detalles del proyecto.',
+        ],
+      },
+      {
+        heading: 'Procesamiento del formulario y protección contra spam',
+        paragraphs: [
+          'La configuración prevista del formulario usa Cloudflare Turnstile para ayudar a evitar el spam automático y Resend para entregar la consulta por correo electrónico. Cuando use el formulario configurado, esos proveedores pueden procesar la información y los datos técnicos de la solicitud según sus propios términos y políticas de privacidad.',
+          'El código del sitio no guarda intencionalmente las consultas en una base de datos del sitio. Las prácticas finales de conservación de los correos entregados y de los registros de los proveedores deben ser confirmadas y documentadas por el dueño antes del lanzamiento.',
+        ],
+      },
+      {
+        heading: 'Información técnica',
+        paragraphs: [
+          'Los proveedores de hosting y seguridad pueden procesar información estándar de cada solicitud, como la dirección IP, el tipo de navegador, las páginas visitadas y la hora, para entregar y proteger el sitio. La versión inicial del sitio no tiene ningún servicio de analítica activado.',
+        ],
+      },
+      {
+        heading: 'Cookies',
+        paragraphs: [
+          'El sitio no usa cookies de publicidad ni de analítica. Si cambia de idioma, una pequeña cookie «lang» recuerda su elección. Cloudflare Turnstile puede usar almacenamiento necesario del navegador o una tecnología similar cuando el formulario de consulta esté activado. Esta sección debe actualizarse si cambian los proveedores o las herramientas de medición del sitio.',
+        ],
+      },
+      {
+        heading: 'Cómo se usa la información',
+        paragraphs: [
+          'La información de las consultas se usa para revisar y responder consultas sobre proyectos web, para comunicarnos sobre un proyecto o servicio por el que usted preguntó, y para proteger el formulario y el sitio contra abusos y mantenerlos funcionando de forma segura.',
+          'El estudio no debe vender la información personal recogida a través de este sitio. Los proveedores de servicios que se usen deben recibir solo la información necesaria para cumplir su función.',
+        ],
+      },
+      {
+        heading: 'Conservación y sus opciones',
+        paragraphs: [
+          'La información de las consultas debe conservarse solo el tiempo razonablemente necesario para la comunicación, los registros del negocio, la seguridad y las obligaciones que apliquen. El dueño debe definir y verificar el plazo real de conservación antes de considerar este aviso como definitivo.',
+          'Puede preguntar qué información envió o pedir que el estudio la corrija o la borre, sujeto a los requisitos de registro que apliquen. Antes del lanzamiento debe agregarse aquí un medio de contacto verificado para temas de privacidad.',
+        ],
+      },
+      {
+        heading: 'Cambios a este aviso',
+        paragraphs: [
+          'Este aviso debe revisarse cuando cambien el formulario, el hosting, la analítica u otras prácticas de manejo de datos. La versión publicada debe incluir una fecha de vigencia verificada después de la revisión del dueño.',
+        ],
+      },
+    ],
+  },
+}[lang];
+---
+
+<BaseLayout title={copy.title} description={copy.description} noindex={privacyIsDraft}>
+  <PageHero eyebrow={copy.eyebrow} title={copy.heroTitle} copy={copy.heroCopy} />
+
+  <section class="section section--bright">
+    <div class="container prose">
+      <p class="legal-draft"><strong>{copy.draftStrong}</strong> {copy.draft}</p>
+      {copy.sections.map((section) => (
+        <>
+          <h2>{section.heading}</h2>
+          {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+        </>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -600,6 +600,13 @@ main {
   margin-bottom: clamp(1rem, 2vw, 1.5rem);
 }
 
+/* The eyebrow is part of the homepage H1; keep its label typography. */
+.hero h1 .hero__eyebrow {
+  font-family: var(--font-body);
+  font-variation-settings: normal;
+  letter-spacing: 0.14em;
+}
+
 .hero h1 {
   max-width: 36rem;
   margin-bottom: clamp(1rem, 2vw, 1.5rem);

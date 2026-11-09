@@ -1,4 +1,9 @@
 ---
+import { langFromPath, localizePath, ui } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+const t = ui[lang];
+
 interface Props {
   title?: string;
   copy?: string;
@@ -7,10 +12,10 @@ interface Props {
 }
 
 const {
-  eyebrow = 'Start a project',
-  buttonLabel = 'Let’s Discuss Your Project',
-  title = 'Have a website project in mind?',
-  copy = 'Tell us about your business and what you need from your website, and we’ll take it from there.',
+  eyebrow = t.ctaEyebrow,
+  buttonLabel = t.ctaButton,
+  title = t.ctaTitle,
+  copy = t.ctaCopy,
 } = Astro.props;
 ---
 
@@ -26,6 +31,6 @@ const {
       <h2 id="closing-cta">{title}</h2>
       <p>{copy}</p>
     </div>
-    <a class="button button--light button--lg" href="/contact/">{buttonLabel}</a>
+    <a class="button button--light button--lg" href={localizePath('/contact/', lang)}>{buttonLabel}</a>
   </div>
 </section>

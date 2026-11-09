@@ -44,13 +44,14 @@ src/
   assets/          Brand source files, skyline SVG, and portfolio screenshots
   components/      Shared UI, navigation, metadata, and form components
   config/          Business identity and public runtime configuration
-  data/            Services, process, FAQs, portfolio, and logo geometry
+  data/            Services, process, FAQs, portfolio (in both languages), and logo geometry
+  i18n/            Language helpers, routing, and shared interface strings
   layouts/         Global page layout
   lib/             SEO helpers
   pages/           Static routes
   scripts/         Optional 3D logo enhancement
   styles/          Design tokens and global responsive styles
-functions/api/     Cloudflare Pages inquiry endpoint
+functions/         Pages Functions: language middleware and api/inquiry endpoint
 public/            Public brand assets, favicons, robots.txt, and headers
 scripts/           SVG generator and static SEO audit
 ```
@@ -95,7 +96,9 @@ Configure public and server environment variables separately for preview and pro
 
 ## Content and SEO
 
-`/es/` is the Spanish counterpart of the homepage. Its copy lives in `src/data/es.ts`, and `/` and `/es/` declare reciprocal hreflang alternates, which the SEO audit validates. The off-site local SEO checklist (Search Console, Google Business Profile, citations, reviews) lives in the owner's private knowledge base, outside this repository.
+The site is bilingual. Every page is generated in English (at the root) and Spanish (under `/es/`) from `src/pages/[...lang]/`; page copy lives beside the markup as `{ en, es }` objects, shared interface strings in `src/i18n/index.ts`, and both languages of the services, process, FAQ, and portfolio data in `src/data/`. Each indexable page declares reciprocal hreflang alternates, the sitemap includes them, and the SEO audit validates them.
+
+Visitors are sent to their language by `functions/_middleware.ts`: an explicit choice from the EN/ES switcher (stored in a `lang` cookie) wins, otherwise the browser's `Accept-Language` decides. Crawlers and requests without a language preference are served the URL they asked for, so both versions can be indexed. `public/_routes.json` excludes static assets from the middleware. The off-site local SEO checklist (Search Console, Google Business Profile, citations, reviews) lives in the owner's private knowledge base, outside this repository.
 
 Each indexable page owns one search intent and has unique metadata. Internal links use trailing slashes. Organization and WebSite structured data are emitted only on the homepage; other pages use the appropriate page and breadcrumb types.
 

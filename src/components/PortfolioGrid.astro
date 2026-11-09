@@ -1,6 +1,10 @@
 ---
 import { Picture } from 'astro:assets';
 import { projects } from '../data/portfolio';
+import { langFromPath, ui } from '../i18n';
+
+const lang = langFromPath(Astro.url.pathname);
+const t = ui[lang];
 ---
 
 <div class="work">
@@ -25,18 +29,18 @@ import { projects } from '../data/portfolio';
           </div>
         </div>
         <div class="work-card__body">
-          <p class="work-card__category">{project.category}</p>
+          <p class="work-card__category">{project.category[lang]}</p>
           <h3>{project.name}</h3>
-          <p class="work-card__description">{project.description}</p>
+          <p class="work-card__description">{project.description[lang]}</p>
           <a class="work-card__link" href={project.url} target="_blank" rel="noopener">
-            {project.domain}<span class="sr-only"> (opens in a new tab)</span>
+            {project.domain}<span class="sr-only"> {t.opensNewTab}</span>
           </a>
         </div>
       </li>
     ))}
   </ul>
   <p class="work__hint" aria-hidden="true">
-    <span>Swipe to see all {projects.length} sites</span>
+    <span>{t.swipeHint(projects.length)}</span>
     <span class="work__progress"><i></i></span>
   </p>
 </div>

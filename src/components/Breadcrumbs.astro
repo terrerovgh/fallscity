@@ -1,5 +1,6 @@
 ---
 import type { Crumb } from '../lib/seo';
+import { langFromPath, ui } from '../i18n';
 
 interface Props {
   items: Crumb[];
@@ -8,7 +9,7 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<nav class="breadcrumbs" aria-label="Breadcrumb">
+<nav class="breadcrumbs" aria-label={ui[langFromPath(Astro.url.pathname)].breadcrumb}>
   <ol>
     {items.map((item, index) =>
       index === items.length - 1 ? (

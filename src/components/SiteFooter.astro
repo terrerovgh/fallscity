@@ -1,6 +1,14 @@
 ---
 import { site } from '../config/site';
 import { services } from '../data/services';
+import { counterpartPath, langFromPath, langTag, localizePath, ui } from '../i18n';
+
+const pathname = Astro.url.pathname;
+const lang = langFromPath(pathname);
+const t = ui[lang];
+const otherLang = lang === 'en' ? 'es' : 'en';
+const switchHref = counterpartPath(pathname, otherLang);
+const lp = (path: string) => localizePath(path, lang);
 import LouisvilleSkyline from './LouisvilleSkyline.astro';
 ---
 
@@ -8,31 +16,31 @@ import LouisvilleSkyline from './LouisvilleSkyline.astro';
   <div class="container">
     <div class="site-footer__grid">
       <div class="site-footer__brand">
-        <a class="brand" href="/" aria-label="Falls City Dev Studio, home">
+        <a class="brand" href={lp('/')} aria-label={t.homeLabel}>
           <img class="brand__logo brand__logo--lg" src="/brand/fallscity-logo.svg" alt="" width="1259" height="316" loading="lazy" />
         </a>
-        <p class="site-footer__statement">Websites for Louisville small businesses, from design and development to hosting and maintenance.</p>
+        <p class="site-footer__statement">{t.footerStatement}</p>
       </div>
       <div>
-        <h2 class="site-footer__heading">Explore</h2>
+        <h2 class="site-footer__heading">{t.footerExplore}</h2>
         <div class="site-footer__links">
-          {site.navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+          {t.nav.map((item) => <a href={lp(item.href)}>{item.label}</a>)}
         </div>
       </div>
       <div>
-        <h2 class="site-footer__heading">Services</h2>
+        <h2 class="site-footer__heading">{t.footerServices}</h2>
         <div class="site-footer__links">
-          {services.map((service) => <a href={service.href}>{service.shortTitle}</a>)}
+          {services[lang].map((service) => <a href={lp(service.href)}>{service.shortTitle}</a>)}
         </div>
       </div>
       <div>
-        <h2 class="site-footer__heading">Studio</h2>
+        <h2 class="site-footer__heading">{t.footerStudio}</h2>
         <div class="site-footer__links">
-          <a href="/contact/">Get a Website Quote</a>
+          <a href={lp('/contact/')}>{t.footerQuote}</a>
           <a href={`mailto:${site.email}`}>{site.email}</a>
-          <a href="/es/" hreflang="es-US" lang="es-US">En español</a>
-          <a href="/privacy/">Privacy Notice</a>
-          <a href="/sitemap-index.xml">Sitemap</a>
+          <a href={switchHref} hreflang={langTag[otherLang]} lang={langTag[otherLang]} data-lang-switch={otherLang}>{t.footerSwitch}</a>
+          <a href={lp('/privacy/')}>{t.footerPrivacy}</a>
+          <a href="/sitemap-index.xml">{t.footerSitemap}</a>
         </div>
       </div>
     </div>
@@ -41,7 +49,7 @@ import LouisvilleSkyline from './LouisvilleSkyline.astro';
   <div class="site-footer__river">
     <div class="container site-footer__bottom">
       <span>© {new Date().getFullYear()} Falls City Dev Studio</span>
-      <span>Louisville, Kentucky · Serving businesses statewide</span>
+      <span>{t.footerPlace}</span>
     </div>
   </div>
 </footer>

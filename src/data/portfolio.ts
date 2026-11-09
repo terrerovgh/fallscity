@@ -1,4 +1,5 @@
 import type { ImageMetadata } from 'astro';
+import type { Lang } from '../i18n';
 import goodninaDesktop from '../assets/portfolio/goodnina-desktop.webp';
 import goodninaMobile from '../assets/portfolio/goodnina-mobile.webp';
 import leeyrealtyDesktop from '../assets/portfolio/leeyrealty-desktop.webp';
@@ -28,8 +29,8 @@ export interface Project {
   url: string;
   /** The address as shown to visitors. */
   domain: string;
-  category: string;
-  description: string;
+  category: Record<Lang, string>;
+  description: Record<Lang, string>;
   desktop: ImageMetadata;
   mobile: ImageMetadata;
 }
@@ -40,8 +41,14 @@ export const projects: Project[] = [
     name: 'Nina Romero',
     url: 'https://goodnina.com/',
     domain: 'goodnina.com',
-    category: 'Tattoo artist in Albuquerque, NM',
-    description: 'A portfolio for a fine line tattoo artist, with her floral and ornamental work, a gallery, and session booking, in English and Spanish.',
+    category: {
+      en: 'Tattoo artist in Albuquerque, NM',
+      es: 'Tatuadora en Albuquerque, NM',
+    },
+    description: {
+      en: 'A portfolio for a fine line tattoo artist, with her floral and ornamental work, a gallery, and session booking, in English and Spanish.',
+      es: 'Un portafolio para una tatuadora de línea fina, con su trabajo floral y ornamental, una galería y reserva de sesiones, en inglés y español.',
+    },
     desktop: goodninaDesktop,
     mobile: goodninaMobile,
   },
@@ -50,8 +57,14 @@ export const projects: Project[] = [
     name: 'Leey Hernandez',
     url: 'https://leeyrealty.com/',
     domain: 'leeyrealty.com',
-    category: 'Realtor in South Georgia & North Florida',
-    description: 'A bilingual site for a realtor licensed in Georgia and Florida, with homes for sale, a blog, services, and the areas she covers.',
+    category: {
+      en: 'Realtor in South Georgia & North Florida',
+      es: 'Agente inmobiliaria en el sur de Georgia y el norte de Florida',
+    },
+    description: {
+      en: 'A bilingual site for a realtor licensed in Georgia and Florida, with homes for sale, a blog, services, and the areas she covers.',
+      es: 'Un sitio bilingüe para una agente inmobiliaria con licencia en Georgia y Florida, con casas en venta, un blog, servicios y las zonas que cubre.',
+    },
     desktop: leeyrealtyDesktop,
     mobile: leeyrealtyMobile,
   },
@@ -60,8 +73,14 @@ export const projects: Project[] = [
     name: 'Cat & Cobra',
     url: 'https://www.terrerov.com/catandcobra/',
     domain: 'terrerov.com/catandcobra',
-    category: 'Tattoo studio in Albuquerque, NM',
-    description: 'An app-style site for a custom tattoo studio, with artists, a gallery, aftercare guidance, and booking, in English and Spanish.',
+    category: {
+      en: 'Tattoo studio in Albuquerque, NM',
+      es: 'Estudio de tatuajes en Albuquerque, NM',
+    },
+    description: {
+      en: 'An app-style site for a custom tattoo studio, with artists, a gallery, aftercare guidance, and booking, in English and Spanish.',
+      es: 'Un sitio con estilo de app para un estudio de tatuajes personalizados, con artistas, galería, guía de cuidados y reservas, en inglés y español.',
+    },
     desktop: catandcobraDesktop,
     mobile: catandcobraMobile,
   },
@@ -70,8 +89,14 @@ export const projects: Project[] = [
     name: 'All Needs Discount',
     url: 'https://allneedsdiscount.com/',
     domain: 'allneedsdiscount.com',
-    category: 'Remodeling & construction in South Georgia',
-    description: 'A site for a licensed residential remodeling and construction company, with its services, rentals, service area, and free estimate requests.',
+    category: {
+      en: 'Remodeling & construction in South Georgia',
+      es: 'Remodelación y construcción en el sur de Georgia',
+    },
+    description: {
+      en: 'A site for a licensed residential remodeling and construction company, with its services, rentals, service area, and free estimate requests.',
+      es: 'Un sitio para una empresa con licencia de remodelación y construcción residencial, con sus servicios, alquileres, zona de servicio y solicitudes de presupuesto gratis.',
+    },
     desktop: allneedsdiscountDesktop,
     mobile: allneedsdiscountMobile,
   },
@@ -80,8 +105,14 @@ export const projects: Project[] = [
     name: 'Dura Fence Metal',
     url: 'https://durafencemetal.com/',
     domain: 'durafencemetal.com',
-    category: 'Metal fences & gates in South Georgia',
-    description: 'A catalog of metal privacy fences, gates, planks, and parts, with an estimate builder for Standard or Premium options.',
+    category: {
+      en: 'Metal fences & gates in South Georgia',
+      es: 'Cercas y portones de metal en el sur de Georgia',
+    },
+    description: {
+      en: 'A catalog of metal privacy fences, gates, planks, and parts, with an estimate builder for Standard or Premium options.',
+      es: 'Un catálogo de cercas de privacidad de metal, portones, tablas y piezas, con un cotizador para opciones Standard o Premium.',
+    },
     desktop: durafenceDesktop,
     mobile: durafenceMobile,
   },
@@ -90,8 +121,14 @@ export const projects: Project[] = [
     name: 'Sagwa',
     url: 'https://sagwa.dev/',
     domain: 'sagwa.dev',
-    category: 'Open-source documentation',
-    description: 'Documentation for Sagwa, an open-source Siamese cat that lives on an M5Stack CoreS3, with an interactive 3D model of the hardware.',
+    category: {
+      en: 'Open-source documentation',
+      es: 'Documentación de código abierto',
+    },
+    description: {
+      en: 'Documentation for Sagwa, an open-source Siamese cat that lives on an M5Stack CoreS3, with an interactive 3D model of the hardware.',
+      es: 'Documentación de Sagwa, un gato siamés de código abierto que vive en un M5Stack CoreS3, con un modelo 3D interactivo del hardware.',
+    },
     desktop: sagwaDesktop,
     mobile: sagwaMobile,
   },
@@ -100,8 +137,14 @@ export const projects: Project[] = [
     name: 'terrerov.com',
     url: 'https://www.terrerov.com/',
     domain: 'terrerov.com',
-    category: 'Personal résumé site',
-    description: 'An illustrated, scroll-driven résumé for a computer engineer and Linux systems and network administrator.',
+    category: {
+      en: 'Personal résumé site',
+      es: 'Sitio de currículum personal',
+    },
+    description: {
+      en: 'An illustrated, scroll-driven résumé for a computer engineer and Linux systems and network administrator.',
+      es: 'Un currículum ilustrado que avanza con el scroll, para un ingeniero en computación y administrador de sistemas Linux y redes.',
+    },
     desktop: terrerovDesktop,
     mobile: terrerovMobile,
   },
@@ -110,8 +153,14 @@ export const projects: Project[] = [
     name: 'Who are you?',
     url: 'https://character.terrerov.com/',
     domain: 'character.terrerov.com',
-    category: 'Interactive experiment',
-    description: 'Type a username and get a hand-drawn creature: seeded procedural characters drawn with Canvas 2D brush strokes on a Three.js rig.',
+    category: {
+      en: 'Interactive experiment',
+      es: 'Experimento interactivo',
+    },
+    description: {
+      en: 'Type a username and get a hand-drawn creature: seeded procedural characters drawn with Canvas 2D brush strokes on a Three.js rig.',
+      es: 'Escriba un nombre de usuario y obtenga una criatura dibujada a mano: personajes procedurales generados a partir de una semilla, con trazos de pincel en Canvas 2D sobre un esqueleto de Three.js.',
+    },
     desktop: characterDesktop,
     mobile: characterMobile,
   },

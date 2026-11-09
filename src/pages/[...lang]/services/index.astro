@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import FaqList from '../../../components/FaqList.astro';
+import CallToAction from '../../../components/CallToAction.astro';
+import SectionHeading from '../../../components/SectionHeading.astro';
+import { getService, services } from '../../../data/services';
+import { pickFaqs, serviceFaqKeys } from '../../../data/faqs';
+import { serviceNode } from '../../../lib/seo';
+import { langPaths, localizePath, type Lang } from '../../../i18n';
+
+export const getStaticPaths = langPaths;
+const { lang } = Astro.props as { lang: Lang };
+const lp = (path: string) => localizePath(path, lang);
+
+const copy = {
+  en: {
+    title: 'Website Services for Louisville Businesses | Falls City Dev Studio',
+    description:
+      'Website design and development, SEO foundations, domain, hosting and SSL setup, and website maintenance for Louisville small businesses. See what each service covers.',
+    crumbHome: 'Home',
+    crumb: 'Services',
+    eyebrow: 'Services',
+    heroTitle: 'Website services for Louisville businesses.',
+    heroCopy: 'Design, development, and the technical setup needed to launch and maintain your site. Each project is scoped around what your business needs.',
+    heroLink: 'Discuss your project',
+    detailsLabel: 'Service details',
+    canInclude: 'Work can include',
+    hostingType: 'Domain, hosting, and SSL setup',
+    scopeEyebrow: 'What we focus on',
+    scopeTitle: 'A short list of services, on purpose.',
+    scopeCopy: 'Falls City Dev Studio works on the design, development, launch, and upkeep of business websites, and nothing outside of that.',
+    fitTitle: 'A good fit',
+    fitCopy: 'You run a small or service-based business and need a first website, want to replace an outdated one, or need technical help launching and looking after it.',
+    notFitTitle: 'Probably not a fit',
+    notFitCopy: 'You’re looking for paid advertising, social media management, a CRM or other enterprise software, or a broad marketing campaign. We also don’t promise search rankings, because no one honestly can.',
+    faqEyebrow: 'Service questions',
+    faqTitle: 'Questions about the services.',
+    ctaTitle: 'Not sure which services you need?',
+    ctaCopy: 'Tell us about your business and where your current website falls short. We’ll help you sort out what’s worth doing.',
+  },
+  es: {
+    title: 'Servicios Web para Negocios de Louisville | Falls City Dev Studio',
+    description:
+      'Diseño y desarrollo web, bases de SEO, configuración de dominio, hosting y SSL, y mantenimiento web para pequeños negocios de Louisville. Vea qué cubre cada servicio.',
+    crumbHome: 'Inicio',
+    crumb: 'Servicios',
+    eyebrow: 'Servicios',
+    heroTitle: 'Servicios web para negocios de Louisville.',
+    heroCopy: 'Diseño, desarrollo y la configuración técnica necesaria para publicar y mantener su página. Cada proyecto se define según lo que su negocio necesita.',
+    heroLink: 'Hablemos de su proyecto',
+    detailsLabel: 'Detalle de los servicios',
+    canInclude: 'Puede incluir',
+    hostingType: 'Configuración de dominio, hosting y SSL',
+    scopeEyebrow: 'En qué nos enfocamos',
+    scopeTitle: 'Pocos servicios, a propósito.',
+    scopeCopy: 'Falls City Dev Studio trabaja en el diseño, el desarrollo, la publicación y el cuidado de páginas web de negocios, y en nada fuera de eso.',
+    fitTitle: 'Somos una buena opción',
+    fitCopy: 'Tiene un negocio pequeño o de servicios y necesita su primera página, quiere reemplazar una anticuada o necesita ayuda técnica para publicarla y cuidarla.',
+    notFitTitle: 'Probablemente no somos la opción',
+    notFitCopy: 'Busca anuncios pagados, manejo de redes sociales, un CRM u otro software empresarial, o una campaña de marketing amplia. Tampoco prometemos posiciones en Google, porque nadie puede hacerlo con honestidad.',
+    faqEyebrow: 'Preguntas sobre los servicios',
+    faqTitle: 'Preguntas sobre los servicios.',
+    ctaTitle: '¿No sabe qué servicios necesita?',
+    ctaCopy: 'Cuéntenos de su negocio y en qué se queda corta su página actual. Le ayudamos a ver qué vale la pena hacer.',
+  },
+}[lang];
+
+// Domains, hosting & SSL has no page of its own, so its Service entity lives
+// here. The other services are described on their dedicated pages.
+const hosting = getService(lang, 'domains-hosting-ssl');
+const structuredData = [
+  serviceNode({
+    name: hosting.title,
+    serviceType: copy.hostingType,
+    description: hosting.description,
+    path: lp(hosting.href),
+  }),
+];
+const breadcrumbs = [
+  { name: copy.crumbHome, path: lp('/') },
+  { name: copy.crumb, path: lp('/services/') },
+];
+---
+
+<BaseLayout title={copy.title} description={copy.description} pageType="CollectionPage" breadcrumbs={breadcrumbs} structuredData={structuredData}>
+  <PageHero breadcrumbs={breadcrumbs} eyebrow={copy.eyebrow} title={copy.heroTitle} copy={copy.heroCopy}>
+    <a class="text-link" href={lp('/contact/')}>{copy.heroLink}</a>
+  </PageHero>
+
+  <section class="section--bright" aria-label={copy.detailsLabel}>
+    <div class="container service-details">
+      {services[lang].map((service) => (
+        <article class="service-detail reveal-on-scroll" id={service.anchor}>
+          <div>
+            <div class="service-detail__header">
+              <h2>{service.title}</h2>
+              <p class="service-detail__description">{service.description}</p>
+            </div>
+            <div class="service-detail__body">
+              <h3>{copy.canInclude}</h3>
+              <ul class="check-list">{service.details.map((item) => <li>{item}</li>)}</ul>
+            </div>
+            {service.href.startsWith('/services/#') ? null : (
+              <a class="text-link" href={lp(service.href)}>{service.linkLabel}</a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="scope-heading">
+    <div class="container">
+      <SectionHeading id="scope-heading" eyebrow={copy.scopeEyebrow} title={copy.scopeTitle} copy={copy.scopeCopy} />
+      <div class="scope-grid">
+        <div class="scope-card">
+          <h3>{copy.fitTitle}</h3>
+          <p>{copy.fitCopy}</p>
+        </div>
+        <div class="scope-card scope-card--muted">
+          <h3>{copy.notFitTitle}</h3>
+          <p>{copy.notFitCopy}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="service-faq-heading">
+    <div class="container faq-layout">
+      <div class="faq-layout__intro">
+        <p class="eyebrow">{copy.faqEyebrow}</p>
+        <h2 class="display" id="service-faq-heading">{copy.faqTitle}</h2>
+      </div>
+      <FaqList faqs={pickFaqs(lang, serviceFaqKeys)} />
+    </div>
+  </section>
+
+  <CallToAction title={copy.ctaTitle} copy={copy.ctaCopy} />
+</BaseLayout>
