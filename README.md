@@ -6,7 +6,7 @@ Official marketing website for Falls City Dev Studio, a Louisville web design an
 
 - Astro 7 with static output and strict TypeScript
 - Custom responsive CSS and self-hosted variable fonts
-- Cloudflare Pages Function for project inquiries
+- Cloudflare Worker for language routing and project inquiries
 - Cloudflare Turnstile and Resend for spam protection and delivery
 - Three.js for the optional homepage logo enhancement
 
@@ -31,10 +31,10 @@ npm run audit:seo  # Validate the generated HTML in dist/
 npm test           # Check, build, and SEO audit
 ```
 
-Astro's development and preview servers do not execute Cloudflare Pages Functions. Test the inquiry endpoint through Wrangler:
+Astro's development and preview servers do not run the Worker. Test language redirects and the inquiry endpoint through Wrangler after a build:
 
 ```sh
-npx wrangler pages dev dist
+npm run build && npx wrangler dev
 ```
 
 ## Project structure
@@ -51,7 +51,7 @@ src/
   pages/           Static routes
   scripts/         Optional 3D logo enhancement
   styles/          Design tokens and global responsive styles
-functions/         Pages Functions: language middleware and api/inquiry endpoint
+worker/            Cloudflare Worker: canonical host, language redirects, inquiry endpoint
 public/            Public brand assets, favicons, robots.txt, and headers
 scripts/           SVG generator and static SEO audit
 ```
@@ -84,12 +84,12 @@ Portfolio entries live in `src/data/portfolio.ts`. Their real desktop and mobile
 
 ## Deployment
 
-The recommended target is Cloudflare Pages:
+Production runs as a Cloudflare Worker with static assets, built by Workers Builds from this repository and configured in `wrangler.jsonc`:
 
-- Root directory: repository root
 - Build command: `npm run build`
-- Output directory: `dist`
-- Functions directory: `functions/`
+- Deploy command: `npx wrangler deploy`
+- Static assets: `dist/`, served through `worker/index.ts` (pages and `/api/*`); `/_astro/*` and `/brand/*` are served directly
+- Server variables and secrets are set in the Cloudflare dashboard and kept across deploys (`keep_vars`)
 - Production origin: `https://fallscity.dev`
 
 Configure public and server environment variables separately for preview and production. Verify real inquiry delivery before enabling the form publicly.
@@ -98,7 +98,7 @@ Configure public and server environment variables separately for preview and pro
 
 The site is bilingual. Every page is generated in English (at the root) and Spanish (under `/es/`) from `src/pages/[...lang]/`; page copy lives beside the markup as `{ en, es }` objects, shared interface strings in `src/i18n/index.ts`, and both languages of the services, process, FAQ, and portfolio data in `src/data/`. Each indexable page declares reciprocal hreflang alternates, the sitemap includes them, and the SEO audit validates them.
 
-Visitors are sent to their language by `functions/_middleware.ts`: an explicit choice from the EN/ES switcher (stored in a `lang` cookie) wins, otherwise the browser's `Accept-Language` decides. Crawlers and requests without a language preference are served the URL they asked for, so both versions can be indexed. `public/_routes.json` excludes static assets from the middleware. The off-site local SEO checklist (Search Console, Google Business Profile, citations, reviews) lives in the owner's private knowledge base, outside this repository.
+Visitors are sent to their language by `worker/language.ts`: an explicit choice from the EN/ES switcher (stored in a `lang` cookie) wins, otherwise the browser's `Accept-Language` decides. Crawlers and requests without a language preference are served the URL they asked for, so both versions can be indexed. The off-site local SEO checklist (Search Console, Google Business Profile, citations, reviews) lives in the owner's private knowledge base, outside this repository.
 
 Each indexable page owns one search intent and has unique metadata. Internal links use trailing slashes. Organization and WebSite structured data are emitted only on the homepage; other pages use the appropriate page and breadcrumb types.
 

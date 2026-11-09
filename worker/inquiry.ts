@@ -1,4 +1,4 @@
-interface InquiryEnvironment {
+export interface InquiryEnvironment {
   TURNSTILE_SECRET_KEY?: string;
   RESEND_API_KEY?: string;
   INQUIRY_TO_EMAIL?: string;

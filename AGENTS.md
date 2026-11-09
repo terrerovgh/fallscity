@@ -4,7 +4,7 @@
 
 Business context (clients, offer, pricing, process) lives in the private knowledge base, which is kept locally next to this repository as `../fallscity-knowledge/` and is never committed here: see `../fallscity-knowledge/00-README.md` and `../fallscity-knowledge/AGENTS.md`. Never copy anything from `../fallscity-knowledge/07-referencia/` into the site.
 
-This repository (checked out locally as `web/`) contains the Falls City Dev Studio marketing website. It is an Astro 7 static site with strict TypeScript, custom CSS, and one Cloudflare Pages Function for project inquiries. The canonical production origin is `https://fallscity.dev`. The site is bilingual: every page exists in English at the root and in Spanish under `/es/`, with the same content.
+This repository (checked out locally as `web/`) contains the Falls City Dev Studio marketing website. It is an Astro 7 static site with strict TypeScript, custom CSS, and a small Cloudflare Worker (language routing and the project inquiry endpoint). The canonical production origin is `https://fallscity.dev`. The site is bilingual: every page exists in English at the root and in Spanish under `/es/`, with the same content.
 
 ## Commands
 
@@ -16,7 +16,7 @@ npm run build
 npm run preview
 ```
 
-Run `npm test` (type check, build, and the SEO audit over `dist/`) after meaningful changes. Test Cloudflare Pages Functions through Wrangler, not Astro's static preview. Do not claim provider-backed email delivery unless a real configured submission has been observed.
+Run `npm test` (type check, build, and the SEO audit over `dist/`) after meaningful changes. Test the Worker (language redirects, inquiry endpoint) through `npx wrangler dev` after `npm run build`, not Astro's static preview. Do not claim provider-backed email delivery unless a real configured submission has been observed.
 
 ## Conventions
 
@@ -31,7 +31,7 @@ Run `npm test` (type check, build, and the SEO audit over `dist/`) after meaning
 - Bilingual site: pages live in `src/pages/[...lang]/` and are generated for `en` (root) and `es` (`/es/`) by `langPaths` in `src/i18n/index.ts`. Page copy sits next to its markup as `{ en, es }` objects; shared interface strings are in `ui` (`src/i18n/index.ts`); `src/data/` holds both languages. Any content change must be made in both languages so the versions stay equivalent. Build internal links with `localizePath()`; never hard-code `/es/`.
 - English copy uses American English; Spanish copy uses neutral US Spanish with *usted*. Keep the tone clear, practical, local, and free of exaggerated claims in both.
 - `BaseLayout` emits reciprocal hreflang alternates (en-US, es-US, x-default → English) for every indexable page, and the sitemap lists both versions; `npm run audit:seo` checks html lang and hreflang reciprocity.
-- `functions/_middleware.ts` redirects visitors at the edge to their language: the `lang` cookie (set by the EN/ES switcher in the header and footer) wins, then the browser's Accept-Language. Crawlers and requests without a language preference are never redirected. `public/_routes.json` keeps static assets out of the middleware; add new top-level asset paths there.
+- Production is a Cloudflare Worker with static assets (`wrangler.jsonc`, built by Workers Builds), not Pages: `functions/` would be ignored. `worker/index.ts` runs before every page and `/api/*` request: it redirects http/www to `https://fallscity.dev`, serves `/api/inquiry` (`worker/inquiry.ts`), sends visitors to their language (`worker/language.ts`: the `lang` cookie set by the EN/ES switcher wins, then Accept-Language; crawlers and requests without a preference are never redirected), and adds `noindex` on non-production hosts. `/_astro/*` and `/brand/*` skip the Worker via `run_worker_first`.
 
 ## Business guardrails
 

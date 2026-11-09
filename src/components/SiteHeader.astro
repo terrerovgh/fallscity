@@ -34,7 +34,7 @@ const switchHref = counterpartPath(pathname, otherLang);
 
 <script>
   // Remember an explicit language choice so the edge middleware stops
-  // redirecting by browser language (see functions/_middleware.ts).
+  // redirecting by browser language (see worker/language.ts).
   document.querySelectorAll<HTMLAnchorElement>('[data-lang-switch]').forEach((link) =>
     link.addEventListener('click', () => {
       document.cookie = `lang=${link.dataset.langSwitch}; path=/; max-age=31536000; SameSite=Lax; Secure`;

@@ -3,14 +3,9 @@
 // (the `lang` cookie set by the EN/ES switcher) or, failing that, their
 // browser's Accept-Language. Crawlers and requests without a language
 // preference are never redirected, so search engines can index both versions
-// through hreflang. Static assets are excluded in public/_routes.json.
+// through hreflang.
 
 type Lang = 'en' | 'es';
-
-interface MiddlewareContext {
-  request: Request;
-  next: () => Promise<Response>;
-}
 
 const CRAWLER = /bot|crawl|spider|slurp|preview|facebookexternalhit|inspectiontool|lighthouse|headless/i;
 
@@ -57,17 +52,16 @@ export function languageRedirect(request: Request): string | null {
   return `${wanted === 'es' ? `/es${basePath}` : basePath}${url.search}`;
 }
 
-export async function onRequest(context: MiddlewareContext): Promise<Response> {
-  const target = languageRedirect(context.request);
-  if (target) {
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: target,
-        'Cache-Control': 'private, no-store',
-        Vary: 'Accept-Language, Cookie',
-      },
-    });
-  }
-  return context.next();
+/** A 302 to the visitor's language version, or null to serve the request as is. */
+export function languageResponse(request: Request): Response | null {
+  const target = languageRedirect(request);
+  if (!target) return null;
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: target,
+      'Cache-Control': 'private, no-store',
+      Vary: 'Accept-Language, Cookie',
+    },
+  });
 }

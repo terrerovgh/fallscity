@@ -1,0 +1,18 @@
+// Production deploy: a Cloudflare Worker ("fallscity", built by Workers Builds
+// from this repository) serving the static site in dist/ through worker/index.ts.
+{
+  "name": "fallscity",
+  "main": "worker/index.ts",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // Fingerprinted and brand assets skip the Worker; pages and /api/* run it.
+    "run_worker_first": ["/*", "!/_astro/*", "!/brand/*"],
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  // Keep variables and secrets set in the Cloudflare dashboard on each deploy
+  // (TURNSTILE_SECRET_KEY, RESEND_API_KEY, INQUIRY_TO_EMAIL, INQUIRY_FROM_EMAIL).
+  "keep_vars": true
+}
