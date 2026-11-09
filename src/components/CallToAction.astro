@@ -2,9 +2,13 @@
 interface Props {
   title?: string;
   copy?: string;
+  eyebrow?: string;
+  buttonLabel?: string;
 }
 
 const {
+  eyebrow = 'Start a project',
+  buttonLabel = 'Let’s Discuss Your Project',
   title = 'Have a website project in mind?',
   copy = 'Tell us about your business and what you need from your website, and we’ll take it from there.',
 } = Astro.props;
@@ -18,10 +22,10 @@ const {
   </svg>
   <div class="container cta__inner">
     <div>
-      <p class="eyebrow">Start a project</p>
+      <p class="eyebrow">{eyebrow}</p>
       <h2 id="closing-cta">{title}</h2>
       <p>{copy}</p>
     </div>
-    <a class="button button--light button--lg" href="/contact/">Let’s Discuss Your Project</a>
+    <a class="button button--light button--lg" href="/contact/">{buttonLabel}</a>
   </div>
 </section>

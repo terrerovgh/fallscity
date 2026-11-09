@@ -1,6 +1,6 @@
 ---
 import { site } from '../config/site';
-import { absoluteUrl, ids, louisville, type Crumb, type PageType } from '../lib/seo';
+import { absoluteUrl, areaServed, ids, type Alternate, type Crumb, type PageType } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -12,6 +12,10 @@ interface Props {
   pageType?: PageType;
   breadcrumbs?: Crumb[];
   structuredData?: Record<string, unknown>[];
+  /** BCP 47 language of the page, e.g. "en-US" or "es-US". */
+  lang?: string;
+  /** Every language version of this page, including itself. Emits hreflang links. */
+  alternates?: Alternate[];
 }
 
 const {
@@ -24,11 +28,15 @@ const {
   pageType = 'WebPage',
   breadcrumbs = [],
   structuredData = [],
+  lang = 'en-US',
+  alternates = [],
 } = Astro.props;
 
 const canonical = absoluteUrl(pathname);
 const socialImage = absoluteUrl(image);
 const isHome = pathname === '/';
+const ogLocale = lang.replace('-', '_');
+const ogAlternateLocales = alternates.map((a) => a.hreflang).filter((l) => l !== lang && l !== 'x-default');
 
 // Organization and WebSite are described once, on the homepage (Google's
 // recommendation); every other page refers to them by @id.
@@ -46,7 +54,19 @@ const siteEntities = isHome
           height: 301,
         },
         description: site.description,
-        areaServed: louisville,
+        email: site.email,
+        areaServed,
+        knowsLanguage: ['en-US', 'es-US'],
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'sales',
+          email: site.email,
+          availableLanguage: ['English', 'Spanish'],
+          areaServed,
+        },
+        // Add profile URLs here (Google Business Profile, Bing Places, etc.)
+        // only once they exist and are verified by the owner.
+        // sameAs: [],
       },
       {
         '@type': 'WebSite',
@@ -70,7 +90,7 @@ const graph = noindex
         url: canonical,
         name: title,
         description,
-        inLanguage: 'en-US',
+        inLanguage: lang,
         isPartOf: { '@id': ids.website },
         ...(isHome ? { about: { '@id': ids.organization } } : {}),
         ...(hasTrail ? { breadcrumb: { '@id': `${canonical}#breadcrumb` } } : {}),
@@ -96,9 +116,11 @@ const graph = noindex
 <title>{title}</title>
 <meta name="description" content={description} />
 {!noindex && <link rel="canonical" href={canonical} />}
+{!noindex && alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={absoluteUrl(alt.path)} />)}
 <meta name="robots" content={noindex ? 'noindex' : 'index, follow, max-image-preview:large'} />
 <meta name="theme-color" content="#0d1927" />
-<meta property="og:locale" content="en_US" />
+<meta property="og:locale" content={ogLocale} />
+{ogAlternateLocales.map((l) => <meta property="og:locale:alternate" content={l.replace('-', '_')} />)}
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={site.name} />
 <meta property="og:title" content={title} />

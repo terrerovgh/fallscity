@@ -66,7 +66,12 @@ for (const file of htmlFiles) {
   const robots = metaContent(html, 'name', 'robots') ?? '';
   const indexable = !/noindex/i.test(robots);
   const canonicalTag = tags(html, 'link').find((t) => attr(t, 'rel') === 'canonical');
-  pages.set(path, { html, ids, indexable, canonical: canonicalTag ? attr(canonicalTag, 'href') : null, file });
+  const alternates = new Map(
+    tags(html, 'link')
+      .filter((t) => attr(t, 'rel') === 'alternate' && attr(t, 'hreflang'))
+      .map((t) => [attr(t, 'hreflang'), attr(t, 'href')]),
+  );
+  pages.set(path, { html, ids, indexable, canonical: canonicalTag ? attr(canonicalTag, 'href') : null, alternates, file });
 }
 
 const titles = new Map();
@@ -78,7 +83,8 @@ for (const [path, page] of pages) {
 
   // <html lang>
   const lang = attr(tags(html, 'html')[0] ?? '', 'lang');
-  if (lang !== 'en-US') fail(label, `html lang is "${lang}", expected "en-US"`);
+  const expectedLang = path.startsWith('/es/') ? 'es-US' : 'en-US';
+  if (lang !== expectedLang) fail(label, `html lang is "${lang}", expected "${expectedLang}"`);
 
   // Title and description
   const titleMatch = html.match(/<title>([\s\S]*?)<\/title>/i);
@@ -165,6 +171,20 @@ for (const [path, page] of pages) {
     if (targetPage && !targetPage.indexable && page.indexable && !target.startsWith('/privacy/')) {
       warn(label, `links to noindex page ${target}`);
     }
+  }
+}
+
+// hreflang: each alternate is an indexable, self-canonical page that lists this page back
+for (const [path, page] of pages) {
+  if (!page.indexable || page.alternates.size === 0) continue;
+  const self = `${ORIGIN}${path}`;
+  if (![...page.alternates.values()].includes(self)) fail(path, 'hreflang set does not include the page itself');
+  if (!page.alternates.has('x-default')) fail(path, 'hreflang set has no x-default');
+  for (const [hreflang, href] of page.alternates) {
+    const target = href?.startsWith(ORIGIN) ? pages.get(href.slice(ORIGIN.length)) : null;
+    if (!target) fail(path, `hreflang ${hreflang} points to a missing or off-origin page: ${href}`);
+    else if (!target.indexable || target.canonical !== href) fail(path, `hreflang ${hreflang} points to a non-canonical or noindex page: ${href}`);
+    else if (![...target.alternates.values()].includes(self)) fail(path, `hreflang ${hreflang} target ${href} does not link back`);
   }
 }
 

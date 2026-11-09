@@ -2,7 +2,9 @@
 
 ## Project
 
-This repository contains the Falls City Dev Studio marketing website. It is an Astro 7 static site with strict TypeScript, custom CSS, and one Cloudflare Pages Function for project inquiries. The canonical production origin is `https://fallscity.dev`.
+Business context (clients, offer, pricing, process) lives in the private knowledge base, which is kept locally next to this repository as `../fallscity-knowledge/` and is never committed here: see `../fallscity-knowledge/00-README.md` and `../fallscity-knowledge/AGENTS.md`. Never copy anything from `../fallscity-knowledge/07-referencia/` into the site.
+
+This repository (checked out locally as `web/`) contains the Falls City Dev Studio marketing website. It is an Astro 7 static site with strict TypeScript, custom CSS, and one Cloudflare Pages Function for project inquiries. The canonical production origin is `https://fallscity.dev`.
 
 ## Commands
 
@@ -23,9 +25,10 @@ Run `npm test` (type check, build, and the SEO audit over `dist/`) after meaning
 - Reuse tokens and component patterns in `src/styles/global.css`; keep JavaScript limited to necessary interaction.
 - Preserve semantic HTML, one clear H1 per page, keyboard access, visible focus, reduced-motion support, and responsive behavior at 390px, 768px, and 1440px.
 - Update unique metadata and visible structured-data sources when page content changes. Never add unverified schema properties.
-- Each indexable URL owns one search intent. `/` targets "web design Louisville"; `/services/web-design/`, `/services/website-maintenance/`, and `/services/seo-foundations/` own their service intents. Do not create neighborhood/ZIP/city pages or guides without substantial owner-verified content.
+- Each indexable URL owns one search intent. `/` targets "web design Louisville"; `/services/web-design/`, `/services/website-maintenance/`, and `/services/seo-foundations/` own their service intents; `/es/` owns the Spanish intent "diseño de páginas web Louisville". Do not create neighborhood/ZIP/city pages or guides without substantial owner-verified content.
+- Service area (owner-confirmed 2026-11-09): based in Louisville, working remotely with businesses across Kentucky, in English or Spanish. Express that in copy and in `areaServed` (`src/lib/seo.ts`), not through per-city pages. The only public contact detail is `site.email`; there is no public address or phone, so never add `address`, `telephone`, or `LocalBusiness` schema.
 - Internal links use trailing slashes. Organization/WebSite JSON-LD live on `/` only; other pages pass `breadcrumbs`/`pageType` to `BaseLayout`. Keep noindex pages out of the sitemap filter in `astro.config.mjs`.
-- Use American English for public copy. Keep the tone clear, practical, local, and free of exaggerated claims.
+- Use American English for public copy, except `/es/`, which is written in neutral US Spanish using *usted* (copy in `src/data/es.ts`). `/` and `/es/` declare reciprocal hreflang alternates (en-US, es-US, x-default); keep them in sync, and `npm run audit:seo` checks them. Keep the tone clear, practical, local, and free of exaggerated claims.
 
 ## Business guardrails
 

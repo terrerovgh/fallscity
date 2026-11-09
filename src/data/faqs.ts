@@ -5,6 +5,16 @@ export const homeFaqs = [
       'The studio is focused on Louisville-area small businesses, independent professionals, and service-based businesses that need a clear, professional website. That includes businesses launching their first site and those replacing an outdated one.',
   },
   {
+    question: 'Do you work with businesses outside Louisville?',
+    answer:
+      'Yes. The studio is based in Louisville and also works remotely with small businesses anywhere in Kentucky. Conversations, reviews, and launch happen by phone, video call, and email, so the process is the same wherever you are.',
+  },
+  {
+    question: 'Can we work together in Spanish?',
+    answer:
+      'Yes. We can run the project in English or Spanish, and a Spanish version of your website can be part of the scope if your customers need it.',
+  },
+  {
     question: 'Will my website work well on phones?',
     answer:
       'Yes. Responsive behavior is part of the design and development process. Layouts, navigation, content, and inquiry paths are built for small screens first and then adapted for larger devices.',

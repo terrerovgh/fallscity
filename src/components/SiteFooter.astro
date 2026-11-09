@@ -29,6 +29,8 @@ import LouisvilleSkyline from './LouisvilleSkyline.astro';
         <h2 class="site-footer__heading">Studio</h2>
         <div class="site-footer__links">
           <a href="/contact/">Get a Website Quote</a>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+          <a href="/es/" hreflang="es-US" lang="es-US">En español</a>
           <a href="/privacy/">Privacy Notice</a>
           <a href="/sitemap-index.xml">Sitemap</a>
         </div>
@@ -39,7 +41,7 @@ import LouisvilleSkyline from './LouisvilleSkyline.astro';
   <div class="site-footer__river">
     <div class="container site-footer__bottom">
       <span>© {new Date().getFullYear()} Falls City Dev Studio</span>
-      <span>Louisville, Kentucky</span>
+      <span>Louisville, Kentucky · Serving businesses statewide</span>
     </div>
   </div>
 </footer>

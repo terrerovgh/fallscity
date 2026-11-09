@@ -16,11 +16,16 @@ export const ids = {
 
 export const absoluteUrl = (path: string) => new URL(path, site.url).href;
 
-export const louisville = {
-  '@type': 'City',
-  name: 'Louisville',
-  containedInPlace: { '@type': 'State', name: 'Kentucky' },
-};
+const kentucky = { '@type': 'State', name: 'Kentucky' };
+
+/** Owner-confirmed service area: Louisville first, and remote projects anywhere in Kentucky. */
+export const areaServed = [{ '@type': 'City', name: 'Louisville', containedInPlace: kentucky }, kentucky];
+
+/** One indexable translation of a page, for hreflang alternates. */
+export interface Alternate {
+  hreflang: string;
+  path: string;
+}
 
 /** A Service entity for a page that describes one service in full. */
 export const serviceNode = (options: { name: string; description: string; path: string; serviceType: string }) => ({
@@ -31,5 +36,5 @@ export const serviceNode = (options: { name: string; description: string; path: 
   description: options.description,
   url: absoluteUrl(options.path),
   provider: { '@id': ids.organization },
-  areaServed: louisville,
+  areaServed,
 });

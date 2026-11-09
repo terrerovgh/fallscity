@@ -12,3 +12,11 @@ dist/
 playwright-report/
 test-results/
 lighthouse-report*
+
+# Local-only files: third-party stock/reference images (not licensed for
+# publication) and private business notes. Never commit them.
+public/brand/*.jpg
+public/brand/*.avif
+public/brand/*.webp
+public/brand/*.gif
+notas-fallscity-dev.md

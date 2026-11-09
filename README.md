@@ -85,6 +85,7 @@ Portfolio entries live in `src/data/portfolio.ts`. Their real desktop and mobile
 
 The recommended target is Cloudflare Pages:
 
+- Root directory: repository root
 - Build command: `npm run build`
 - Output directory: `dist`
 - Functions directory: `functions/`
@@ -93,6 +94,8 @@ The recommended target is Cloudflare Pages:
 Configure public and server environment variables separately for preview and production. Verify real inquiry delivery before enabling the form publicly.
 
 ## Content and SEO
+
+`/es/` is the Spanish counterpart of the homepage. Its copy lives in `src/data/es.ts`, and `/` and `/es/` declare reciprocal hreflang alternates, which the SEO audit validates. The off-site local SEO checklist (Search Console, Google Business Profile, citations, reviews) lives in the owner's private knowledge base, outside this repository.
 
 Each indexable page owns one search intent and has unique metadata. Internal links use trailing slashes. Organization and WebSite structured data are emitted only on the homepage; other pages use the appropriate page and breadcrumb types.
 
