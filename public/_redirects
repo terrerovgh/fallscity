@@ -1,0 +1,4 @@
+# Old sitemap addresses (from the previous @astrojs/sitemap setup) point to the
+# single sitemap, so any Search Console submission of them keeps working.
+/sitemap-index.xml /sitemap.xml 301
+/sitemap-0.xml /sitemap.xml 301

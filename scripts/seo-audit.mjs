@@ -188,25 +188,36 @@ for (const [path, page] of pages) {
   }
 }
 
-// Sitemap: every URL is built, indexable, and self-canonical; every indexable page is listed
-const sitemapIndex = join(DIST, 'sitemap-index.xml');
-if (!existsSync(sitemapIndex)) fail('sitemap', 'sitemap-index.xml missing');
+// Sitemap: one /sitemap.xml whose URLs are built, indexable, and self-canonical;
+// every indexable page is listed once, with the same hreflang alternates the
+// page itself declares.
+const sitemapPath = join(DIST, 'sitemap.xml');
+if (!existsSync(sitemapPath)) fail('sitemap', 'sitemap.xml missing');
 else {
+  const xml = readFileSync(sitemapPath, 'utf8');
+  if (!xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) fail('sitemap', 'missing XML declaration');
+  if (!xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"')) fail('sitemap', 'missing sitemap urlset namespace');
   const listed = new Set();
-  for (const loc of readFileSync(sitemapIndex, 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)) {
-    const file = join(DIST, new URL(loc[1]).pathname);
-    if (!loc[1].startsWith(`${ORIGIN}/`) || !existsSync(file)) {
-      fail('sitemap', `child sitemap missing or off-origin: ${loc[1]}`);
+  for (const block of xml.matchAll(/<url>([\s\S]*?)<\/url>/g)) {
+    const url = block[1].match(/<loc>([^<]+)<\/loc>/)?.[1];
+    if (!url) {
+      fail('sitemap', 'entry without <loc>');
       continue;
     }
-    for (const url of readFileSync(file, 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)) listed.add(url[1]);
-  }
-  for (const url of listed) {
+    if (listed.has(url)) fail('sitemap', `lists a URL twice: ${url}`);
+    listed.add(url);
     const path = url.startsWith(ORIGIN) ? url.slice(ORIGIN.length) : null;
     const page = path ? pages.get(path) : null;
     if (!page) fail('sitemap', `lists a URL with no built page: ${url}`);
     else if (!page.indexable) fail('sitemap', `lists a noindex page: ${url}`);
     else if (page.canonical !== url) fail('sitemap', `lists a non-canonical URL: ${url}`);
+    if (!page) continue;
+    const alternates = new Map(
+      [...block[1].matchAll(/<xhtml:link rel="alternate" hreflang="([^"]+)" href="([^"]+)"\/>/g)].map((m) => [m[1], m[2]]),
+    );
+    const sameAlternates =
+      alternates.size === page.alternates.size && [...alternates].every(([lang, href]) => page.alternates.get(lang) === href);
+    if (!sameAlternates) fail('sitemap', `hreflang alternates for ${url} differ from the page's own`);
   }
   for (const [path, page] of pages) {
     if (page.indexable && !listed.has(`${ORIGIN}${path}`)) fail('sitemap', `indexable page missing from sitemap: ${path}`);
@@ -218,7 +229,7 @@ const robotsPath = join(DIST, 'robots.txt');
 if (!existsSync(robotsPath)) fail('robots.txt', 'missing');
 else {
   const robots = readFileSync(robotsPath, 'utf8');
-  if (!robots.includes(`Sitemap: ${ORIGIN}/sitemap-index.xml`)) fail('robots.txt', 'missing production Sitemap directive');
+  if (!robots.includes(`Sitemap: ${ORIGIN}/sitemap.xml`)) fail('robots.txt', 'missing production Sitemap directive');
   if (/^\s*Disallow:\s*\/\s*$/im.test(robots)) fail('robots.txt', 'blocks the whole site');
 }
 
