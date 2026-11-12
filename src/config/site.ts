@@ -11,7 +11,7 @@ export const site = {
   /** Bing Webmaster Tools ownership code; also in public/BingSiteAuth.xml. Public by design. */
   bingSiteVerification: 'CEA9010A7EE9ED39FF47824909791585',
   /** Google tag (Tag Manager container) loaded on every page in production builds. */
-  googleTagId: 'GTM-W7BGC8VC',
+  googleTagId: 'GTM-WFTPCFT4',
 } as const;
 
 export const isFormConfigured = site.turnstileSiteKey.length > 0;
