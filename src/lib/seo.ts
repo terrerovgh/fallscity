@@ -21,6 +21,9 @@ const kentucky = { '@type': 'State', name: 'Kentucky' };
 /** Owner-confirmed service area: Louisville first, and remote projects anywhere in Kentucky. */
 export const areaServed = [{ '@type': 'City', name: 'Louisville', containedInPlace: kentucky }, kentucky];
 
+/** Owner-confirmed 2026-11-16: websites for tattoo artists and studios anywhere in the United States, worked remotely. */
+export const areaServedUS = [{ '@type': 'Country', name: 'United States' }];
+
 /** One indexable translation of a page, for hreflang alternates. */
 export interface Alternate {
   hreflang: string;
@@ -28,7 +31,13 @@ export interface Alternate {
 }
 
 /** A Service entity for a page that describes one service in full. */
-export const serviceNode = (options: { name: string; description: string; path: string; serviceType: string }) => ({
+export const serviceNode = (options: {
+  name: string;
+  description: string;
+  path: string;
+  serviceType: string;
+  areaServed?: Record<string, unknown>[];
+}) => ({
   '@type': 'Service',
   '@id': `${absoluteUrl(options.path)}#service`,
   name: options.name,
@@ -36,5 +45,5 @@ export const serviceNode = (options: { name: string; description: string; path: 
   description: options.description,
   url: absoluteUrl(options.path),
   provider: { '@id': ids.organization },
-  areaServed,
+  areaServed: options.areaServed ?? areaServed,
 });

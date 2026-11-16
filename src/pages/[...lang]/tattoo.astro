@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import PortfolioGrid from '../../components/PortfolioGrid.astro';
+import PricingTiers from '../../components/PricingTiers.astro';
+import FaqList from '../../components/FaqList.astro';
+import CallToAction from '../../components/CallToAction.astro';
+import { getProject } from '../../data/portfolio';
+import { areaServedUS, serviceNode } from '../../lib/seo';
+import { langPaths, localizePath, type Lang } from '../../i18n';
+
+export const getStaticPaths = langPaths;
+const { lang } = Astro.props as { lang: Lang };
+const lp = (path: string) => localizePath(path, lang);
+
+const copy = {
+  en: {
+    title: 'Websites for Tattoo Artists & Studios | Falls City Dev Studio',
+    description:
+      'Portfolio and booking websites for tattoo artists and studios anywhere in the US: work organized by style, an inquiry form that filters requests, deposits, and aftercare, in English or Spanish.',
+    crumbs: ['Home', 'Tattoo artist websites'],
+    schemaName: 'Websites for tattoo artists and studios',
+    schemaType: 'Website design and development',
+    eyebrow: 'For tattoo artists & studios',
+    heroTitle: 'A tattoo website that doesn’t depend on Instagram.',
+    heroCopy:
+      'Your portfolio and booking page on a domain you own, for tattoo artists and studios anywhere in the US. Designed and built in Louisville, by video call, phone, and email, in English or Spanish.',
+    heroLink: 'Tell us about your books',
+    whyEyebrow: 'Why a site of your own',
+    whyTitle: 'Instagram shows your work. Your site runs your books.',
+    why: [
+      { title: 'Your clients can always find you', copy: 'Accounts get restricted or disabled, sometimes by mistake. A site on your own domain keeps your portfolio, contact, and booking path in one place you control.' },
+      { title: 'Fewer “how much for a small one?” DMs', copy: 'An inquiry form asks for size, placement, reference images, budget, and availability before the conversation starts, so you reply to requests you can actually quote.' },
+      { title: 'Deposits people can trust', copy: 'Clients can check that the booking and deposit link comes from your official site, which helps when fake profiles copy an artist’s work to take deposits.' },
+      { title: 'Open books, closed books, waitlists', copy: 'Show clearly when books open, how guest spots work, and what to expect, instead of answering the same questions in every comment.' },
+    ],
+    workEyebrow: 'Selected work',
+    workTitle: 'Tattoo websites we’ve built.',
+    workCopy: 'A fine line artist and a custom studio in Albuquerque, New Mexico. Both sites work in English and Spanish. Each link opens the live site.',
+    includedEyebrow: 'What’s included',
+    includedTitle: 'Built around how tattoo booking actually works.',
+    included: [
+      'Portfolio organized by style, with images you choose',
+      'Inquiry form for size, placement, references, budget, and dates',
+      'Deposit and booking links to the tools you already use',
+      'Aftercare page you can send after every session',
+      'Artist pages for studios with several chairs',
+      'English and Spanish versions available',
+      'SEO foundations and a domain in your name',
+    ],
+    photosTitle: 'Your work stays yours',
+    photosCopy:
+      'We only publish photos you send or approve, and we never alter your tattoos. Previews stay private and out of search engines until you decide.',
+    pricingEyebrow: 'Pricing',
+    pricingTitle: 'Clear starting prices.',
+    pricingCopy: 'Own your site with a one-time payment, or add monthly care if you’d rather not deal with hosting and updates.',
+    faqEyebrow: 'Questions from artists',
+    faqTitle: 'What tattoo artists ask before starting.',
+    faqs: [
+      { question: 'I’m not in Kentucky. Can you still build my site?', answer: 'Yes. Tattoo projects are done remotely anywhere in the US, by video call, phone, and email. You review the real site online as it takes shape.' },
+      { question: 'Do I have to stop using Instagram or my booking app?', answer: 'No. Keep posting on Instagram and keep the booking or payment tool you use today. The site links to them and gives clients one official place to start.' },
+      { question: 'Do I have to pay every month?', answer: 'Not for an independent artist site. You can pay once and own it, with the domain in your name. Monthly care is optional, and changes without it are billed by the hour, approved first.' },
+      { question: 'Can the site be in Spanish too?', answer: 'Yes. Both of the tattoo sites above work in English and Spanish, and so can yours.' },
+    ],
+    ctaTitle: 'Want to see what your site could look like?',
+    ctaCopy: 'Send your Instagram handle and tell us how you take bookings today. We’ll reply with honest next steps.',
+  },
+  es: {
+    title: 'Páginas Web para Tatuadores y Estudios | Falls City Dev Studio',
+    description:
+      'Páginas de portafolio y reservas para tatuadores y estudios de cualquier parte de EE. UU.: trabajos ordenados por estilo, formulario que filtra consultas, depósitos y cuidados, en inglés o español.',
+    crumbs: ['Inicio', 'Páginas para tatuadores'],
+    schemaName: 'Páginas web para tatuadores y estudios de tatuaje',
+    schemaType: 'Diseño y desarrollo web',
+    eyebrow: 'Para tatuadores y estudios',
+    heroTitle: 'Una página de tatuajes que no depende de Instagram.',
+    heroCopy:
+      'Su portafolio y su página de reservas en un dominio propio, para tatuadores y estudios de cualquier parte de EE. UU. Diseñada y construida en Louisville, por videollamada, teléfono y correo, en inglés o español.',
+    heroLink: 'Cuéntenos cómo maneja su agenda',
+    whyEyebrow: 'Por qué una página propia',
+    whyTitle: 'Instagram muestra su trabajo. Su página organiza su agenda.',
+    why: [
+      { title: 'Sus clientes siempre le encuentran', copy: 'Las cuentas se restringen o se desactivan, a veces por error. Una página en su propio dominio mantiene su portafolio, su contacto y sus reservas en un lugar que usted controla.' },
+      { title: 'Menos mensajes de “¿cuánto por uno pequeño?”', copy: 'Un formulario pide tamaño, zona del cuerpo, imágenes de referencia, presupuesto y disponibilidad antes de empezar a hablar, así responde a consultas que sí puede cotizar.' },
+      { title: 'Depósitos en los que se puede confiar', copy: 'Sus clientes pueden comprobar que el enlace de reserva y depósito sale de su página oficial, algo útil cuando perfiles falsos copian el trabajo de un artista para cobrar depósitos.' },
+      { title: 'Agenda abierta, cerrada o en lista de espera', copy: 'Muestre con claridad cuándo abre su agenda, cómo funcionan los guest spots y qué esperar, en vez de responder lo mismo en cada comentario.' },
+    ],
+    workEyebrow: 'Trabajos',
+    workTitle: 'Páginas de tatuaje que hemos hecho.',
+    workCopy: 'Una artista de línea fina y un estudio de tatuajes personalizados en Albuquerque, Nuevo México. Las dos funcionan en inglés y en español. Cada enlace abre la página real.',
+    includedEyebrow: 'Qué incluye',
+    includedTitle: 'Pensada según cómo se reserva un tatuaje de verdad.',
+    included: [
+      'Portafolio ordenado por estilo, con las imágenes que usted elija',
+      'Formulario de consulta con tamaño, zona, referencias, presupuesto y fechas',
+      'Enlaces de depósito y reserva a las herramientas que ya usa',
+      'Página de cuidados para enviar después de cada sesión',
+      'Páginas por artista para estudios con varias sillas',
+      'Versión en inglés y en español disponible',
+      'Bases de SEO y dominio a su nombre',
+    ],
+    photosTitle: 'Su trabajo sigue siendo suyo',
+    photosCopy:
+      'Solo publicamos fotos que usted envía o aprueba, y nunca alteramos sus tatuajes. Las vistas previas son privadas y quedan fuera de los buscadores hasta que usted decida.',
+    pricingEyebrow: 'Precios',
+    pricingTitle: 'Precios de inicio claros.',
+    pricingCopy: 'Quédese con su página con un solo pago, o añada el cuidado mensual si prefiere no ocuparse del hosting y los cambios.',
+    faqEyebrow: 'Preguntas de artistas',
+    faqTitle: 'Lo que preguntan los tatuadores antes de empezar.',
+    faqs: [
+      { question: 'No estoy en Kentucky. ¿Pueden hacer mi página igual?', answer: 'Sí. Los proyectos de tatuaje se hacen a distancia en cualquier parte de EE. UU., por videollamada, teléfono y correo. Usted revisa la página real en línea mientras toma forma.' },
+      { question: '¿Tengo que dejar Instagram o mi app de reservas?', answer: 'No. Siga publicando en Instagram y use la herramienta de reservas o pagos que ya tiene. La página enlaza a ellas y les da a sus clientes un lugar oficial por donde empezar.' },
+      { question: '¿Tengo que pagar cada mes?', answer: 'No en una página de artista independiente. Puede pagar una vez y quedarse con ella, con el dominio a su nombre. El cuidado mensual es opcional; sin él, los cambios se cobran por hora y se aprueban antes.' },
+      { question: '¿La página puede estar también en español?', answer: 'Sí. Las dos páginas de tatuaje de arriba funcionan en inglés y en español, y la suya también puede.' },
+    ],
+    ctaTitle: '¿Quiere ver cómo podría quedar su página?',
+    ctaCopy: 'Envíenos su usuario de Instagram y cuéntenos cómo recibe sus reservas hoy. Le responderemos con próximos pasos honestos.',
+  },
+}[lang];
+
+const path = lp('/tattoo/');
+const breadcrumbs = [
+  { name: copy.crumbs[0]!, path: lp('/') },
+  { name: copy.crumbs[1]!, path },
+];
+const structuredData = [
+  serviceNode({ name: copy.schemaName, serviceType: copy.schemaType, description: copy.description, path, areaServed: areaServedUS }),
+];
+const work = [getProject('goodnina'), getProject('catandcobra')];
+---
+
+<BaseLayout title={copy.title} description={copy.description} pathname={path} breadcrumbs={breadcrumbs} structuredData={structuredData}>
+  <PageHero breadcrumbs={breadcrumbs} eyebrow={copy.eyebrow} title={copy.heroTitle} copy={copy.heroCopy}>
+    <a class="text-link" href={lp('/contact/')}>{copy.heroLink}</a>
+  </PageHero>
+
+  <section class="section section--bright" aria-labelledby="tattoo-why-heading">
+    <div class="container">
+      <SectionHeading id="tattoo-why-heading" eyebrow={copy.whyEyebrow} title={copy.whyTitle} />
+      <div class="service-grid">
+        {copy.why.map((item) => (
+          <article class="service-card service-card--plain">
+            <h3>{item.title}</h3>
+            <p>{item.copy}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--work" aria-labelledby="tattoo-work-heading">
+    <div class="container">
+      <SectionHeading id="tattoo-work-heading" eyebrow={copy.workEyebrow} title={copy.workTitle} copy={copy.workCopy} />
+      <PortfolioGrid projects={work} />
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="tattoo-included-heading">
+    <div class="container">
+      <SectionHeading id="tattoo-included-heading" eyebrow={copy.includedEyebrow} title={copy.includedTitle} />
+      <div class="scope-grid">
+        <div class="scope-card">
+          <ul class="check-list">{copy.included.map((item) => <li>{item}</li>)}</ul>
+        </div>
+        <div class="scope-card scope-card--muted">
+          <h3>{copy.photosTitle}</h3>
+          <p>{copy.photosCopy}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing" aria-labelledby="tattoo-pricing-heading">
+    <div class="container">
+      <SectionHeading id="tattoo-pricing-heading" eyebrow={copy.pricingEyebrow} title={copy.pricingTitle} copy={copy.pricingCopy} />
+      <PricingTiers only={['artist', 'studio']} />
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="tattoo-faq-heading">
+    <div class="container faq-layout">
+      <div class="faq-layout__intro">
+        <p class="eyebrow">{copy.faqEyebrow}</p>
+        <h2 class="display" id="tattoo-faq-heading">{copy.faqTitle}</h2>
+      </div>
+      <FaqList faqs={copy.faqs} />
+    </div>
+  </section>
+
+  <CallToAction title={copy.ctaTitle} copy={copy.ctaCopy} />
+</BaseLayout>

@@ -1,8 +1,14 @@
 ---
 import { Picture } from 'astro:assets';
-import { projects } from '../data/portfolio';
+import { projects as allProjects, type Project } from '../data/portfolio';
 import { langFromPath, ui } from '../i18n';
 
+interface Props {
+  /** Which projects to show. Defaults to the client sites. */
+  projects?: Project[];
+}
+
+const { projects = allProjects.filter((project) => project.kind === 'client') } = Astro.props;
 const lang = langFromPath(Astro.url.pathname);
 const t = ui[lang];
 ---

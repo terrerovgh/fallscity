@@ -11,11 +11,13 @@ import PortfolioGrid from '../../components/PortfolioGrid.astro';
 import LouisvilleSkyline from '../../components/LouisvilleSkyline.astro';
 import { services } from '../../data/services';
 import { homeFaqKeys, pickFaqs } from '../../data/faqs';
-import { langPaths, localizePath, type Lang } from '../../i18n';
+import { projects } from '../../data/portfolio';
+import { langPaths, localizePath, ui, type Lang } from '../../i18n';
 
 export const getStaticPaths = langPaths;
 const { lang } = Astro.props as { lang: Lang };
 const lp = (path: string) => localizePath(path, lang);
+const labProjects = projects.filter((project) => project.kind === 'lab');
 
 const copy = {
   en: {
@@ -38,7 +40,9 @@ const copy = {
     workEyebrow: 'Selected work',
     workTitle: 'Real websites, live today.',
     workCopy:
-      'Some of the sites we’ve designed and built. Most are for small businesses, one is a documentation site, and a couple are personal projects. Each link opens the live site.',
+      'Business websites we’ve designed and built, from tattoo artists in New Mexico to contractors in Georgia. Each link opens the live site.',
+    labTitle: 'Also from the studio',
+    labCopy: 'Open-source and personal projects where we try out new techniques.',
     servicesEyebrow: 'What we do',
     servicesTitle: 'What we can do for your website.',
     servicesCopy: 'Most projects use some or all of these four services. We’ll help you work out which ones you need.',
@@ -63,6 +67,8 @@ const copy = {
     localCopy:
       'A good-looking page isn’t enough for a local business. Your website should help a neighbor understand what you do, trust you, and get in touch without hunting for a phone number.',
     localKentucky: 'Outside Louisville? We also work remotely with small businesses anywhere in Kentucky, by phone, video, and email. And everything can be done in English or Spanish.',
+    localTattooBefore: 'Tattoo artist or studio anywhere in the US?',
+    localTattooLink: 'See our websites for tattoo artists',
     localServicesBefore: 'We can help whether you need a',
     localServicesDesign: 'first website or a redesign',
     localServicesMid: ', the',
@@ -96,7 +102,9 @@ const copy = {
     workEyebrow: 'Trabajos',
     workTitle: 'Páginas reales, en línea hoy.',
     workCopy:
-      'Algunas de las páginas que hemos diseñado y construido. La mayoría son de pequeños negocios, una es un sitio de documentación y un par son proyectos personales. Cada enlace abre la página real.',
+      'Páginas de negocios que hemos diseñado y construido, desde tatuadoras en Nuevo México hasta contratistas en Georgia. Cada enlace abre la página real.',
+    labTitle: 'También del estudio',
+    labCopy: 'Proyectos personales y de código abierto donde probamos técnicas nuevas.',
     servicesEyebrow: 'Lo que hacemos',
     servicesTitle: 'Lo que podemos hacer por su página web.',
     servicesCopy: 'La mayoría de los proyectos usan algunos o todos estos cuatro servicios. Le ayudamos a ver cuáles necesita.',
@@ -121,6 +129,8 @@ const copy = {
     localCopy:
       'Para un negocio local no basta con una página bonita. Su página debe ayudar a un vecino a entender qué hace usted, confiar en usted y contactarle sin tener que buscar un número de teléfono.',
     localKentucky: '¿Está fuera de Louisville? También trabajamos a distancia con pequeños negocios de cualquier parte de Kentucky, por teléfono, videollamada y correo. Y todo se puede hacer en inglés o en español.',
+    localTattooBefore: '¿Es tatuador o tiene un estudio en cualquier parte de EE. UU.?',
+    localTattooLink: 'Vea nuestras páginas para tatuadores',
     localServicesBefore: 'Le ayudamos si necesita una',
     localServicesDesign: 'primera página o un rediseño',
     localServicesMid: ', las',
@@ -174,6 +184,18 @@ const copy = {
     <div class="container">
       <SectionHeading id="work-heading" eyebrow={copy.workEyebrow} title={copy.workTitle} copy={copy.workCopy} />
       <PortfolioGrid />
+      <div class="work-lab">
+        <h3 class="work-lab__title">{copy.labTitle}</h3>
+        <p class="work-lab__copy">{copy.labCopy}</p>
+        <ul class="work-lab__list" role="list">
+          {labProjects.map((project) => (
+            <li>
+              <a href={project.url} target="_blank" rel="noopener">{project.name}<span class="sr-only"> {ui[lang].opensNewTab}</span></a>
+              <span>{project.category[lang]}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -228,6 +250,7 @@ const copy = {
       <div class="local-panel__copy">
         <p>{copy.localCopy}</p>
         <p>{copy.localKentucky}</p>
+        <p>{copy.localTattooBefore} <a href={lp('/tattoo/')}>{copy.localTattooLink}</a>.</p>
         <p>
           {copy.localServicesBefore} <a href={lp('/services/web-design/')}>{copy.localServicesDesign}</a>{copy.localServicesMid}
           <a href={lp('/services/seo-foundations/')}>{copy.localServicesSeo}</a> {copy.localServicesMid2}
