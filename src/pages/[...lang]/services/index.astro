@@ -4,6 +4,7 @@ import PageHero from '../../../components/PageHero.astro';
 import FaqList from '../../../components/FaqList.astro';
 import CallToAction from '../../../components/CallToAction.astro';
 import SectionHeading from '../../../components/SectionHeading.astro';
+import PricingTiers from '../../../components/PricingTiers.astro';
 import { getService, services } from '../../../data/services';
 import { pickFaqs, serviceFaqKeys } from '../../../data/faqs';
 import { serviceNode } from '../../../lib/seo';
@@ -27,6 +28,10 @@ const copy = {
     detailsLabel: 'Service details',
     canInclude: 'Work can include',
     hostingType: 'Domain, hosting, and SSL setup',
+    pricingEyebrow: 'Pricing',
+    pricingTitle: 'Starting prices, published up front.',
+    pricingCopy: 'Most studios ask you to request a quote before you see a number. Here is where projects start, so you know before the first call.',
+    pricingTattoo: 'Websites for tattoo artists and studios',
     scopeEyebrow: 'What we focus on',
     scopeTitle: 'A short list of services, on purpose.',
     scopeCopy: 'Falls City Dev Studio works on the design, development, launch, and upkeep of business websites, and nothing outside of that.',
@@ -52,6 +57,10 @@ const copy = {
     detailsLabel: 'Detalle de los servicios',
     canInclude: 'Puede incluir',
     hostingType: 'Configuración de dominio, hosting y SSL',
+    pricingEyebrow: 'Precios',
+    pricingTitle: 'Precios de inicio, publicados desde el principio.',
+    pricingCopy: 'Muchos estudios le piden una cotización antes de darle una cifra. Aquí está desde dónde empiezan los proyectos, para que lo sepa antes de la primera llamada.',
+    pricingTattoo: 'Páginas para tatuadores y estudios',
     scopeEyebrow: 'En qué nos enfocamos',
     scopeTitle: 'Pocos servicios, a propósito.',
     scopeCopy: 'Falls City Dev Studio trabaja en el diseño, el desarrollo, la publicación y el cuidado de páginas web de negocios, y en nada fuera de eso.',
@@ -110,7 +119,15 @@ const breadcrumbs = [
     </div>
   </section>
 
-  <section class="section" aria-labelledby="scope-heading">
+  <section class="section" id="pricing" aria-labelledby="pricing-heading">
+    <div class="container">
+      <SectionHeading id="pricing-heading" eyebrow={copy.pricingEyebrow} title={copy.pricingTitle} copy={copy.pricingCopy} />
+      <PricingTiers />
+      <a class="text-link" href={lp('/tattoo/')}>{copy.pricingTattoo}</a>
+    </div>
+  </section>
+
+  <section class="section section--bright" aria-labelledby="scope-heading">
     <div class="container">
       <SectionHeading id="scope-heading" eyebrow={copy.scopeEyebrow} title={copy.scopeTitle} copy={copy.scopeCopy} />
       <div class="scope-grid">
@@ -126,7 +143,7 @@ const breadcrumbs = [
     </div>
   </section>
 
-  <section class="section section--bright" aria-labelledby="service-faq-heading">
+  <section class="section" aria-labelledby="service-faq-heading">
     <div class="container faq-layout">
       <div class="faq-layout__intro">
         <p class="eyebrow">{copy.faqEyebrow}</p>

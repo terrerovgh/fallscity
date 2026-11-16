@@ -1,0 +1,28 @@
+---
+import { pricing, pricingNote, type Tier } from '../data/pricing';
+import { langFromPath } from '../i18n';
+
+interface Props {
+  /** Which tiers to show, in order. Defaults to all. */
+  only?: Tier['id'][];
+}
+
+const lang = langFromPath(Astro.url.pathname);
+const { only } = Astro.props;
+const tiers = only ? only.map((id) => pricing[lang].find((tier) => tier.id === id)!) : pricing[lang];
+---
+
+<div class="pricing">
+  <div class="service-grid pricing__grid">
+    {tiers.map((tier) => (
+      <article class="service-card service-card--plain pricing__tier">
+        <h3>{tier.name}</h3>
+        <p>{tier.audience}</p>
+        <p class="pricing__price">{tier.price}</p>
+        <p class="pricing__note">{tier.priceNote}</p>
+        <ul class="check-list">{tier.includes.map((item) => <li>{item}</li>)}</ul>
+      </article>
+    ))}
+  </div>
+  <p class="pricing__footnote">{pricingNote[lang]}</p>
+</div>

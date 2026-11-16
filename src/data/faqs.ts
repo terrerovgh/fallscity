@@ -76,7 +76,7 @@ export const faqs: Record<Lang, Record<FaqKey, Faq>> = {
     cost: {
       question: 'How much does a small business website cost?',
       answer:
-        'It depends on the scope: how many pages the site needs, features such as inquiry forms or booking links, how much content has to be prepared, and whether you want ongoing maintenance. After a first conversation, the scope is written up as a proposal with agreed deliverables, so the work is defined before it starts.',
+        'It depends on the scope. Sites for independent artists start at $650, studios and salons with several artists start at $1,400, and the first five Louisville barbershops and salons can join as founding partners at $350 plus $59 a month. After a first conversation, the scope is written up as a proposal with agreed deliverables and a fixed price, so the work is defined before it starts. Kentucky sales tax is added where it applies.',
     },
     redesign: {
       question: 'Can you redesign the website I already have?',
@@ -143,7 +143,7 @@ export const faqs: Record<Lang, Record<FaqKey, Faq>> = {
     cost: {
       question: '¿Cuánto cuesta una página web para un pequeño negocio?',
       answer:
-        'Depende del alcance: cuántas páginas necesita, funciones como formularios de contacto o enlaces de reservas, cuánto contenido hay que preparar y si quiere mantenimiento. Después de una primera conversación, el alcance se escribe en una propuesta con entregables acordados, para que el trabajo quede definido antes de empezar.',
+        'Depende del alcance. Las páginas para artistas independientes empiezan en $650, las de estudios y salones con varios artistas en $1,400, y los primeros cinco barberías y salones de Louisville pueden entrar como socios fundadores por $350 más $59 al mes. Después de una primera conversación, el alcance se escribe en una propuesta con entregables acordados y un precio fijo, para que el trabajo quede definido antes de empezar. Se añade el impuesto de ventas de Kentucky cuando aplica.',
     },
     redesign: {
       question: '¿Pueden rediseñar la página que ya tengo?',

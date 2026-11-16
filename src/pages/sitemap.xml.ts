@@ -15,6 +15,7 @@ const order = [
   '/services/web-design/',
   '/services/seo-foundations/',
   '/services/website-maintenance/',
+  '/tattoo/',
   '/process/',
   '/about/',
   '/contact/',

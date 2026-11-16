@@ -31,6 +31,7 @@ import LouisvilleSkyline from './LouisvilleSkyline.astro';
         <h2 class="site-footer__heading">{t.footerServices}</h2>
         <div class="site-footer__links">
           {services[lang].map((service) => <a href={lp(service.href)}>{service.shortTitle}</a>)}
+          <a href={lp('/tattoo/')}>{t.footerTattoo}</a>
         </div>
       </div>
       <div>
