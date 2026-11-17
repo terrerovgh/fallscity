@@ -2,19 +2,24 @@
 // Axe (light + dark), page switcher by mouse and keyboard, horizontal overflow, reduced motion.
 import { chromium } from 'playwright';
 import { AxeBuilder } from '@axe-core/playwright';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 
 // Without a base URL, serve the build with astro preview (or reuse the one already running:
 // Astro allows a single preview server per project and reports its URL).
 let server;
+let startedPreview = false;
 let base = process.argv[2];
 if (!base) {
   const astro = new URL('../node_modules/.bin/astro', import.meta.url).pathname;
   server = spawn(astro, ['preview', '--port', '4399'], { stdio: ['ignore', 'pipe', 'pipe'] });
   base = await new Promise((resolve, reject) => {
     const onData = (d) => {
-      const m = String(d).match(/http:\/\/localhost:\d+/);
-      if (m) resolve(m[0]);
+      const text = String(d);
+      const m = text.match(/http:\/\/localhost:\d+/);
+      if (m) {
+        startedPreview = !/already running/.test(text);
+        resolve(m[0]);
+      }
     };
     server.stdout.on('data', onData);
     server.stderr.on('data', onData);
@@ -103,5 +108,9 @@ for (const width of [320, 390, 768, 1024, 1440]) {
 
 await browser.close();
 server?.kill();
+if (startedPreview) {
+  // Astro 7 keeps preview running in the background; stop the one this run started.
+  spawnSync(new URL('../node_modules/.bin/astro', import.meta.url).pathname, ['preview', 'stop'], { stdio: 'ignore' });
+}
 console.log(failures ? `\n${failures} check(s) failed` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

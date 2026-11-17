@@ -1,0 +1,23 @@
+---
+import { benefits, ui, type Lang } from '../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<section class="section" id="benefits" aria-labelledby="benefits-title">
+  <div class="wrap">
+    <header class="section-head">
+      <h2 id="benefits-title">{ui.benefits.title[lang]}</h2>
+      <p>{ui.benefits.lead[lang]}</p>
+    </header>
+    <ul class="points">
+      {
+        benefits.map((b) => (
+          <li class="reveal">
+            <h3>{b.title[lang]}</h3>
+            <p>{b.body[lang]}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

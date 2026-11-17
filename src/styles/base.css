@@ -606,13 +606,20 @@ a {
   }
 }
 
-/* ---------- Process ---------- */
-.steps {
+/* ---------- Benefits & process ---------- */
+.points {
   display: grid;
   gap: 1rem;
   padding: 0;
   list-style: none;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  row-gap: 2.5rem;
+  column-gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
+  @media (width >= 40rem) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (width >= 62rem) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 
   & li {
     padding-top: 1.5rem;

@@ -1,5 +1,6 @@
 // Single source of content for the site. Every visible string is { en, es }.
-// Rule: describe only what exists. No invented clients, numbers, reviews or prices.
+// Rules: sell benefits (what the owner gains), never "who it's for".
+// Describe only what exists: no invented clients, numbers, reviews or prices.
 // Voice: first person singular ("I build"), talking to the owner ("you", "tú").
 import type { ImageMetadata } from 'astro';
 
@@ -30,30 +31,48 @@ export function shot(site: string, page: string, device: 'desktop' | 'mobile'): 
   return mod.default;
 }
 
-// ---- Who it's for --------------------------------------------------------
-export const niches: { id: string; title: L; body: L }[] = [
+// ---- Benefits ------------------------------------------------------------
+export const benefits: { title: L; body: L }[] = [
   {
-    id: 'tattoo',
-    title: { en: 'Tattoo artists and studios', es: 'Tatuadores y estudios de tatuaje' },
+    title: { en: 'Clients find you first', es: 'Los clientes te encuentran primero' },
     body: {
-      en: 'Your portfolio sorted by style, and a booking form that asks for placement, size and idea, so you get real requests instead of “how much for a tattoo?”. Flash, aftercare and deposit details in one place.',
-      es: 'Tu portafolio ordenado por estilo y un formulario de reserva que pide zona, tamaño e idea, para que recibas solicitudes reales y no “¿cuánto cuesta un tatuaje?”. Flash, cuidados y depósitos en un solo lugar.',
+      en: 'Pages built for what people search on Google, fast and easy to read, so you show up when someone near you needs what you offer.',
+      es: 'Páginas hechas para lo que la gente busca en Google, rápidas y fáciles de leer, para que aparezcas cuando alguien cerca necesita lo que ofreces.',
     },
   },
   {
-    id: 'barber',
-    title: { en: 'Barbershops', es: 'Barberías' },
+    title: { en: 'More visits become clients', es: 'Más visitas se convierten en clientes' },
     body: {
-      en: 'Services and prices clear at a glance, your barbers and their cuts, and a “Book now” button connected to the app you already use. Hours, address and directions for people searching nearby.',
-      es: 'Servicios y precios claros de un vistazo, tus barberos y sus cortes, y un botón de “Reservar” conectado a la app que ya usas. Horario, dirección y cómo llegar para quien te busca cerca.',
+      en: 'Your work shown at its best and a clear path to book, call or ask for a quote. Nobody gets lost on the way to hiring you.',
+      es: 'Tu trabajo mostrado en su mejor versión y un camino claro para reservar, llamar o pedir cotización. Nadie se pierde en el camino a contratarte.',
     },
   },
   {
-    id: 'salon',
-    title: { en: 'Hair, beauty and nail salons', es: 'Salones de belleza, peluquerías y uñas' },
+    title: { en: 'A brand that earns trust', es: 'Una marca que inspira confianza' },
     body: {
-      en: 'Your service menu, a gallery of recent work you can update from your phone, and booking in one tap. Pages written to show up when someone searches for a salon in your area.',
-      es: 'Tu menú de servicios, una galería de trabajos recientes que actualizas desde el teléfono y reservas en un toque. Páginas escritas para aparecer cuando alguien busca un salón en tu zona.',
+      en: 'Your own domain, a professional design and a secure connection tell clients you take your business seriously before you say a word.',
+      es: 'Tu propio dominio, un diseño profesional y una conexión segura le dicen al cliente que tomas tu negocio en serio antes de que digas una palabra.',
+    },
+  },
+  {
+    title: { en: 'Hours back every week', es: 'Horas libres cada semana' },
+    body: {
+      en: 'Quotes, reminders, follow-ups and invoices go out on their own. Less time answering the same questions, more time for the work you get paid for.',
+      es: 'Cotizaciones, recordatorios, seguimientos y facturas salen solos. Menos tiempo respondiendo lo mismo, más tiempo para el trabajo que te pagan.',
+    },
+  },
+  {
+    title: { en: 'You stay in control', es: 'Tú tienes el control' },
+    body: {
+      en: 'Change photos, prices and news yourself from a simple panel. Your domain and your content stay in your name.',
+      es: 'Cambia fotos, precios y novedades tú mismo desde un panel sencillo. Tu dominio y tu contenido quedan a tu nombre.',
+    },
+  },
+  {
+    title: { en: 'One person responsible for everything', es: 'Una sola persona responsable de todo' },
+    body: {
+      en: 'Design, hosting, security and updates in the same hands. No agency, no middlemen, no passing your problem from one person to the next.',
+      es: 'Diseño, hosting, seguridad y actualizaciones en las mismas manos. Sin agencia, sin intermediarios, sin que tu problema pase de una persona a otra.',
     },
   },
 ];
@@ -82,8 +101,8 @@ export const projects: Project[] = [
     url: 'https://goodnina.com/',
     kind: { en: 'Fine line tattoo artist · Albuquerque, NM', es: 'Tatuadora de línea fina · Albuquerque, NM' },
     summary: {
-      en: 'A bilingual portfolio with her work filtered by style and a direct path to booking. Nina changes her gallery, texts and announcements herself from a private panel, without calling anyone.',
-      es: 'Un portafolio bilingüe con su trabajo filtrado por estilo y un camino directo para reservar. Nina cambia su galería, textos y anuncios ella misma desde un panel privado, sin llamar a nadie.',
+      en: 'Her work organized by style, booking requests through her own domain instead of DMs, and a private panel where she updates her gallery and announcements herself.',
+      es: 'Su trabajo ordenado por estilo, solicitudes de reserva desde su propio dominio en vez de mensajes directos, y un panel privado donde ella misma actualiza su galería y anuncios.',
     },
     pages: [
       { id: 'home', label: { en: 'Home', es: 'Inicio' } },
@@ -98,8 +117,8 @@ export const projects: Project[] = [
     url: 'https://tonypixeltattoo.com/',
     kind: { en: 'Realism tattoo artist · Montevideo, Uruguay', es: 'Tatuador de realismo · Montevideo, Uruguay' },
     summary: {
-      en: 'The site of Antonio “Tony” Otero at Tempel Tattoo Studio: a portfolio filtered by style, a page for each specialty, and a booking form that opens WhatsApp with the request already written.',
-      es: 'La web de Antonio «Tony» Otero en Tempel Tattoo Studio: portafolio filtrado por estilo, una página por especialidad y un formulario de turnos que abre WhatsApp con la consulta ya escrita.',
+      en: 'A portfolio that sells his realism work, a page for each specialty to be found on Google, and a booking form that sends him a complete request by WhatsApp.',
+      es: 'Un portafolio que vende su trabajo de realismo, una página por especialidad para aparecer en Google y un formulario de turnos que le envía la consulta completa por WhatsApp.',
     },
     pages: [
       { id: 'home', label: { en: 'Home', es: 'Inicio' } },
@@ -114,8 +133,8 @@ export const projects: Project[] = [
     url: 'https://leeyrealty.com/',
     kind: { en: 'Realtor, Lock & Key Realty · South Georgia', es: 'Agente inmobiliaria, Lock & Key Realty · Sur de Georgia' },
     summary: {
-      en: 'A bilingual realtor site whose listings refresh from her inventory, with a page for each town she serves and a blog that brings in search traffic.',
-      es: 'Una web inmobiliaria bilingüe cuyas propiedades se actualizan desde su inventario, con una página por cada ciudad donde trabaja y un blog que atrae visitas desde los buscadores.',
+      en: 'Listings that update themselves from her inventory, a page for every town she serves, and a blog that brings in visitors from search, in English and Spanish.',
+      es: 'Propiedades que se actualizan solas desde su inventario, una página por cada ciudad donde trabaja y un blog que atrae visitas desde los buscadores, en español e inglés.',
     },
     pages: [
       { id: 'home', label: { en: 'Home', es: 'Inicio' } },
@@ -130,8 +149,8 @@ export const projects: Project[] = [
     url: 'https://durafencemetal.com/',
     kind: { en: 'Metal fence company · South Georgia', es: 'Cercas metálicas · Sur de Georgia' },
     summary: {
-      en: 'Fences, gates and parts with an online estimator that itemizes materials and draws the fence, a quote request form, and a private invoicing tool for the owner.',
-      es: 'Cercas, portones y piezas con un estimador en línea que desglosa materiales y dibuja la cerca, un formulario de cotización y una herramienta privada de facturación para el dueño.',
+      en: 'Clients price their own fence with an online estimator and request a quote from the site, and the business invoices from its own private tool.',
+      es: 'Los clientes calculan el precio de su cerca con un estimador en línea y piden cotización desde la web, y el negocio factura desde su propia herramienta privada.',
     },
     pages: [
       { id: 'home', label: { en: 'Home', es: 'Inicio' } },
@@ -144,8 +163,6 @@ export const projects: Project[] = [
 // ---- Services ------------------------------------------------------------
 export interface Service {
   id: string;
-  /** Short name, used in structured data. */
-  name: L;
   title: L;
   body: L;
   /** Screenshot that shows the service in a real project. */
@@ -155,63 +172,57 @@ export interface Service {
 export const services: Service[] = [
   {
     id: 'design',
-    name: { en: 'Custom web design', es: 'Diseño web a medida' },
-    title: { en: 'A website that sells your work', es: 'Una web que vende tu trabajo' },
+    title: { en: 'Custom web design', es: 'Diseño web a medida' },
     body: {
-      en: 'Designed around your style, your services and the way your clients book. It loads fast on any phone and speaks to your clients in English, Spanish or both.',
-      es: 'Diseñada alrededor de tu estilo, tus servicios y la forma en que tus clientes reservan. Carga rápido en cualquier teléfono y les habla a tus clientes en inglés, español o ambos.',
+      en: 'A site designed around your brand and your work, fast on any phone, in English, Spanish or both. Clients see the quality of what you do before they ever contact you.',
+      es: 'Una web diseñada alrededor de tu marca y tu trabajo, rápida en cualquier teléfono, en español, inglés o ambos. El cliente ve la calidad de lo que haces antes de contactarte.',
     },
     example: { site: 'nina', page: 'gallery', caption: { en: 'goodnina.com: gallery filtered by style', es: 'goodnina.com: galería filtrada por estilo' } },
   },
   {
     id: 'seo',
-    name: { en: 'Local SEO', es: 'SEO local' },
-    title: { en: 'Local SEO: be the one they find', es: 'SEO local: que te encuentren a ti' },
+    title: { en: 'SEO', es: 'SEO' },
     body: {
-      en: 'Pages written for what people really search, like “fine line tattoo in Albuquerque” or “barbershop near me”, a page for each area you serve, and a site Google can read without effort.',
-      es: 'Páginas escritas para lo que la gente busca de verdad, como “tatuaje de línea fina en Albuquerque” o “barbería cerca de mí”, una página por cada zona que atiendes y una web que Google lee sin esfuerzo.',
+      en: 'Text, structure and speed tuned for Google, with a page for each service and area you cover. You show up when people search for what you offer, without paying for every click.',
+      es: 'Textos, estructura y velocidad pensados para Google, con una página por cada servicio y zona que atiendes. Apareces cuando buscan lo que ofreces, sin pagar por cada clic.',
     },
-    example: { site: 'leey', page: 'area', caption: { en: 'leeyrealty.com: one page for each town she serves', es: 'leeyrealty.com: una página por cada ciudad donde trabaja' } },
+    example: { site: 'leey', page: 'area', caption: { en: 'leeyrealty.com: a page for each town she serves', es: 'leeyrealty.com: una página por cada ciudad donde trabaja' } },
   },
   {
     id: 'content',
-    name: { en: 'Content management and automatic updates', es: 'Gestión de contenido y actualización automática' },
-    title: { en: 'Update it yourself, or let it update itself', es: 'Actualízala tú, o deja que se actualice sola' },
+    title: { en: 'Content that stays current', es: 'Contenido siempre al día' },
     body: {
-      en: 'A simple private panel to change photos, prices and announcements without a developer. Or automatic updates from the tools you already use, like a listings feed or a product catalog.',
-      es: 'Un panel privado y sencillo para cambiar fotos, precios y anuncios sin depender de un programador. O actualizaciones automáticas desde las herramientas que ya usas, como un inventario o un catálogo.',
+      en: 'A private panel to change photos, prices and news in minutes, or automatic updates from your inventory or catalog. Your site never looks abandoned, and you never wait on anyone.',
+      es: 'Un panel privado para cambiar fotos, precios y novedades en minutos, o actualizaciones automáticas desde tu inventario o catálogo. Tu web nunca se ve abandonada y no esperas por nadie.',
     },
-    example: { site: 'leey', page: 'properties', caption: { en: 'leeyrealty.com: listings that refresh from her inventory', es: 'leeyrealty.com: propiedades que se actualizan desde su inventario' } },
+    example: { site: 'leey', page: 'properties', caption: { en: 'leeyrealty.com: listings that update from her inventory', es: 'leeyrealty.com: propiedades que se actualizan desde su inventario' } },
   },
   {
     id: 'hosting',
-    name: { en: 'Domain, SSL and hosting', es: 'Dominio, SSL y hosting' },
-    title: { en: 'Domain, SSL and hosting, handled', es: 'Dominio, SSL y hosting, resueltos' },
+    title: { en: 'Domain, SSL and hosting', es: 'Dominio, SSL y hosting' },
     body: {
-      en: 'Your own .com, the secure padlock in the browser, and fast, reliable hosting. The domain is registered in your name, so your address online is always yours.',
-      es: 'Tu propio .com, el candado de conexión segura en el navegador y un hosting rápido y estable. El dominio queda a tu nombre: tu dirección en internet siempre es tuya.',
+      en: 'Your own .com, the secure padlock in the browser, and fast, reliable hosting, set up and watched over. Your domain stays in your name, always.',
+      es: 'Tu propio .com, el candado de conexión segura en el navegador y un hosting rápido y estable, configurados y vigilados. Tu dominio queda a tu nombre, siempre.',
     },
     example: { site: 'dura', page: 'home', caption: { en: 'durafencemetal.com', es: 'durafencemetal.com' } },
   },
   {
     id: 'automation',
-    name: { en: 'Business automation', es: 'Automatización de negocios' },
-    title: { en: 'Automations that give you hours back', es: 'Automatizaciones que te devuelven horas' },
+    title: { en: 'Automations and business solutions', es: 'Automatizaciones y soluciones para tu negocio' },
     body: {
-      en: 'Estimates, quotes, invoices and the repetitive steps between them happen on their own, so your time goes to clients, not paperwork.',
-      es: 'Estimados, cotizaciones, facturas y los pasos repetitivos entre ellos ocurren solos, para que tu tiempo sea para tus clientes y no para el papeleo.',
+      en: 'Estimators, quotes, invoices and the repetitive steps between them, built into your site. Fewer hours on paperwork and fewer mistakes from copying data by hand.',
+      es: 'Estimadores, cotizaciones, facturas y los pasos repetitivos entre ellos, integrados en tu web. Menos horas de papeleo y menos errores al copiar datos a mano.',
     },
     example: { site: 'dura', page: 'estimate', caption: { en: 'durafencemetal.com: online cost estimator', es: 'durafencemetal.com: estimador de costos en línea' } },
   },
   {
     id: 'clients',
-    name: { en: 'Client management and follow-up', es: 'Gestión y seguimiento de clientes' },
-    title: { en: 'Every client, organized', es: 'Cada cliente, en orden' },
+    title: { en: 'Client management and follow-up', es: 'Gestión y seguimiento de clientes' },
     body: {
-      en: 'Inquiries arrive complete: who they are, what they want and how to reach them. Follow each client from the first message to the next visit, instead of losing them in scattered chats.',
-      es: 'Las consultas llegan completas: quién es, qué quiere y cómo contactarle. Sigue a cada cliente desde el primer mensaje hasta la próxima visita, en vez de perderlo entre chats sueltos.',
+      en: 'Every inquiry arrives complete: who they are, what they want and how to reach them. Each client is followed from the first message to the next visit, so no opportunity gets lost in a chat.',
+      es: 'Cada consulta llega completa: quién es, qué quiere y cómo contactarle. Cada cliente se sigue desde el primer mensaje hasta la próxima visita, para que ninguna oportunidad se pierda en un chat.',
     },
-    example: { site: 'tony', page: 'book', caption: { en: 'tonypixeltattoo.com: booking form that opens WhatsApp', es: 'tonypixeltattoo.com: formulario de turnos que abre WhatsApp' } },
+    example: { site: 'tony', page: 'book', caption: { en: 'tonypixeltattoo.com: booking form that sends the request by WhatsApp', es: 'tonypixeltattoo.com: formulario de turnos que envía la consulta por WhatsApp' } },
   },
 ];
 
@@ -219,29 +230,26 @@ export const services: Service[] = [
 export const tools: Service[] = [
   {
     id: 'messaging',
-    name: { en: 'Automated client messaging', es: 'Mensajería automática con clientes' },
-    title: { en: 'Automatic messages', es: 'Mensajes automáticos' },
+    title: { en: 'Automatic messaging', es: 'Mensajería automática' },
     body: {
-      en: 'Confirmations, reminders and follow-ups by email, text or WhatsApp, sent at the right moment without you typing them.',
-      es: 'Confirmaciones, recordatorios y seguimientos por correo, SMS o WhatsApp, enviados en el momento justo sin que los escribas tú.',
+      en: 'Confirmations, reminders and follow-ups by email, text or WhatsApp, sent at the right moment without you typing them. Fewer missed appointments, more clients who come back.',
+      es: 'Confirmaciones, recordatorios y seguimientos por correo, SMS o WhatsApp, enviados en el momento justo sin que los escribas. Menos citas perdidas, más clientes que vuelven.',
     },
   },
   {
     id: 'control',
-    name: { en: 'Internal business tools', es: 'Herramientas de control interno' },
     title: { en: 'Internal control', es: 'Control interno' },
     body: {
-      en: 'Appointments, jobs, payments and records in one private place, for you and your team only.',
-      es: 'Citas, trabajos, pagos y registros en un solo lugar privado, solo para ti y tu equipo.',
+      en: 'Appointments, jobs, payments and records in one private place for you and your team. Know where your business stands at a glance.',
+      es: 'Citas, trabajos, pagos y registros en un solo lugar privado para ti y tu equipo. Sabes cómo va tu negocio de un vistazo.',
     },
   },
   {
     id: 'care',
-    name: { en: 'Website maintenance', es: 'Mantenimiento web' },
-    title: { en: 'Ongoing care', es: 'Mantenimiento continuo' },
+    title: { en: 'Maintenance', es: 'Mantenimiento' },
     body: {
-      en: 'Updates, backups, security and quick changes when you need them. Your site keeps working while you do.',
-      es: 'Actualizaciones, copias de seguridad, seguridad y cambios rápidos cuando los necesites. Tu web sigue trabajando mientras tú trabajas.',
+      en: 'Updates, backups, security and quick changes whenever you need them. Your site stays fast, safe and current while you focus on your work.',
+      es: 'Actualizaciones, copias de seguridad, seguridad y cambios rápidos cuando los necesites. Tu web sigue rápida, segura y al día mientras tú te enfocas en tu trabajo.',
     },
   },
 ];
@@ -249,24 +257,24 @@ export const tools: Service[] = [
 // ---- Process -------------------------------------------------------------
 export const steps: { title: L; body: L }[] = [
   {
-    title: { en: 'Tell me about your business', es: 'Cuéntame de tu negocio' },
+    title: { en: 'We talk', es: 'Conversamos' },
     body: {
-      en: 'Write me what you do, where you are and what you need. We talk it through and agree on the services and the price before any work starts.',
-      es: 'Escríbeme qué haces, dónde estás y qué necesitas. Lo conversamos y acordamos los servicios y el precio antes de empezar.',
+      en: 'You tell me about your business and your goals. I propose what will help you most, and we agree on scope and price before any work starts.',
+      es: 'Me cuentas de tu negocio y tus metas. Te propongo lo que más te va a ayudar y acordamos alcance y precio antes de empezar.',
     },
   },
   {
     title: { en: 'I design and build it', es: 'La diseño y la construyo' },
     body: {
-      en: 'With your photos, your services and your brand. You see the site and ask for changes before anything is published.',
-      es: 'Con tus fotos, tus servicios y tu marca. Ves la web y pides cambios antes de que se publique nada.',
+      en: 'With your photos, your services and your brand. You review everything and ask for changes before anything is published.',
+      es: 'Con tus fotos, tus servicios y tu marca. Revisas todo y pides cambios antes de que se publique nada.',
     },
   },
   {
-    title: { en: 'We launch, and I stay with you', es: 'La publicamos, y sigo contigo' },
+    title: { en: 'Launch and ongoing care', es: 'Publicación y cuidado continuo' },
     body: {
-      en: 'I take care of the domain, hosting and launch. Then I keep your site running, up to date and growing with your business.',
-      es: 'Me encargo del dominio, el hosting y la publicación. Después mantengo tu web funcionando, al día y creciendo con tu negocio.',
+      en: 'I handle the domain, hosting and launch, then keep your site running and improving as your business grows.',
+      es: 'Me encargo del dominio, el hosting y la publicación, y después mantengo tu web funcionando y mejorando a medida que crece tu negocio.',
     },
   },
 ];
@@ -276,39 +284,29 @@ export const faqs: { q: L; a: L }[] = [
   {
     q: { en: 'How much does a website cost?', es: '¿Cuánto cuesta una web?' },
     a: {
-      en: 'It depends on what your business needs: a portfolio is not the same as a site with booking, a private panel and automations. After a short conversation you get a written quote for exactly what we agreed on.',
-      es: 'Depende de lo que necesite tu negocio: un portafolio no es lo mismo que una web con reservas, panel privado y automatizaciones. Después de una conversación corta recibes una cotización por escrito con exactamente lo que acordamos.',
+      en: 'It depends on what will help your business most: a showcase site is not the same as one with bookings, a private panel and automations. After a short conversation you get a written quote for exactly what we agreed on.',
+      es: 'Depende de lo que más ayude a tu negocio: una web de presentación no es lo mismo que una con reservas, panel privado y automatizaciones. Después de una conversación corta recibes una cotización por escrito con exactamente lo que acordamos.',
     },
   },
   {
-    q: {
-      en: 'Can I keep using Booksy, Square, Vagaro or my current booking app?',
-      es: '¿Puedo seguir usando Booksy, Square, Vagaro o mi app de reservas actual?',
-    },
+    q: { en: 'Can I keep the tools I already use?', es: '¿Puedo seguir usando las herramientas que ya tengo?' },
     a: {
-      en: 'Yes. Your site can send clients straight to the booking app you already use, or I can build a booking request form made for your business.',
-      es: 'Sí. Tu web puede llevar a tus clientes directo a la app de reservas que ya usas, o puedo crear un formulario de solicitud de cita hecho para tu negocio.',
+      en: 'Yes. Your site can connect to the booking app, payment system or messaging you already use, or I can build a tool made for the way you work.',
+      es: 'Sí. Tu web puede conectarse a la app de reservas, el sistema de pagos o la mensajería que ya usas, o puedo crear una herramienta hecha para tu forma de trabajar.',
     },
   },
   {
     q: { en: 'Can I update the site myself?', es: '¿Puedo actualizar la web yo mismo?' },
     a: {
-      en: 'Yes, if you want to. Nina Romero, a tattoo artist in Albuquerque, changes her gallery, texts and announcements from a private panel, without calling anyone.',
-      es: 'Sí, si quieres. Nina Romero, tatuadora en Albuquerque, cambia su galería, textos y anuncios desde un panel privado, sin llamar a nadie.',
-    },
-  },
-  {
-    q: { en: 'Do you work with businesses outside Louisville?', es: '¿Trabajas con negocios fuera de Louisville?' },
-    a: {
-      en: 'Yes. I’m based in Louisville, Kentucky, and work remotely with businesses anywhere in the United States, in English or Spanish.',
-      es: 'Sí. Estoy en Louisville, Kentucky, y trabajo a distancia con negocios de cualquier parte de Estados Unidos, en inglés o en español.',
+      en: 'Yes, if you want to. Nina Romero changes her gallery, texts and announcements from a private panel without calling anyone.',
+      es: 'Sí, si quieres. Nina Romero cambia su galería, textos y anuncios desde un panel privado sin llamar a nadie.',
     },
   },
   {
     q: { en: 'What do I need to get started?', es: '¿Qué necesito para empezar?' },
     a: {
-      en: 'Your logo if you have one, photos of your work, your list of services and your Instagram or Google Maps link. If something is missing, we sort it out together.',
-      es: 'Tu logo si lo tienes, fotos de tu trabajo, tu lista de servicios y tu enlace de Instagram o Google Maps. Si falta algo, lo resolvemos juntos.',
+      en: 'Your logo if you have one, photos of your work, your list of services and your social media or Google Maps link. If something is missing, we sort it out together.',
+      es: 'Tu logo si lo tienes, fotos de tu trabajo, tu lista de servicios y tu enlace de redes sociales o Google Maps. Si falta algo, lo resolvemos juntos.',
     },
   },
   {
@@ -324,16 +322,16 @@ export const faqs: { q: L; a: L }[] = [
 export const ui = {
   meta: {
     title: {
-      en: 'Websites for Tattoo Artists, Barbers & Salons | Falls City',
-      es: 'Webs para tatuadores, barberías y salones | Falls City',
+      en: 'Web Design, SEO & Business Automation | Falls City Dev Studio',
+      es: 'Diseño web, SEO y automatización | Falls City Dev Studio',
     },
     description: {
-      en: 'Websites for tattoo artists, barbershops and salons: portfolio, online booking, local SEO and automations. English & Spanish, from Louisville, KY.',
-      es: 'Webs para tatuadores, barberías y salones de belleza: portafolio, reservas, SEO local y automatizaciones. En español e inglés, desde Louisville, KY.',
+      en: 'Websites that bring you clients and save you time: custom design, SEO, hosting, automations and client management, in English and Spanish.',
+      es: 'Webs que te traen clientes y te ahorran tiempo: diseño a medida, SEO, hosting, automatizaciones y gestión de clientes, en español e inglés.',
     },
     ogAlt: {
-      en: 'Falls City Dev Studio: websites for tattoo artists, barbershops and salons, shown on three phones',
-      es: 'Falls City Dev Studio: webs para tatuadores, barberías y salones, en tres teléfonos',
+      en: 'Falls City Dev Studio: client websites shown on three phones',
+      es: 'Falls City Dev Studio: webs de clientes en tres teléfonos',
     },
   },
   skip: { en: 'Skip to content', es: 'Saltar al contenido' },
@@ -347,32 +345,32 @@ export const ui = {
   },
   hero: {
     title: {
-      en: 'Websites for tattoo artists, barbershops and beauty salons',
-      es: 'Webs para tatuadores, barberías y salones de belleza',
+      en: 'A website that wins you clients and gives you your time back',
+      es: 'Una web que te consigue clientes y te devuelve tu tiempo',
     },
     lead: {
-      en: 'Show your best work, get found on Google and take bookings directly, without living in your DMs. Designed and built for your business, in English and Spanish.',
-      es: 'Muestra tu mejor trabajo, aparece en Google y recibe reservas directas, sin vivir pegado a los mensajes de Instagram. Diseñada y construida para tu negocio, en español e inglés.',
+      en: 'Designed for your brand, fast on any phone, and connected to tools that handle bookings, follow-ups, quotes and messages for you. Built, launched and cared for by one person you can always reach.',
+      es: 'Diseñada para tu marca, rápida en cualquier teléfono y conectada a herramientas que se encargan de reservas, seguimientos, cotizaciones y mensajes por ti. La construye, publica y cuida una sola persona a la que siempre puedes contactar.',
     },
     cta: { en: 'Get a quote', es: 'Pedir cotización' },
     secondary: { en: 'See live sites', es: 'Ver webs publicadas' },
     where: {
-      en: 'Louisville, KY · Clients across the US · English & Español',
-      es: 'Louisville, KY · Clientes en todo EE. UU. · Español & English',
+      en: 'Louisville, KY · English & Español',
+      es: 'Louisville, KY · Español & English',
     },
   },
-  niches: {
-    title: { en: 'Built around how your business works', es: 'Hecha según cómo funciona tu negocio' },
+  benefits: {
+    title: { en: 'What changes when your website works for you', es: 'Lo que cambia cuando tu web trabaja para ti' },
     lead: {
-      en: 'A tattoo studio, a barbershop and a salon don’t win clients the same way. Your website shouldn’t work the same either.',
-      es: 'Un estudio de tatuajes, una barbería y un salón no consiguen clientes de la misma forma. Tu web tampoco debería funcionar igual.',
+      en: 'A good website is not an expense. It is the employee that never closes.',
+      es: 'Una buena web no es un gasto. Es el empleado que nunca cierra.',
     },
   },
   work: {
-    title: { en: 'Sites already working for real businesses', es: 'Webs que ya trabajan para negocios reales' },
+    title: { en: 'Real sites, working today', es: 'Webs reales, funcionando hoy' },
     lead: {
-      en: 'Switch pages and see each one on a computer and on a phone, the way your clients will.',
-      es: 'Cambia de página y mira cada una en una computadora y en un teléfono, como la verán tus clientes.',
+      en: 'Each one designed for its business. Switch pages to see them on a computer and on a phone.',
+      es: 'Cada una diseñada para su negocio. Cambia de página para verlas en una computadora y en un teléfono.',
     },
     pageLegend: { en: 'Page shown', es: 'Página mostrada' },
     visit: { en: 'Visit', es: 'Visitar' },
@@ -381,39 +379,39 @@ export const ui = {
     mobileAlt: { en: 'on a phone', es: 'en un teléfono' },
   },
   services: {
-    title: { en: 'What I can do for your business', es: 'Lo que puedo hacer por tu negocio' },
+    title: { en: 'Everything your business needs online', es: 'Todo lo que tu negocio necesita en internet' },
     lead: {
-      en: 'Pick what you need today and add more as you grow. Every service is quoted for your business; there are no fixed packages.',
-      es: 'Elige lo que necesitas hoy y suma más a medida que creces. Cada servicio se cotiza para tu negocio; no hay paquetes fijos.',
+      en: 'Start with what you need today and add more as you grow. Each service is quoted for your business.',
+      es: 'Empieza con lo que necesitas hoy y suma más a medida que creces. Cada servicio se cotiza para tu negocio.',
     },
-    toolsTitle: { en: 'Behind the scenes', es: 'Detrás de escena' },
+    toolsTitle: { en: 'Working behind the scenes', es: 'Trabajando detrás de escena' },
   },
   process: {
-    title: { en: 'From first message to launch', es: 'Del primer mensaje a la publicación' },
+    title: { en: 'Simple from start to launch', es: 'Simple de principio a fin' },
   },
   faq: {
-    title: { en: 'Questions business owners ask', es: 'Preguntas que hacen los dueños de negocios' },
+    title: { en: 'Frequently asked questions', es: 'Preguntas frecuentes' },
   },
   contact: {
-    title: { en: 'Let’s talk about your website.', es: 'Hablemos de tu web.' },
+    title: { en: 'Let’s make your website work for you.', es: 'Hagamos que tu web trabaje para ti.' },
     lead: {
-      en: 'Send me your business name, city and what you need. I’ll reply personally with ideas and next steps.',
-      es: 'Envíame el nombre de tu negocio, tu ciudad y lo que necesitas. Te respondo personalmente con ideas y los próximos pasos.',
+      en: 'Tell me about your business and what you need. I’ll reply personally with ideas and a quote.',
+      es: 'Cuéntame de tu negocio y lo que necesitas. Te respondo personalmente con ideas y una cotización.',
     },
     subject: { en: 'Website quote', es: 'Cotización de web' },
     body: {
-      en: 'Business name:\nCity:\nType of business (tattoo, barbershop, salon, other):\nWhat I need:\nInstagram or current website:\n',
-      es: 'Nombre del negocio:\nCiudad:\nTipo de negocio (tatuajes, barbería, salón, otro):\nQué necesito:\nInstagram o web actual:\n',
+      en: 'Business name:\nCity:\nWhat my business does:\nWhat I need:\nCurrent website or social media:\n',
+      es: 'Nombre del negocio:\nCiudad:\nA qué se dedica mi negocio:\nQué necesito:\nWeb o redes sociales actuales:\n',
     },
     where: {
-      en: 'Louisville, KY · Remote across the US · English & Español',
-      es: 'Louisville, KY · A distancia en todo EE. UU. · Español & English',
+      en: 'Louisville, KY · English & Español',
+      es: 'Louisville, KY · Español & English',
     },
   },
   footer: {
     tagline: {
-      en: 'Websites for tattoo artists, barbershops and beauty salons.',
-      es: 'Webs para tatuadores, barberías y salones de belleza.',
+      en: 'Websites that win you clients and give you your time back.',
+      es: 'Webs que te consiguen clientes y te devuelven tu tiempo.',
     },
     privacy: { en: 'Privacy', es: 'Privacidad' },
   },

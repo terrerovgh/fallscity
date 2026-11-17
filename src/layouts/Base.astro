@@ -1,7 +1,7 @@
 ---
 import '../styles/tokens.css';
 import '../styles/base.css';
-import { faqs, niches, services, studio, tools, ui, type Lang } from '../data/site';
+import { faqs, services, studio, tools, ui, type Lang } from '../data/site';
 
 interface Props {
   lang: Lang;
@@ -32,13 +32,12 @@ const business = {
   address: { '@type': 'PostalAddress', addressLocality: studio.locality, addressRegion: studio.region, addressCountry: 'US' },
   areaServed: { '@type': 'Country', name: 'United States' },
   knowsLanguage: ['en', 'es'],
-  audience: niches.map((n) => ({ '@type': 'BusinessAudience', audienceType: n.title[lang] })),
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: ui.services.title[lang],
     itemListElement: [...services, ...tools].map((s) => ({
       '@type': 'Offer',
-      itemOffered: { '@type': 'Service', name: s.name[lang], description: s.body[lang], provider: { '@id': orgId } },
+      itemOffered: { '@type': 'Service', name: s.title[lang], description: s.body[lang], provider: { '@id': orgId } },
     })),
   },
 };
