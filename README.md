@@ -2,7 +2,7 @@
 
 Minimalist landing page for the studio: websites, SEO, hosting and business tools for tattoo artists, barbershops and beauty salons. It shows real projects (desktop and phone screenshots) and explains each service. No public prices; contact is by email (`info@fallscity.dev`).
 
-Static Astro 7 and hand-written CSS, served by a small Cloudflare Worker (`worker/index.ts`). The only client JavaScript is the contact form, which is rendered only when it is configured. English at `/`, Spanish at `/es/`.
+Static Astro 7 and hand-written CSS, served by a small Cloudflare Worker (`worker/index.ts`). Client JavaScript: the contact form (`src/scripts/inquiry.ts`) and Google Tag Manager. English at `/`, Spanish at `/es/`.
 
 ## Commands
 
@@ -34,28 +34,42 @@ node scripts/capture.mjs --only=leey --base:leey=http://127.0.0.1:5101
 
 ## Worker
 
-`worker/index.ts` runs in front of the static files (`wrangler.jsonc`: assets in `dist/`, Worker first except `/_astro/*` and `/fonts/*`, `404.html` for unknown paths):
+`worker/index.ts` runs in front of the static files (`wrangler.jsonc`: Worker `fallscity`, assets in `dist/`, Worker first except `/_astro/*` and `/fonts/*`, `404.html` for unknown paths, `keep_vars` so dashboard variables survive deploys):
 
 - **Canonical host:** `http://` and `www.` redirect (308) to `https://fallscity.dev`.
 - **Old URLs:** pages from the previous site (`/pricing/`, `/work/`, `/contact/`, `/services/…`, trade pages…) redirect (301) to the matching section of the home page; `/sitemap.xml` goes to `/sitemap-index.xml`.
 - **Language:** the EN/ES switch links carry `?lang=`, which stores a `lang` cookie. Without it, the cookie or `Accept-Language` picks the language (crawlers are never redirected). `/privacy/` ↔ `/es/privacidad/`.
-- **`POST /api/inquiry`:** the contact form. It checks origin, size, fields, a honeypot and the fill time, verifies Turnstile, and emails the message through Resend (reply-to: the sender). Nothing is stored.
+- **`GET /api/inquiry/config`:** `{ enabled, siteKey }`. `enabled` is true only when all four secrets are set (and `PUBLIC_INQUIRY_ENABLED` is not `false`).
+- **`POST /api/inquiry`:** checks origin, size, fields, a honeypot and the fill time, verifies Turnstile, and emails the message through Resend (reply-to: the sender). Nothing is stored.
+- **Search engines:** serves `/google684d937ef0685901.html` (Search Console); `public/BingSiteAuth.xml` and the `msvalidate.01` meta on the home pages cover Bing.
 
-## Contact form and environment variables
+## Contact form
 
-Same variables as the previous site (see `.env.example`):
+`Contact.astro` always shows the email link. The form is rendered hidden; `src/scripts/inquiry.ts` asks `/api/inquiry/config` and shows it only if delivery works, then renders Turnstile (`interaction-only`), validates each field in place (EN/ES messages), counts characters, keeps an unsent draft in `localStorage`, and on success shows a confirmation and pushes `generate_lead` to the GTM `dataLayer`. If sending fails, it offers an email link with the message prefilled.
 
-| Variable | Where | Purpose |
+### Variables (runtime, on the Worker)
+
+Set them in Cloudflare > Workers > **fallscity** > Settings > Variables and Secrets (not build variables: those don't reach the Worker). Locally, use `.dev.vars`. See `.env.example`.
+
+| Variable | Type | Purpose |
 |---|---|---|
-| `PUBLIC_TURNSTILE_SITE_KEY` | build variable | Turnstile widget |
-| `PUBLIC_INQUIRY_ENABLED` | build variable | `true` renders the form |
-| `TURNSTILE_SECRET_KEY` | Worker secret | Turnstile verification |
-| `RESEND_API_KEY` | Worker secret | sends the email |
-| `INQUIRY_TO_EMAIL` | Worker secret | where messages arrive |
-| `INQUIRY_FROM_EMAIL` | Worker secret | verified Resend sender |
+| `PUBLIC_TURNSTILE_SITE_KEY` | text | Turnstile widget key (public) |
+| `TURNSTILE_SECRET_KEY` | secret | Turnstile verification |
+| `RESEND_API_KEY` | secret | sends the email |
+| `INQUIRY_TO_EMAIL` | secret | where messages arrive |
+| `INQUIRY_FROM_EMAIL` | secret | verified Resend sender, e.g. `Falls City <web@fallscity.dev>` |
+| `PUBLIC_INQUIRY_ENABLED` | text, optional | `false` hides the form |
 
-The form is rendered only when both `PUBLIC_*` variables are set at build time; otherwise the contact section shows only the email address, and the privacy page leaves out the form paragraph. Without the four secrets the API answers `503 not_configured`. For local tests with `wrangler dev`, put the secrets in `.dev.vars` (ignored by git). Cloudflare's test keys (`1x00000000000000000000AA` site key) let you see the widget locally.
+```sh
+npx wrangler secret put RESEND_API_KEY      # prompts for the value; same for the other secrets
+```
+
+A `PUBLIC_TURNSTILE_SITE_KEY` build variable still works as a fallback for the key.
+
+## Analytics
+
+Google Tag Manager `GTM-WFTPCFT4` loads only on `fallscity.dev` (not previews or localhost). The privacy page describes it.
 
 ## Deploy
 
-Cloudflare Worker `falls-city-dev-studio` with static assets, deployed from `main` of `terrerovgh/fallscity`: build `npm run build`, then `npx wrangler deploy` (or `npm run deploy`). `public/_headers` sets security and cache headers.
+Workers Builds deploys `main` of `terrerovgh/fallscity` to the `fallscity` Worker (build `npm run build`, then `wrangler deploy`). Manual: `npm run deploy`. `public/_headers` sets security and cache headers.

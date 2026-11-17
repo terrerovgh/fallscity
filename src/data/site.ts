@@ -18,15 +18,18 @@ export const studio = {
   email: 'info@fallscity.dev',
   locality: 'Louisville',
   region: 'KY',
+  /** Google Tag Manager container, loaded only on https://fallscity.dev (see Base.astro). */
+  googleTagId: 'GTM-WFTPCFT4',
+  /** Bing Webmaster Tools ownership code; also in public/BingSiteAuth.xml. Public by design. */
+  bingSiteVerification: 'CEA9010A7EE9ED39FF47824909791585',
 };
 
 // ---- Contact form ----------------------------------------------------------
-// Build-time switches (Cloudflare build variables). The form only renders when both are set;
-// otherwise the contact section offers the email address alone. The Worker holds the secrets.
-const turnstileSiteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined)?.trim() ?? '';
+// The form is shown by its script only when the Worker says delivery works
+// (GET /api/inquiry/config: runtime secrets present). The Turnstile site key comes from the
+// Worker too; this build-time value is only a fallback.
 export const inquiry = {
-  siteKey: turnstileSiteKey,
-  enabled: turnstileSiteKey !== '' && import.meta.env.PUBLIC_INQUIRY_ENABLED === 'true',
+  siteKey: ((import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined) ?? '').trim(),
 };
 
 // ---- Screenshots ---------------------------------------------------------
@@ -430,27 +433,43 @@ export const ui = {
       label: { en: 'Contact form', es: 'Formulario de contacto' },
       name: { en: 'Your name', es: 'Tu nombre' },
       email: { en: 'Email', es: 'Correo electrónico' },
-      business: { en: 'Business name (optional)', es: 'Nombre del negocio (opcional)' },
-      city: { en: 'City (optional)', es: 'Ciudad (opcional)' },
-      links: { en: 'Current website or social media (optional)', es: 'Web o redes sociales actuales (opcional)' },
+      business: { en: 'Business name', es: 'Nombre del negocio' },
+      city: { en: 'City', es: 'Ciudad' },
+      links: { en: 'Current website or social media', es: 'Web o redes sociales actuales' },
+      optional: { en: 'optional', es: 'opcional' },
       message: { en: 'What do you need?', es: '¿Qué necesitas?' },
       messageHint: {
-        en: 'What your business does and what you want your website to do for you. At least 20 characters.',
-        es: 'A qué se dedica tu negocio y qué quieres que tu web haga por ti. Mínimo 20 caracteres.',
+        en: 'What your business does and what you want your website to do for you.',
+        es: 'A qué se dedica tu negocio y qué quieres que tu web haga por ti.',
       },
       privacy: { en: 'I agree that my message is used to reply to my inquiry.', es: 'Acepto que mi mensaje se use para responder a mi consulta.' },
       privacyLink: { en: 'Privacy', es: 'Privacidad' },
       send: { en: 'Send message', es: 'Enviar mensaje' },
-      sending: { en: 'Sending…', es: 'Enviando…' },
-      sent: {
-        en: 'Thanks, your message was sent. I’ll reply to the email you gave me.',
-        es: 'Gracias, tu mensaje se envió. Te respondo al correo que me diste.',
-      },
-      error: {
-        en: 'The message couldn’t be sent. Your text is still here: try again or write to info@fallscity.dev.',
-        es: 'No se pudo enviar el mensaje. Tu texto sigue aquí: inténtalo de nuevo o escribe a info@fallscity.dev.',
-      },
       orEmail: { en: 'Prefer email? Write to', es: '¿Prefieres el correo? Escribe a' },
+      /** Messages used by the form script (src/scripts/inquiry.ts). */
+      script: {
+        sending: { en: 'Sending…', es: 'Enviando…' },
+        verifying: { en: 'Checking that you’re not a robot…', es: 'Comprobando que no eres un robot…' },
+        count: { en: '{n} / 3000 characters', es: '{n} / 3000 caracteres' },
+        countShort: { en: '{n} / 3000 characters (at least 20)', es: '{n} / 3000 caracteres (mínimo 20)' },
+        errName: { en: 'Enter your name.', es: 'Escribe tu nombre.' },
+        errEmail: { en: 'Enter your email address.', es: 'Escribe tu correo electrónico.' },
+        errEmailFormat: { en: 'Check the email address (for example, name@business.com).', es: 'Revisa el correo (por ejemplo, nombre@negocio.com).' },
+        errMessage: { en: 'Tell me a little about what you need.', es: 'Cuéntame un poco de lo que necesitas.' },
+        errMessageShort: { en: 'Write at least 20 characters.', es: 'Escribe al menos 20 caracteres.' },
+        errPrivacy: { en: 'Check this box so I can use your message to reply.', es: 'Marca esta casilla para que pueda usar tu mensaje para responderte.' },
+        errTooLong: { en: 'This is too long.', es: 'Es demasiado largo.' },
+        errSummary: { en: 'Please fix the highlighted fields.', es: 'Revisa los campos marcados.' },
+        errVerify: { en: 'The anti-spam check failed. Please try again.', es: 'Falló la comprobación anti-spam. Inténtalo de nuevo.' },
+        errSend: { en: 'Your message couldn’t be sent. Your text is still here.', es: 'No se pudo enviar tu mensaje. Tu texto sigue aquí.' },
+        emailInstead: { en: 'Send it by email instead', es: 'Enviarlo por correo' },
+        sentTitle: { en: 'Message sent', es: 'Mensaje enviado' },
+        sentBody: {
+          en: 'Thanks, {name}. I’ll reply personally to {email}.',
+          es: 'Gracias, {name}. Te respondo personalmente a {email}.',
+        },
+        another: { en: 'Send another message', es: 'Enviar otro mensaje' },
+      },
     },
   },
   footer: {

@@ -302,6 +302,32 @@ test('a valid inquiry is sent through Resend with escaped HTML and reply-to set'
   assert.ok(email.text.includes('instagram.com/inkandco'));
 });
 
+test('inquiry config reports delivery only with every secret, and never leaks them', async () => {
+  const off = await invoke(request('https://fallscity.dev/api/inquiry/config'));
+  assert.equal(off.status, 200);
+  assert.deepEqual(await off.json(), { enabled: false, siteKey: null });
+  const on = await invoke(request('https://fallscity.dev/api/inquiry/config'), { env: { ...CONFIGURED_ENV, PUBLIC_TURNSTILE_SITE_KEY: 'site-key' } });
+  const body = await on.json();
+  assert.deepEqual(body, { enabled: true, siteKey: 'site-key' });
+  assert.equal(on.headers.get('Cache-Control'), 'no-store');
+  assert.ok(!JSON.stringify(body).includes('test-resend-key'));
+  const alias = await invoke(request('https://fallscity.dev/api/inquiry/config'), { env: { ...CONFIGURED_ENV, TURNSTILE_SITE_KEY: 'alias-key' } });
+  assert.equal((await alias.json()).siteKey, 'alias-key');
+  const switchedOff = await invoke(request('https://fallscity.dev/api/inquiry/config'), { env: { ...CONFIGURED_ENV, PUBLIC_INQUIRY_ENABLED: 'false' } });
+  assert.equal((await switchedOff.json()).enabled, false);
+  const missingOne = { ...CONFIGURED_ENV };
+  delete missingOne.RESEND_API_KEY;
+  assert.equal((await (await invoke(request('https://fallscity.dev/api/inquiry/config'), { env: missingOne })).json()).enabled, false);
+  const post = await invoke(request('https://fallscity.dev/api/inquiry/config', { method: 'POST' }));
+  assert.equal(post.status, 405);
+});
+
+test('serves the Google Search Console verification file', async () => {
+  const response = await invoke(request('https://fallscity.dev/google684d937ef0685901.html'));
+  assert.equal(response.status, 200);
+  assert.equal(await response.text(), 'google-site-verification: google684d937ef0685901.html');
+});
+
 // ---- Through wrangler dev (real Workers runtime + built assets) ----
 async function freePort() {
   const { createServer } = await import('node:net');
@@ -390,6 +416,14 @@ if (base) {
     const lang = await fetch(`${base}/es/?lang=es`, { redirect: 'manual' });
     assert.equal(lang.status, 303);
     assert.match(lang.headers.get('Set-Cookie'), /^lang=es;/);
+  });
+  await run('wrangler: verification files are served as-is', async () => {
+    const google = await fetch(`${base}/google684d937ef0685901.html`, { redirect: 'manual' });
+    assert.equal(google.status, 200);
+    assert.match(await google.text(), /google-site-verification/);
+    const bing = await fetch(`${base}/BingSiteAuth.xml`, { redirect: 'manual' });
+    assert.equal(bing.status, 200);
+    assert.match(await bing.text(), /CEA9010A7EE9ED39FF47824909791585/);
   });
   await run('wrangler: inquiry API without secrets answers not_configured', async () => {
     const response = await fetch(`${base}/api/inquiry`, {

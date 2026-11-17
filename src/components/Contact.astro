@@ -1,112 +1,94 @@
 ---
+// Contact: the email link always works. The form is rendered hidden and shown by
+// src/scripts/inquiry.ts only when the Worker reports that delivery is configured.
 import { inquiry, privacyPath, studio, ui, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const mailto = `mailto:${studio.email}?subject=${encodeURIComponent(ui.contact.subject[lang])}&body=${encodeURIComponent(ui.contact.body[lang])}`;
 const f = ui.contact.form;
+const strings = Object.fromEntries(Object.entries(f.script).map(([k, v]) => [k, v[lang]]));
+const optional = `(${f.optional[lang]})`;
 ---
-<section class:list={['section contact', { 'has-form': inquiry.enabled }]} id="contact" aria-labelledby="contact-title">
+<section class="section contact" id="contact" aria-labelledby="contact-title">
   <div class="wrap">
     <div class="contact-intro">
       <h2 id="contact-title">{ui.contact.title[lang]}</h2>
       <p class="lead">{ui.contact.lead[lang]}</p>
-      {inquiry.enabled && <p class="or-email">{f.orEmail[lang]}</p>}
+      <p class="or-email">{f.orEmail[lang]}</p>
       <a class="mail" href={mailto}>{studio.email}</a>
       <p class="where">{ui.contact.where[lang]}</p>
     </div>
-    {
-      inquiry.enabled && (
-        // Hidden until the script runs: without JavaScript there is no Turnstile, so the email link above is the way in.
-        <form class="inquiry" method="post" action="/api/inquiry" aria-label={f.label[lang]} data-inquiry hidden
-          data-sending={f.sending[lang]} data-sent={f.sent[lang]} data-error={f.error[lang]}>
-          <div class="fields">
-            <label>
-              <span>{f.name[lang]}</span>
-              <input type="text" name="name" minlength="2" maxlength="80" autocomplete="name" required />
-            </label>
-            <label>
-              <span>{f.email[lang]}</span>
-              <input type="email" name="email" maxlength="254" autocomplete="email" required />
-            </label>
-            <label>
-              <span>{f.business[lang]}</span>
-              <input type="text" name="business" maxlength="120" autocomplete="organization" />
-            </label>
-            <label>
-              <span>{f.city[lang]}</span>
-              <input type="text" name="city" maxlength="80" autocomplete="address-level2" />
-            </label>
-            <label class="wide">
-              <span>{f.links[lang]}</span>
-              <input type="text" name="links" maxlength="200" autocomplete="url" />
-            </label>
-            <label class="wide">
-              <span>{f.message[lang]}</span>
-              <textarea name="message" minlength="20" maxlength="3000" rows="6" required aria-describedby="message-hint"></textarea>
-              <small id="message-hint">{f.messageHint[lang]}</small>
-            </label>
+
+    <div class="inquiry-wrap" data-inquiry-wrap hidden>
+      <form class="inquiry" method="post" action="/api/inquiry" novalidate aria-label={f.label[lang]}
+        data-inquiry data-sitekey={inquiry.siteKey} data-lang={lang} data-email={studio.email}
+        data-subject={ui.contact.subject[lang]} data-strings={JSON.stringify(strings)}>
+        <p class="summary" data-summary tabindex="-1" hidden></p>
+        <div class="fields">
+          <div class="field">
+            <label for="f-name">{f.name[lang]}</label>
+            <input id="f-name" type="text" name="name" minlength="2" maxlength="80" autocomplete="name" required aria-describedby="e-name" />
+            <p class="field-error" id="e-name" hidden></p>
           </div>
-          <div class="trap" aria-hidden="true">
-            <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+          <div class="field">
+            <label for="f-email">{f.email[lang]}</label>
+            <input id="f-email" type="email" name="email" maxlength="254" autocomplete="email" inputmode="email" spellcheck="false" required aria-describedby="e-email" />
+            <p class="field-error" id="e-email" hidden></p>
           </div>
-          <input type="hidden" name="language" value={lang} />
-          <input type="hidden" name="startedAt" value="" />
+          <div class="field">
+            <label for="f-business">{f.business[lang]} <span class="opt">{optional}</span></label>
+            <input id="f-business" type="text" name="business" maxlength="120" autocomplete="organization" />
+          </div>
+          <div class="field">
+            <label for="f-city">{f.city[lang]} <span class="opt">{optional}</span></label>
+            <input id="f-city" type="text" name="city" maxlength="80" autocomplete="address-level2" />
+          </div>
+          <div class="field wide">
+            <label for="f-links">{f.links[lang]} <span class="opt">{optional}</span></label>
+            <input id="f-links" type="text" name="links" maxlength="200" autocomplete="url" spellcheck="false" />
+          </div>
+          <div class="field wide">
+            <label for="f-message">{f.message[lang]}</label>
+            <textarea id="f-message" name="message" minlength="20" maxlength="3000" rows="6" required aria-describedby="h-message c-message e-message"></textarea>
+            <div class="field-meta">
+              <small id="h-message">{f.messageHint[lang]}</small>
+              <small id="c-message" class="count" data-count></small>
+            </div>
+            <p class="field-error" id="e-message" hidden></p>
+          </div>
+        </div>
+        <div class="trap" aria-hidden="true">
+          <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <div class="field">
           <label class="consent">
-            <input type="checkbox" name="privacy" value="true" required />
+            <input type="checkbox" name="privacy" value="true" required aria-describedby="e-privacy" />
             <span>{f.privacy[lang]} <a href={privacyPath[lang]}>{f.privacyLink[lang]}</a></span>
           </label>
-          <div class="cf-turnstile" data-sitekey={inquiry.siteKey} data-language={lang} data-theme="auto"></div>
+          <p class="field-error" id="e-privacy" hidden></p>
+        </div>
+        <div class="turnstile" data-turnstile></div>
+        <div class="actions">
           <button class="btn send" type="submit">{f.send[lang]}</button>
-          <p class="status" role="status" aria-live="polite"></p>
-        </form>
-      )
-    }
+          <p class="status" role="status" aria-live="polite" data-status></p>
+        </div>
+        <p class="send-error" data-error tabindex="-1" hidden>
+          <span data-error-text></span>
+          <a data-error-mail href={mailto}>{f.script.emailInstead[lang]}</a>
+        </p>
+      </form>
+
+      <div class="sent" data-sent hidden>
+        <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" /><path d="M14 25l7 7l13-15" /></svg>
+        <h3 tabindex="-1" data-sent-title>{f.script.sentTitle[lang]}</h3>
+        <p data-sent-body></p>
+        <button class="btn ghost-light" type="button" data-another>{f.script.another[lang]}</button>
+      </div>
+    </div>
   </div>
 </section>
-{inquiry.enabled && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
-{
-  inquiry.enabled && (
-    <script>
-      const form = document.querySelector<HTMLFormElement>('[data-inquiry]');
-      if (form) {
-        form.hidden = false;
-        const started = form.querySelector<HTMLInputElement>('[name="startedAt"]');
-        if (started) started.value = String(Date.now());
-        const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
-        const status = form.querySelector<HTMLElement>('.status')!;
-        const label = button.textContent ?? '';
 
-        form.addEventListener('submit', async (event) => {
-          event.preventDefault();
-          if (!form.reportValidity()) return;
-          button.disabled = true;
-          button.textContent = form.dataset.sending ?? label;
-          status.textContent = '';
-          delete status.dataset.state;
-          const data = new FormData(form);
-          const payload: Record<string, unknown> = Object.fromEntries(data.entries());
-          payload.privacy = data.get('privacy') === 'true';
-          try {
-            const response = await fetch(form.action, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload),
-            });
-            if (!response.ok) throw new Error(String(response.status));
-            form.reset();
-            if (started) started.value = String(Date.now());
-            status.textContent = form.dataset.sent ?? '';
-            status.dataset.state = 'ok';
-          } catch {
-            status.textContent = form.dataset.error ?? '';
-            status.dataset.state = 'error';
-          } finally {
-            (window as { turnstile?: { reset: () => void } }).turnstile?.reset();
-            button.disabled = false;
-            button.textContent = label;
-          }
-        });
-      }
-    </script>
-  )
-}
+<script>
+  import { initInquiry } from '../scripts/inquiry';
+  initInquiry();
+</script>

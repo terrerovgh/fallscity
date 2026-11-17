@@ -9,9 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check",
+    "check": "astro check && tsc -p worker",
     "capture": "node scripts/capture.mjs",
-    "test": "astro check && astro build && node scripts/test-worker.mjs && node scripts/test-ui.mjs",
+    "test": "astro check && tsc -p worker && astro build && node scripts/test-worker.mjs && node scripts/test-ui.mjs",
     "test:worker": "node scripts/test-worker.mjs",
     "deploy": "astro build && wrangler deploy"
   },

@@ -2,22 +2,20 @@
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
-import { inquiry, privacyPath, studio, type Lang } from '../data/site';
+import { privacyPath, studio, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 
+const optOut = 'https://tools.google.com/dlpage/gaoptout';
 const copy = {
   en: {
     title: 'Privacy',
     updated: 'Last updated: November 17, 2026',
     sections: [
-      ['What this site collects', 'This site has no accounts, no analytics and no advertising trackers. It does not collect personal information while you browse.'],
-      ['Cookies', 'The only cookie is a language preference, set when you switch between English and Spanish so the site opens in the language you chose. It holds nothing else.'],
-      ...(inquiry.enabled
-        ? [
-            ['Contact form', 'If you use the contact form, what you type (your name, email, business details and message) is sent to me by email through Resend, an email delivery service. It is not stored in a database on this site. The form uses Cloudflare Turnstile to block spam, which checks technical signals from your browser.'],
-          ]
-        : []),
+      ['What this site collects', 'This site has no accounts and no advertising trackers. It collects personal information only if you send me a message.'],
+      ['Visit statistics', `The site loads Google Tag Manager, which runs Google’s measurement tools (such as Google Analytics) to count visits and see which pages are useful. Google sets its own cookies and receives technical data such as your browser, device, approximate location and the pages you view. You can block it with your browser’s privacy settings or Google’s opt-out add-on: ${optOut}.`],
+      ['Language cookie', 'When you switch between English and Spanish, the site stores a small cookie with that choice so it opens in your language next time. It holds nothing else.'],
+      ['Contact form', 'If you use the contact form, what you type (your name, email, business details and message) is sent to me by email through Resend, an email delivery service. It is not stored in a database on this site. The form uses Cloudflare Turnstile to block spam, which checks technical signals from your browser. Your browser may also keep an unsent draft of the form on your own device until you send it.'],
       ['Hosting', 'The site is served by Cloudflare, which may keep short-lived technical logs (such as IP address and request time) to deliver the pages and protect against abuse.'],
       ['How your message is used', `Whether you write through the form or to ${studio.email}, your message and email address are used only to reply and to discuss your project. They are not sold or shared for marketing.`],
       ['Questions', `Write to ${studio.email} to ask about or delete any message you sent.`],
@@ -27,13 +25,10 @@ const copy = {
     title: 'Privacidad',
     updated: 'Última actualización: 17 de noviembre de 2026',
     sections: [
-      ['Qué recoge este sitio', 'Este sitio no tiene cuentas, analítica ni rastreadores publicitarios. No recoge datos personales mientras navegas.'],
-      ['Cookies', 'La única cookie es la preferencia de idioma: se guarda cuando cambias entre español e inglés, para que el sitio se abra en el idioma que elegiste. No contiene nada más.'],
-      ...(inquiry.enabled
-        ? [
-            ['Formulario de contacto', 'Si usas el formulario de contacto, lo que escribes (tu nombre, correo, datos del negocio y mensaje) me llega por correo a través de Resend, un servicio de envío de correo. No se guarda en ninguna base de datos de este sitio. El formulario usa Cloudflare Turnstile para bloquear el spam, que revisa señales técnicas de tu navegador.'],
-          ]
-        : []),
+      ['Qué recoge este sitio', 'Este sitio no tiene cuentas ni rastreadores publicitarios. Solo recoge datos personales si me envías un mensaje.'],
+      ['Estadísticas de visitas', `El sitio carga Google Tag Manager, que ejecuta las herramientas de medición de Google (como Google Analytics) para contar visitas y ver qué páginas son útiles. Google usa sus propias cookies y recibe datos técnicos como tu navegador, dispositivo, ubicación aproximada y las páginas que ves. Puedes bloquearlo con la configuración de privacidad de tu navegador o con el complemento de inhabilitación de Google: ${optOut}.`],
+      ['Cookie de idioma', 'Cuando cambias entre español e inglés, el sitio guarda una pequeña cookie con esa elección para abrirse en tu idioma la próxima vez. No contiene nada más.'],
+      ['Formulario de contacto', 'Si usas el formulario de contacto, lo que escribes (tu nombre, correo, datos del negocio y mensaje) me llega por correo a través de Resend, un servicio de envío de correo. No se guarda en ninguna base de datos de este sitio. El formulario usa Cloudflare Turnstile para bloquear el spam, que revisa señales técnicas de tu navegador. Tu navegador también puede guardar en tu propio dispositivo un borrador del formulario hasta que lo envíes.'],
       ['Hosting', 'El sitio lo sirve Cloudflare, que puede guardar registros técnicos breves (como la dirección IP y la hora de la petición) para entregar las páginas y protegerlas de abusos.'],
       ['Cómo se usa tu mensaje', `Escribas por el formulario o a ${studio.email}, tu mensaje y tu correo se usan solo para responderte y hablar de tu proyecto. No se venden ni se comparten con fines de marketing.`],
       ['Preguntas', `Escribe a ${studio.email} para consultar o borrar cualquier mensaje que hayas enviado.`],
@@ -51,7 +46,15 @@ const copy = {
         copy.sections.map(([h, p]) => (
           <>
             <h2>{h}</h2>
-            <p>{p}</p>
+            <p>
+              {p.includes(optOut) ? (
+                <>
+                  {p.slice(0, p.indexOf(optOut))}
+                  <a href={optOut} rel="noopener">{optOut.replace('https://', '')}</a>
+                  {p.slice(p.indexOf(optOut) + optOut.length)}
+                </>
+              ) : p}
+            </p>
           </>
         ))
       }

@@ -1,8 +1,12 @@
 // Cloudflare Worker in front of the static Astro build (wrangler.jsonc).
 // - canonical host (https://fallscity.dev) and redirects from the previous site's URLs;
 // - language routing: ?lang= sets a cookie, otherwise cookie or Accept-Language picks EN/ES;
-// - POST /api/inquiry: validates the contact form, checks Turnstile, sends it by email via Resend.
-// Secrets (TURNSTILE_SECRET_KEY, RESEND_API_KEY, INQUIRY_TO_EMAIL, INQUIRY_FROM_EMAIL) live in Cloudflare.
+// - GET /api/inquiry/config: tells the page whether the contact form can deliver, and its Turnstile key;
+// - POST /api/inquiry: validates the contact form, checks Turnstile, sends it by email via Resend;
+// - the Google Search Console verification file.
+// Runtime variables (Worker > Settings > Variables and Secrets, not build variables):
+// PUBLIC_TURNSTILE_SITE_KEY (or TURNSTILE_SITE_KEY), TURNSTILE_SECRET_KEY, RESEND_API_KEY,
+// INQUIRY_TO_EMAIL, INQUIRY_FROM_EMAIL; PUBLIC_INQUIRY_ENABLED=false turns the form off.
 const CANONICAL_ORIGIN = 'https://fallscity.dev';
 const BODY_LIMIT = 32 * 1024;
 const LANGUAGE_COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
@@ -51,6 +55,10 @@ const LEGACY_REDIRECTS = new Map<string, string>([
   ['/es/privacy/', '/es/privacidad/'],
 ]);
 
+// Google Search Console ownership file, answered here because the assets layer would
+// redirect a bare .html path to its extensionless form.
+const GOOGLE_VERIFICATION = 'google684d937ef0685901.html';
+
 // Pages whose Spanish path is not just /es + the English path.
 const TRANSLATED_PATHS: [en: string, es: string][] = [['/privacy/', '/es/privacidad/']];
 
@@ -64,6 +72,9 @@ export interface WorkerEnv {
   INQUIRY_TO_EMAIL?: string;
   INQUIRY_FROM_EMAIL?: string;
   TURNSTILE_SECRET_KEY?: string;
+  TURNSTILE_SITE_KEY?: string;
+  PUBLIC_TURNSTILE_SITE_KEY?: string;
+  PUBLIC_INQUIRY_ENABLED?: string;
 }
 
 export interface WorkerDependencies {
@@ -460,6 +471,22 @@ export function createWorkerHandler(dependencies: WorkerDependencies = {}): (req
       if (url.protocol === 'https:') cookie.push('Secure');
       response.headers.set('Set-Cookie', cookie.join('; '));
       return response;
+    }
+
+    if (url.pathname === `/${GOOGLE_VERIFICATION}`) {
+      return withResponseHeaders(new Response(`google-site-verification: ${GOOGLE_VERIFICATION}`, {
+        headers: { 'Content-Type': 'text/html; charset=utf-8' },
+      }), url);
+    }
+
+    if (url.pathname === '/api/inquiry/config') {
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return jsonResponse(url, 405, { ok: false, code: 'method_not_allowed' }, { Allow: 'GET, HEAD' });
+      }
+      const siteKey = (env.PUBLIC_TURNSTILE_SITE_KEY ?? env.TURNSTILE_SITE_KEY ?? '').trim();
+      const switchedOff = env.PUBLIC_INQUIRY_ENABLED?.trim().toLowerCase() === 'false';
+      const enabled = !switchedOff && providerConfiguration(env) !== undefined;
+      return jsonResponse(url, 200, { enabled, siteKey: siteKey || null });
     }
 
     if (url.pathname === '/api/inquiry') {

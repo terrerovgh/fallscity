@@ -691,14 +691,30 @@ a {
     margin-top: 2.5rem;
     color: color-mix(in srgb, var(--paper) 72%, transparent);
   }
+  &:not(.has-form) .or-email {
+    display: none;
+  }
 }
 
-.inquiry {
+/* Contact form (shown by src/scripts/inquiry.ts). Lives on the inverted contact band. */
+.inquiry-wrap {
   --field: color-mix(in srgb, var(--paper) 7%, transparent);
   --edge: color-mix(in srgb, var(--paper) 32%, transparent);
   --soft: color-mix(in srgb, var(--paper) 72%, transparent);
+  /* The band is dark in light mode and light in dark mode. */
+  --alert: #ffb4a8;
+  @media (prefers-color-scheme: dark) {
+    --alert: #9b1c0c;
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+.inquiry {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.4rem;
 
   &[hidden] {
     display: none;
@@ -714,11 +730,18 @@ a {
       }
     }
   }
-  & label {
+  & .field {
     display: grid;
     gap: 0.4rem;
+    align-content: start;
+  }
+  & .field > label {
     font-size: var(--step--1);
     font-weight: 600;
+  }
+  & .opt {
+    font-weight: 400;
+    color: var(--soft);
   }
   & :is(input:not([type='checkbox']), textarea) {
     width: 100%;
@@ -730,7 +753,6 @@ a {
     color: var(--paper);
     font: inherit;
     font-size: var(--step-0);
-    font-weight: 400;
     transition: border-color 0.15s;
     &:hover {
       border-color: var(--soft);
@@ -740,21 +762,47 @@ a {
       outline-offset: 1px;
       border-color: var(--paper);
     }
+    &[aria-invalid='true'] {
+      border-color: var(--alert);
+      box-shadow: inset 3px 0 0 var(--alert);
+    }
   }
   & textarea {
     resize: vertical;
     line-height: 1.5;
   }
+  & .field-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+  }
   & small {
-    font-weight: 400;
+    font-size: var(--step--1);
     color: var(--soft);
+  }
+  & .count {
+    font-variant-numeric: tabular-nums;
+  }
+  & .field-error,
+  & .summary {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--alert);
+    &::before {
+      content: '! ';
+    }
+  }
+  & .summary:focus {
+    outline: none;
   }
   & .consent {
     display: flex;
     align-items: start;
     gap: 0.65rem;
-    font-weight: 400;
+    font-size: var(--step--1);
     color: var(--soft);
+    cursor: pointer;
     & input {
       flex: none;
       width: 1.15rem;
@@ -773,8 +821,16 @@ a {
     height: 1px;
     overflow: hidden;
   }
+  & .turnstile:empty {
+    display: none;
+  }
+  & .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+  }
   & .send {
-    justify-self: start;
     background: var(--paper);
     color: var(--ink);
     border-color: var(--paper);
@@ -787,21 +843,104 @@ a {
       color: var(--paper);
     }
     &:disabled {
-      opacity: 0.7;
+      opacity: 0.75;
       cursor: progress;
     }
   }
   & .status {
+    font-size: var(--step--1);
+    color: var(--soft);
+  }
+  & .send-error {
+    display: grid;
+    gap: 0.4rem;
+    padding: 0.9rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--alert);
     font-weight: 600;
-    &:empty {
+    &[hidden] {
       display: none;
     }
-    &[data-state='error'] {
-      color: var(--paper);
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
-      border: 1px solid var(--edge);
+    &:focus {
+      outline: none;
     }
+    & a {
+      justify-self: start;
+      font-weight: 600;
+    }
+  }
+}
+
+.sent {
+  display: grid;
+  justify-items: start;
+  gap: 0.9rem;
+  padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--paper) 25%, transparent);
+
+  &[hidden] {
+    display: none;
+  }
+  & svg {
+    width: 3rem;
+    height: 3rem;
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    & circle {
+      stroke: color-mix(in srgb, var(--paper) 35%, transparent);
+    }
+    & path {
+      stroke: var(--paper);
+    }
+  }
+  & h3 {
+    font-size: var(--step-2);
+    &:focus {
+      outline: none;
+    }
+  }
+  & p {
+    color: color-mix(in srgb, var(--paper) 72%, transparent);
+  }
+  & .btn {
+    margin-top: 0.5rem;
+    border-color: color-mix(in srgb, var(--paper) 45%, transparent);
+    color: var(--paper);
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    &:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    & svg circle {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: sent-ring 0.5s var(--ease) both;
+    }
+    & svg path {
+      stroke-dasharray: 40;
+      animation: sent-check 0.5s 0.25s var(--ease) both;
+    }
+  }
+}
+
+@keyframes sent-ring {
+  from {
+    scale: 0.6;
+    opacity: 0;
+  }
+}
+@keyframes sent-check {
+  from {
+    stroke-dashoffset: 40;
   }
 }
 

@@ -62,12 +62,24 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
 <html lang={lang === 'en' ? 'en-US' : 'es-US'}>
   <head>
     <meta charset="utf-8" />
+    <script is:inline define:vars={{ gtm: studio.googleTagId }}>
+      // Google Tag Manager, only on the production host (not previews or localhost).
+      if (location.hostname === 'fallscity.dev') {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+        const s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtm.js?id=' + gtm;
+        document.head.append(s);
+      }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f5f2" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0f10" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {home && <meta name="msvalidate.01" content={studio.bingSiteVerification} />}
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <link rel="alternate" hreflang="en-US" href={new URL(paths.en, studio.url).href} />
@@ -92,6 +104,7 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>
   <body>
+    <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${studio.googleTagId}`} height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
     <a class="skip" href="#main">{ui.skip[lang]}</a>
     <slot />
   </body>

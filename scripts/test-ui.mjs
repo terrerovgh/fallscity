@@ -96,16 +96,84 @@ for (const width of [320, 390, 768, 1024, 1440]) {
   await ctx.close();
 }
 
-// Contact: without the form build variables there is no form, only the email link
+// Contact: without a configured Worker (astro preview has no /api) only the email link shows
 {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   await page.goto(base + '/', { waitUntil: 'networkidle' });
-  const forms = await page.locator('#contact form').count();
-  const mail = await page.locator('#contact a[href^="mailto:info@fallscity.dev"]').count();
-  check(forms === 0 && mail === 1, `contact without form config: ${forms} forms, ${mail} mailto link`);
+  const formVisible = await page.locator('#contact form').isVisible();
+  const mail = await page.locator('#contact .contact-intro a[href^="mailto:info@fallscity.dev"]').count();
+  check(!formVisible && mail === 1, `contact without delivery config: form hidden (${!formVisible}), ${mail} mailto link`);
   const langHref = await page.locator('.lang a[hreflang="es"]').getAttribute('href');
   check(langHref === '/es/?lang=es', `language switch sets the cookie through ?lang= (${langHref})`);
+  await ctx.close();
+}
+
+// Contact form flow with the Worker and Turnstile mocked
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const page = await ctx.newPage();
+  let posted;
+  let reply = { status: 422, body: { ok: false, code: 'validation_error', fields: { email: 'invalid' } } };
+  await page.route('**/api/inquiry/config', (route) => route.fulfill({ json: { enabled: true, siteKey: '1x00000000000000000000AA' } }));
+  await page.route('**/api/inquiry', (route) => {
+    posted = route.request().postDataJSON();
+    return route.fulfill({ status: reply.status, json: reply.body });
+  });
+  await page.route('https://challenges.cloudflare.com/**', (route) => route.fulfill({
+    contentType: 'text/javascript',
+    body: "let cb; window.turnstile = { render(el, o) { cb = o.callback; setTimeout(() => cb('stub-token'), 50); return 'w1'; }, reset() { setTimeout(() => cb('stub-token'), 50); } };",
+  }));
+  await page.goto(base + '/es/', { waitUntil: 'networkidle' });
+  const form = page.locator('#contact form');
+  await form.waitFor({ state: 'visible' });
+  check(await page.locator('#contact').evaluate((el) => el.classList.contains('has-form')), 'form shows when the Worker reports delivery configured');
+
+  await form.getByRole('button', { name: 'Enviar mensaje' }).click();
+  const invalid = await form.locator('[aria-invalid="true"]').evaluateAll((els) => els.map((e) => e.name));
+  check(JSON.stringify(invalid) === '["name","email","message","privacy"]', `empty submit marks required fields (${invalid})`);
+  check(await page.evaluate(() => document.activeElement?.getAttribute('name')) === 'name', 'focus moves to the first invalid field');
+  check((await page.locator('#e-name').textContent()) === 'Escribe tu nombre.', 'field errors are in Spanish on /es/');
+
+  await form.getByLabel('Tu nombre').fill('Ada Lovelace');
+  await form.getByLabel('Correo electrónico').fill('ada@example.com');
+  await form.getByLabel('¿Qué necesitas?').fill('Una web con galería y reservas en línea para mi estudio.');
+  await form.getByRole('checkbox').check();
+  check(await form.locator('[aria-invalid="true"]').count() === 0, 'errors clear as fields are fixed');
+  check(/\/ 3000/.test(await page.locator('[data-count]').textContent()), 'message shows a character counter');
+
+  await form.getByRole('button', { name: 'Enviar mensaje' }).click();
+  await page.locator('#e-email:not([hidden])').waitFor({ timeout: 8000 });
+  check(posted?.['cf-turnstile-response'] === 'stub-token' && posted?.language === 'es' && posted?.privacy === true, 'payload carries token, language and consent');
+  check(await form.getByLabel('Correo electrónico').getAttribute('aria-invalid') === 'true', 'server field errors are shown on the field');
+
+  reply = { status: 503, body: { ok: false, code: 'not_configured' } };
+  await form.getByRole('button', { name: 'Enviar mensaje' }).click();
+  const errorBox = page.locator('[data-error]');
+  await errorBox.waitFor({ state: 'visible', timeout: 8000 });
+  const mailHref = await errorBox.locator('a').getAttribute('href');
+  check(decodeURIComponent(mailHref).includes('galería y reservas'), 'send error offers email with the message prefilled');
+
+  reply = { status: 202, body: { ok: true, code: 'accepted', id: 'x' } };
+  await form.getByRole('button', { name: 'Enviar mensaje' }).click();
+  await page.locator('[data-sent]').waitFor({ state: 'visible', timeout: 8000 });
+  check((await page.locator('[data-sent-body]').textContent()).includes('ada@example.com'), 'success panel confirms the reply address');
+  check(await page.evaluate(() => document.activeElement?.matches('[data-sent-title]')), 'focus moves to the success message');
+  check(await page.evaluate(() => localStorage.getItem('fallscity-inquiry-draft')) === null, 'draft is cleared after sending');
+  for (const colorScheme of ['light', 'dark']) {
+    await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' });
+    const { violations } = await new AxeBuilder({ page }).include('#contact').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
+    check(violations.length === 0, `axe contact success ${colorScheme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
+  }
+  await page.getByRole('button', { name: 'Enviar otro mensaje' }).click();
+  check(await form.isVisible() && (await form.getByLabel('Tu nombre').inputValue()) === '', '"send another" brings back an empty form');
+  await form.getByRole('button', { name: 'Enviar mensaje' }).click();
+  for (const colorScheme of ['light', 'dark']) {
+    await page.emulateMedia({ colorScheme });
+    const { violations } = await new AxeBuilder({ page }).include('#contact').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
+    check(violations.length === 0, `axe contact form with errors ${colorScheme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
+  }
+  await page.locator('#contact').screenshot({ path: new URL('../artifacts/qa/contact-form-errors.png', import.meta.url).pathname });
   await ctx.close();
 }
 

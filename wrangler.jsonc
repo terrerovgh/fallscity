@@ -1,8 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "falls-city-dev-studio",
+  "name": "fallscity",
   "main": "worker/index.ts",
   "compatibility_date": "2026-11-16",
+  // Keep runtime variables set in the dashboard when deploying (secrets are always kept).
+  "keep_vars": true,
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
