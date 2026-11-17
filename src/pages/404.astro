@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import { homePath } from '../data/site';
+---
+<Base lang="en" title="Page not found · Falls City Dev Studio" description="This page does not exist." paths={homePath} noindex>
+  <Header lang="en" paths={homePath} sections={false} />
+  <main id="main" class="section">
+    <div class="wrap prose">
+      <h1>Page not found</h1>
+      <p lang="es-US">Página no encontrada.</p>
+      <p><a class="btn primary" href="/">Go to the home page</a></p>
+    </div>
+  </main>
+</Base>

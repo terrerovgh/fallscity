@@ -1,0 +1,65 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+import { studio, ui, type Lang } from '../data/site';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** Path of this page in each language, used for canonical and hreflang. */
+  paths: Record<Lang, string>;
+  noindex?: boolean;
+}
+
+const { lang, title, description, paths, noindex = false } = Astro.props;
+const canonical = new URL(paths[lang], studio.url).href;
+const ogImage = new URL('/og.jpg', studio.url).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: studio.name,
+  url: studio.url,
+  email: studio.email,
+  description: ui.meta.description[lang],
+  address: { '@type': 'PostalAddress', addressLocality: studio.locality, addressRegion: studio.region, addressCountry: 'US' },
+  areaServed: { '@type': 'Country', name: 'United States' },
+  knowsLanguage: ['en', 'es'],
+};
+---
+
+<!doctype html>
+<html lang={lang === 'en' ? 'en-US' : 'es-US'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f5f2" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0f10" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en-US" href={new URL(paths.en, studio.url).href} />
+    <link rel="alternate" hreflang="es-US" href={new URL(paths.es, studio.url).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL(paths.en, studio.url).href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/instrument-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={studio.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip" href="#main">{ui.skip[lang]}</a>
+    <slot />
+  </body>
+</html>

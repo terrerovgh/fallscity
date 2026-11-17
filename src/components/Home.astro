@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Work from './Work.astro';
+import Services from './Services.astro';
+import Process from './Process.astro';
+import Contact from './Contact.astro';
+import Footer from './Footer.astro';
+import { homePath, ui, type Lang } from '../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<Base lang={lang} title={ui.meta.title[lang]} description={ui.meta.description[lang]} paths={homePath}>
+  <Header lang={lang} paths={homePath} />
+  <main id="main">
+    <Hero lang={lang} />
+    <Work lang={lang} />
+    <Services lang={lang} />
+    <Process lang={lang} />
+    <Contact lang={lang} />
+  </main>
+  <Footer lang={lang} />
+</Base>

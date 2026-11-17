@@ -1,0 +1,74 @@
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/fonts/instrument-sans-latin-wght-normal.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+
+  /* Raw palette */
+  --paper-light: #f6f5f2;
+  --paper-dark: #0e0f10;
+  --surface-light: #ffffff;
+  --surface-dark: #17191b;
+  --ink-light: #141414;
+  --ink-dark: #f1f0ec;
+  --muted-light: #5d5d58;
+  --muted-dark: #a3a39c;
+  --line-light: #e2e0da;
+  --line-dark: #2a2d30;
+  --accent-light: #1f6f6a;
+  --accent-dark: #6cc7bf;
+  --frame-light: #1b1c1e;
+  --frame-dark: #2b2e31;
+
+  /* Semantic tokens (fallback first, then light-dark()) */
+  --paper: var(--paper-light);
+  --surface: var(--surface-light);
+  --ink: var(--ink-light);
+  --muted: var(--muted-light);
+  --line: var(--line-light);
+  --accent: var(--accent-light);
+  --frame: var(--frame-light);
+
+  @media (prefers-color-scheme: dark) {
+    --paper: var(--paper-dark);
+    --surface: var(--surface-dark);
+    --ink: var(--ink-dark);
+    --muted: var(--muted-dark);
+    --line: var(--line-dark);
+    --accent: var(--accent-dark);
+    --frame: var(--frame-dark);
+  }
+
+  @supports (color: light-dark(white, black)) {
+    --paper: light-dark(var(--paper-light), var(--paper-dark));
+    --surface: light-dark(var(--surface-light), var(--surface-dark));
+    --ink: light-dark(var(--ink-light), var(--ink-dark));
+    --muted: light-dark(var(--muted-light), var(--muted-dark));
+    --line: light-dark(var(--line-light), var(--line-dark));
+    --accent: light-dark(var(--accent-light), var(--accent-dark));
+    --frame: light-dark(var(--frame-light), var(--frame-dark));
+  }
+
+  accent-color: var(--accent);
+
+  /* Type */
+  --font: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --step--1: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
+  --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.08rem);
+  --step-1: clamp(1.18rem, 1.1rem + 0.35vw, 1.4rem);
+  --step-2: clamp(1.5rem, 1.3rem + 0.9vw, 2.1rem);
+  --step-3: clamp(2rem, 1.55rem + 2vw, 3.3rem);
+  --step-4: clamp(2.4rem, 1.7rem + 3.2vw, 4.6rem);
+
+  /* Space & shape */
+  --gutter: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+  --section: clamp(4.5rem, 3rem + 7vw, 9rem);
+  --max: 76rem;
+  --radius: 14px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}

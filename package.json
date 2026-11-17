@@ -1,0 +1,27 @@
+{
+  "name": "fallscity",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "capture": "node scripts/capture.mjs",
+    "test": "astro check && astro build && node scripts/test-ui.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.5",
+    "astro": "^7.4.12",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
+    "playwright": "^1.65.1",
+    "typescript": "^6.0.3"
+  }
+}

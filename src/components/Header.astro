@@ -1,0 +1,46 @@
+---
+import Logo from './Logo.astro';
+import { homePath, langs, ui, type Lang } from '../data/site';
+
+interface Props {
+  lang: Lang;
+  /** This page's path in each language, for the language switch. */
+  paths: Record<Lang, string>;
+  /** Section links only make sense on the home page. */
+  sections?: boolean;
+}
+const { lang, paths, sections = true } = Astro.props;
+const home = homePath[lang];
+const links = [
+  ['work', ui.nav.work],
+  ['services', ui.nav.services],
+  ['process', ui.nav.process],
+  ['contact', ui.nav.contact],
+] as const;
+---
+<header class="site-header">
+  <div class="wrap">
+    <Logo href={home} />
+    <nav class="nav" aria-label={ui.nav.label[lang]}>
+      {
+        sections && (
+          <ul>
+            {links.map(([id, label]) => (
+              <li><a href={`${home}#${id}`}>{label[lang]}</a></li>
+            ))}
+          </ul>
+        )
+      }
+      <div class="lang" role="group" aria-label={ui.nav.langLabel[lang]}>
+        {
+          langs.map((l) => (
+            <a href={paths[l]} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
+              <span aria-hidden="true">{l.toUpperCase()}</span>
+              <span class="sr-only">{l === 'en' ? 'English' : 'Español'}</span>
+            </a>
+          ))
+        }
+      </div>
+    </nav>
+  </div>
+</header>

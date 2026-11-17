@@ -1,0 +1,60 @@
+---
+import DeviceStage from './DeviceStage.astro';
+import { projects, ui, type Lang } from '../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<section class="section" id="work" aria-labelledby="work-title">
+  <div class="wrap">
+    <header class="section-head">
+      <p class="eyebrow">{ui.work.eyebrow[lang]}</p>
+      <h2 id="work-title">{ui.work.title[lang]}</h2>
+      <p>{ui.work.lead[lang]}</p>
+    </header>
+    <div class="work-list">
+      {
+        projects.map((p) => (
+          <article class="project reveal" aria-labelledby={`p-${p.id}`}>
+            <div class="project-stage">
+              {p.pages.map((pg, i) => (
+                <div data-page={i}>
+                  <DeviceStage
+                    site={p.id}
+                    page={pg.id}
+                    domain={p.domain}
+                    label={`${p.domain}, ${pg.label[lang]}`}
+                    desktopAlt={ui.work.desktopAlt[lang]}
+                    mobileAlt={ui.work.mobileAlt[lang]}
+                  />
+                </div>
+              ))}
+            </div>
+            <div>
+              <p class="kind">{p.kind[lang]}</p>
+              <h3 id={`p-${p.id}`}>{p.name}</h3>
+              <p class="summary">{p.summary[lang]}</p>
+              <fieldset class="pages">
+                <legend class="sr-only">{ui.work.pageLegend[lang]}</legend>
+                <div class="options">
+                  {p.pages.map((pg, i) => (
+                    <label>
+                      <input type="radio" name={`page-${p.id}`} value={i} checked={i === 0} />
+                      {pg.label[lang]}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              <p>
+                <a class="visit" href={p.url} target="_blank" rel="noopener">
+                  {ui.work.visit[lang]}: {p.domain}
+                  <span aria-hidden="true">↗</span>
+                  <span class="sr-only">{ui.work.newTab[lang]}</span>
+                </a>
+              </p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
