@@ -11,7 +11,9 @@
     "preview": "astro preview",
     "check": "astro check",
     "capture": "node scripts/capture.mjs",
-    "test": "astro check && astro build && node scripts/test-ui.mjs"
+    "test": "astro check && astro build && node scripts/test-worker.mjs && node scripts/test-ui.mjs",
+    "test:worker": "node scripts/test-worker.mjs",
+    "deploy": "astro build && wrangler deploy"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.5",
@@ -21,7 +23,9 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
     "@axe-core/playwright": "^4.14.0",
+    "@cloudflare/workers-types": "5.20261116.1",
     "playwright": "^1.65.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "4.163.0"
   }
 }

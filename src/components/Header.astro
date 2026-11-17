@@ -28,7 +28,7 @@ const links = [
       <div class="lang" role="group" aria-label={ui.nav.langLabel[lang]}>
         {
           langs.map((l) => (
-            <a href={paths[l]} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
+            <a href={`${paths[l]}?lang=${l}`} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
               <span aria-hidden="true">{l.toUpperCase()}</span>
               <span class="sr-only">{l === 'en' ? 'English' : 'Español'}</span>
             </a>

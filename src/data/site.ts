@@ -20,6 +20,15 @@ export const studio = {
   region: 'KY',
 };
 
+// ---- Contact form ----------------------------------------------------------
+// Build-time switches (Cloudflare build variables). The form only renders when both are set;
+// otherwise the contact section offers the email address alone. The Worker holds the secrets.
+const turnstileSiteKey = (import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined)?.trim() ?? '';
+export const inquiry = {
+  siteKey: turnstileSiteKey,
+  enabled: turnstileSiteKey !== '' && import.meta.env.PUBLIC_INQUIRY_ENABLED === 'true',
+};
+
 // ---- Screenshots ---------------------------------------------------------
 // Files are src/assets/work/<site>-<page>-<desktop|mobile>.jpg, made by scripts/capture.mjs.
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/work/*.jpg', { eager: true });
@@ -416,6 +425,32 @@ export const ui = {
     where: {
       en: 'Louisville, KY · English & Español',
       es: 'Louisville, KY · Español & English',
+    },
+    form: {
+      label: { en: 'Contact form', es: 'Formulario de contacto' },
+      name: { en: 'Your name', es: 'Tu nombre' },
+      email: { en: 'Email', es: 'Correo electrónico' },
+      business: { en: 'Business name (optional)', es: 'Nombre del negocio (opcional)' },
+      city: { en: 'City (optional)', es: 'Ciudad (opcional)' },
+      links: { en: 'Current website or social media (optional)', es: 'Web o redes sociales actuales (opcional)' },
+      message: { en: 'What do you need?', es: '¿Qué necesitas?' },
+      messageHint: {
+        en: 'What your business does and what you want your website to do for you. At least 20 characters.',
+        es: 'A qué se dedica tu negocio y qué quieres que tu web haga por ti. Mínimo 20 caracteres.',
+      },
+      privacy: { en: 'I agree that my message is used to reply to my inquiry.', es: 'Acepto que mi mensaje se use para responder a mi consulta.' },
+      privacyLink: { en: 'Privacy', es: 'Privacidad' },
+      send: { en: 'Send message', es: 'Enviar mensaje' },
+      sending: { en: 'Sending…', es: 'Enviando…' },
+      sent: {
+        en: 'Thanks, your message was sent. I’ll reply to the email you gave me.',
+        es: 'Gracias, tu mensaje se envió. Te respondo al correo que me diste.',
+      },
+      error: {
+        en: 'The message couldn’t be sent. Your text is still here: try again or write to info@fallscity.dev.',
+        es: 'No se pudo enviar el mensaje. Tu texto sigue aquí: inténtalo de nuevo o escribe a info@fallscity.dev.',
+      },
+      orEmail: { en: 'Prefer email? Write to', es: '¿Prefieres el correo? Escribe a' },
     },
   },
   footer: {

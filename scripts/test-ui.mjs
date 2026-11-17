@@ -96,6 +96,51 @@ for (const width of [320, 390, 768, 1024, 1440]) {
   await ctx.close();
 }
 
+// Contact: without the form build variables there is no form, only the email link
+{
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  await page.goto(base + '/', { waitUntil: 'networkidle' });
+  const forms = await page.locator('#contact form').count();
+  const mail = await page.locator('#contact a[href^="mailto:info@fallscity.dev"]').count();
+  check(forms === 0 && mail === 1, `contact without form config: ${forms} forms, ${mail} mailto link`);
+  const langHref = await page.locator('.lang a[hreflang="es"]').getAttribute('href');
+  check(langHref === '/es/?lang=es', `language switch sets the cookie through ?lang= (${langHref})`);
+  await ctx.close();
+}
+
+// Benefits carousel (motion allowed): one slide at a time, auto-advance, manual pick, axe
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'no-preference' });
+  const page = await ctx.newPage();
+  await page.goto(base + '/', { waitUntil: 'networkidle' });
+  const car = page.locator('.carousel');
+  await car.scrollIntoViewIfNeeded();
+  const shown = () => car.locator('.slide').evaluateAll((els) => els.map((e, i) => [i, +getComputedStyle(e).opacity]).filter(([, o]) => o > 0.5).map(([i]) => i));
+  // Jump the CSS timeline instead of waiting: t seconds into the cycle.
+  const at = (t) => page.evaluate((ms) => document.getAnimations().forEach((a) => { if (a.animationName !== 'reveal') { a.pause(); a.currentTime = ms; } }), t * 1000);
+  await at(3);
+  check(JSON.stringify(await shown()) === '[0]', 'carousel shows only slide 0 at 3s');
+  await at(6 * 4 + 3);
+  check(JSON.stringify(await shown()) === '[4]', 'carousel advances to slide 4 at 27s');
+  await page.evaluate(() => document.getAnimations().forEach((a) => a.play()));
+  await car.getByRole('radio', { name: 'A brand that earns trust' }).check();
+  await page.waitForTimeout(700);
+  check(JSON.stringify(await shown()) === '[2]', 'picking a dot shows slide 2');
+  const running = await car.locator('.slide').evaluateAll((els) => els.filter((e) => getComputedStyle(e).animationName === 'benefit-slide').length);
+  check(running === 0, 'picking a dot stops the rotation');
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(700);
+  check(JSON.stringify(await shown()) === '[3]', 'ArrowRight moves the carousel to slide 3');
+  await page.waitForTimeout(6000);
+  for (const colorScheme of ['light', 'dark']) {
+    await page.emulateMedia({ colorScheme });
+    const { violations } = await new AxeBuilder({ page }).include('#benefits').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
+    check(violations.length === 0, `axe carousel ${colorScheme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
+  }
+  await ctx.close();
+}
+
 // Reduced motion: reveal content is fully visible without scrolling
 {
   const ctx = await browser.newContext({ reducedMotion: 'reduce' });

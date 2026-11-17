@@ -5,3 +5,6 @@ dist/
 .env.*
 artifacts/
 .claude/settings.local.json
+.wrangler/
+.dev.vars
+!.env.example

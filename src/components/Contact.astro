@@ -1,14 +1,112 @@
 ---
-import { studio, ui, type Lang } from '../data/site';
+import { inquiry, privacyPath, studio, ui, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const mailto = `mailto:${studio.email}?subject=${encodeURIComponent(ui.contact.subject[lang])}&body=${encodeURIComponent(ui.contact.body[lang])}`;
+const f = ui.contact.form;
 ---
-<section class="section contact" id="contact" aria-labelledby="contact-title">
+<section class:list={['section contact', { 'has-form': inquiry.enabled }]} id="contact" aria-labelledby="contact-title">
   <div class="wrap">
-    <h2 id="contact-title">{ui.contact.title[lang]}</h2>
-    <p class="lead">{ui.contact.lead[lang]}</p>
-    <a class="mail" href={mailto}>{studio.email}</a>
-    <p class="where">{ui.contact.where[lang]}</p>
+    <div class="contact-intro">
+      <h2 id="contact-title">{ui.contact.title[lang]}</h2>
+      <p class="lead">{ui.contact.lead[lang]}</p>
+      {inquiry.enabled && <p class="or-email">{f.orEmail[lang]}</p>}
+      <a class="mail" href={mailto}>{studio.email}</a>
+      <p class="where">{ui.contact.where[lang]}</p>
+    </div>
+    {
+      inquiry.enabled && (
+        // Hidden until the script runs: without JavaScript there is no Turnstile, so the email link above is the way in.
+        <form class="inquiry" method="post" action="/api/inquiry" aria-label={f.label[lang]} data-inquiry hidden
+          data-sending={f.sending[lang]} data-sent={f.sent[lang]} data-error={f.error[lang]}>
+          <div class="fields">
+            <label>
+              <span>{f.name[lang]}</span>
+              <input type="text" name="name" minlength="2" maxlength="80" autocomplete="name" required />
+            </label>
+            <label>
+              <span>{f.email[lang]}</span>
+              <input type="email" name="email" maxlength="254" autocomplete="email" required />
+            </label>
+            <label>
+              <span>{f.business[lang]}</span>
+              <input type="text" name="business" maxlength="120" autocomplete="organization" />
+            </label>
+            <label>
+              <span>{f.city[lang]}</span>
+              <input type="text" name="city" maxlength="80" autocomplete="address-level2" />
+            </label>
+            <label class="wide">
+              <span>{f.links[lang]}</span>
+              <input type="text" name="links" maxlength="200" autocomplete="url" />
+            </label>
+            <label class="wide">
+              <span>{f.message[lang]}</span>
+              <textarea name="message" minlength="20" maxlength="3000" rows="6" required aria-describedby="message-hint"></textarea>
+              <small id="message-hint">{f.messageHint[lang]}</small>
+            </label>
+          </div>
+          <div class="trap" aria-hidden="true">
+            <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <input type="hidden" name="language" value={lang} />
+          <input type="hidden" name="startedAt" value="" />
+          <label class="consent">
+            <input type="checkbox" name="privacy" value="true" required />
+            <span>{f.privacy[lang]} <a href={privacyPath[lang]}>{f.privacyLink[lang]}</a></span>
+          </label>
+          <div class="cf-turnstile" data-sitekey={inquiry.siteKey} data-language={lang} data-theme="auto"></div>
+          <button class="btn send" type="submit">{f.send[lang]}</button>
+          <p class="status" role="status" aria-live="polite"></p>
+        </form>
+      )
+    }
   </div>
 </section>
+{inquiry.enabled && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+{
+  inquiry.enabled && (
+    <script>
+      const form = document.querySelector<HTMLFormElement>('[data-inquiry]');
+      if (form) {
+        form.hidden = false;
+        const started = form.querySelector<HTMLInputElement>('[name="startedAt"]');
+        if (started) started.value = String(Date.now());
+        const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+        const status = form.querySelector<HTMLElement>('.status')!;
+        const label = button.textContent ?? '';
+
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          if (!form.reportValidity()) return;
+          button.disabled = true;
+          button.textContent = form.dataset.sending ?? label;
+          status.textContent = '';
+          delete status.dataset.state;
+          const data = new FormData(form);
+          const payload: Record<string, unknown> = Object.fromEntries(data.entries());
+          payload.privacy = data.get('privacy') === 'true';
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            if (!response.ok) throw new Error(String(response.status));
+            form.reset();
+            if (started) started.value = String(Date.now());
+            status.textContent = form.dataset.sent ?? '';
+            status.dataset.state = 'ok';
+          } catch {
+            status.textContent = form.dataset.error ?? '';
+            status.dataset.state = 'error';
+          } finally {
+            (window as { turnstile?: { reset: () => void } }).turnstile?.reset();
+            button.disabled = false;
+            button.textContent = label;
+          }
+        });
+      }
+    </script>
+  )
+}

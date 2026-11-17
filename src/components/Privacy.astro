@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
-import { privacyPath, studio, type Lang } from '../data/site';
+import { inquiry, privacyPath, studio, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 
@@ -11,9 +11,15 @@ const copy = {
     title: 'Privacy',
     updated: 'Last updated: November 17, 2026',
     sections: [
-      ['What this site collects', 'This site has no forms, no accounts, no cookies, no analytics and no advertising trackers. It does not collect personal information while you browse.'],
-      ['Hosting', 'The site is served by a hosting provider that may keep short-lived technical logs (such as IP address and request time) to deliver the pages and protect against abuse.'],
-      ['When you send an email', `If you write to ${studio.email}, your message and email address are used only to reply and to discuss your project. They are not sold or shared for marketing.`],
+      ['What this site collects', 'This site has no accounts, no analytics and no advertising trackers. It does not collect personal information while you browse.'],
+      ['Cookies', 'The only cookie is a language preference, set when you switch between English and Spanish so the site opens in the language you chose. It holds nothing else.'],
+      ...(inquiry.enabled
+        ? [
+            ['Contact form', 'If you use the contact form, what you type (your name, email, business details and message) is sent to me by email through Resend, an email delivery service. It is not stored in a database on this site. The form uses Cloudflare Turnstile to block spam, which checks technical signals from your browser.'],
+          ]
+        : []),
+      ['Hosting', 'The site is served by Cloudflare, which may keep short-lived technical logs (such as IP address and request time) to deliver the pages and protect against abuse.'],
+      ['How your message is used', `Whether you write through the form or to ${studio.email}, your message and email address are used only to reply and to discuss your project. They are not sold or shared for marketing.`],
       ['Questions', `Write to ${studio.email} to ask about or delete any message you sent.`],
     ],
   },
@@ -21,9 +27,15 @@ const copy = {
     title: 'Privacidad',
     updated: 'Última actualización: 17 de noviembre de 2026',
     sections: [
-      ['Qué recoge este sitio', 'Este sitio no tiene formularios, cuentas, cookies, analítica ni rastreadores publicitarios. No recoge datos personales mientras navegas.'],
-      ['Hosting', 'El sitio lo sirve un proveedor de hosting que puede guardar registros técnicos breves (como la dirección IP y la hora de la petición) para entregar las páginas y protegerlas de abusos.'],
-      ['Cuando envías un correo', `Si escribes a ${studio.email}, tu mensaje y tu correo se usan solo para responderte y hablar de tu proyecto. No se venden ni se comparten con fines de marketing.`],
+      ['Qué recoge este sitio', 'Este sitio no tiene cuentas, analítica ni rastreadores publicitarios. No recoge datos personales mientras navegas.'],
+      ['Cookies', 'La única cookie es la preferencia de idioma: se guarda cuando cambias entre español e inglés, para que el sitio se abra en el idioma que elegiste. No contiene nada más.'],
+      ...(inquiry.enabled
+        ? [
+            ['Formulario de contacto', 'Si usas el formulario de contacto, lo que escribes (tu nombre, correo, datos del negocio y mensaje) me llega por correo a través de Resend, un servicio de envío de correo. No se guarda en ninguna base de datos de este sitio. El formulario usa Cloudflare Turnstile para bloquear el spam, que revisa señales técnicas de tu navegador.'],
+          ]
+        : []),
+      ['Hosting', 'El sitio lo sirve Cloudflare, que puede guardar registros técnicos breves (como la dirección IP y la hora de la petición) para entregar las páginas y protegerlas de abusos.'],
+      ['Cómo se usa tu mensaje', `Escribas por el formulario o a ${studio.email}, tu mensaje y tu correo se usan solo para responderte y hablar de tu proyecto. No se venden ni se comparten con fines de marketing.`],
       ['Preguntas', `Escribe a ${studio.email} para consultar o borrar cualquier mensaje que hayas enviado.`],
     ],
   },
