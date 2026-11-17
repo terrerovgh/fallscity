@@ -7,7 +7,6 @@ const { lang } = Astro.props;
 <section class="section" id="work" aria-labelledby="work-title">
   <div class="wrap">
     <header class="section-head">
-      <p class="eyebrow">{ui.work.eyebrow[lang]}</p>
       <h2 id="work-title">{ui.work.title[lang]}</h2>
       <p>{ui.work.lead[lang]}</p>
     </header>
@@ -46,7 +45,7 @@ const { lang } = Astro.props;
               </fieldset>
               <p>
                 <a class="visit" href={p.url} target="_blank" rel="noopener">
-                  {ui.work.visit[lang]}: {p.domain}
+                  {ui.work.visit[lang]} {p.domain}
                   <span aria-hidden="true">↗</span>
                   <span class="sr-only">{ui.work.newTab[lang]}</span>
                 </a>

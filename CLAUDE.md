@@ -3,7 +3,7 @@
 Landing page for Falls City Dev Studio (fallscity.dev). See README.md for commands.
 
 - Stack: Astro 7 static, TypeScript strict, own CSS (`src/styles/tokens.css`, `src/styles/base.css`). No Tailwind, no UI framework, no client JS. Keep it that way unless asked.
-- Content lives only in `src/data/site.ts`, always `{ en, es }`. EN routes at `/`, ES under `/es/` (privacy: `/privacy/`, `/es/privacidad/`).
+- Content lives only in `src/data/site.ts`, always `{ en, es }`. Voice: first person singular ("I build"), speaking to the owner as "you"/"tú". No decorative numbering (01, 02…) or eyebrow labels repeating a heading. EN routes at `/`, ES under `/es/` (privacy: `/privacy/`, `/es/privacidad/`).
 - Truthfulness: describe only what the client sites really do. No invented clients, numbers, testimonials or prices; services are negotiated per client.
 - The work section's page switcher is a radio group + `:has()` (CSS only, with a first-page fallback). Keep the `data-page` indices and the `input[value]` selectors in `base.css` in sync (max 4 pages per project).
 - Motion is opt-in (`prefers-reduced-motion: no-preference`) and scroll-driven reveals sit behind `@supports (animation-timeline: view())`.

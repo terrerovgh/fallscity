@@ -6,7 +6,7 @@ const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
   <div class="wrap">
-    <p>© {year} {studio.name} · Louisville, KY</p>
+    <p>© {year} {studio.name}, Louisville, KY. {ui.footer.tagline[lang]}</p>
     <ul>
       <li><a href={`mailto:${studio.email}`}>{studio.email}</a></li>
       <li><a href={privacyPath[lang]}>{ui.footer.privacy[lang]}</a></li>

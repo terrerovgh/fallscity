@@ -84,7 +84,7 @@ for (const width of [320, 390, 768, 1024, 1440]) {
   const page = await ctx.newPage();
   await page.goto(base + '/es/');
   const n = await page.locator('main section').count();
-  check(n === 5, `no-JS renders 5 sections (${n})`);
+  check(n === 7, `no-JS renders 7 sections (${n})`);
   await page.locator('.project').nth(1).getByText('Portafolio', { exact: true }).click();
   const shown = await page.locator('.project').nth(1).locator('[data-page]').evaluateAll((els) => els.filter((e) => getComputedStyle(e).display !== 'none').map((e) => e.dataset.page));
   check(JSON.stringify(shown) === '["1"]', 'no-JS switcher works');

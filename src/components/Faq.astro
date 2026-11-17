@@ -1,0 +1,20 @@
+---
+import { faqs, ui, type Lang } from '../data/site';
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+---
+<section class="section" id="faq" aria-labelledby="faq-title">
+  <div class="wrap faq">
+    <h2 id="faq-title">{ui.faq.title[lang]}</h2>
+    <div class="faq-list">
+      {
+        faqs.map((f) => (
+          <details>
+            <summary>{f.q[lang]}</summary>
+            <p>{f.a[lang]}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

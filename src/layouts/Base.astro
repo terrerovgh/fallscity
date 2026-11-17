@@ -1,7 +1,7 @@
 ---
 import '../styles/tokens.css';
 import '../styles/base.css';
-import { studio, ui, type Lang } from '../data/site';
+import { faqs, niches, services, studio, tools, ui, type Lang } from '../data/site';
 
 interface Props {
   lang: Lang;
@@ -10,23 +10,52 @@ interface Props {
   /** Path of this page in each language, used for canonical and hreflang. */
   paths: Record<Lang, string>;
   noindex?: boolean;
+  /** Home page: adds the business, its services and the FAQ to the structured data. */
+  home?: boolean;
 }
 
-const { lang, title, description, paths, noindex = false } = Astro.props;
+const { lang, title, description, paths, noindex = false, home = false } = Astro.props;
 const canonical = new URL(paths[lang], studio.url).href;
 const ogImage = new URL('/og.jpg', studio.url).href;
 
-const jsonLd = {
-  '@context': 'https://schema.org',
+const inLanguage = lang === 'en' ? 'en-US' : 'es-US';
+const orgId = `${studio.url}/#studio`;
+const business = {
   '@type': 'ProfessionalService',
+  '@id': orgId,
   name: studio.name,
   url: studio.url,
   email: studio.email,
+  logo: new URL('/favicon.svg', studio.url).href,
+  image: ogImage,
   description: ui.meta.description[lang],
   address: { '@type': 'PostalAddress', addressLocality: studio.locality, addressRegion: studio.region, addressCountry: 'US' },
   areaServed: { '@type': 'Country', name: 'United States' },
   knowsLanguage: ['en', 'es'],
+  audience: niches.map((n) => ({ '@type': 'BusinessAudience', audienceType: n.title[lang] })),
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: ui.services.title[lang],
+    itemListElement: [...services, ...tools].map((s) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'Service', name: s.name[lang], description: s.body[lang], provider: { '@id': orgId } },
+    })),
+  },
 };
+const graph: Record<string, unknown>[] = [
+  { '@type': 'WebSite', '@id': `${studio.url}/#website`, url: `${studio.url}/`, name: studio.name, inLanguage: ['en-US', 'es-US'], publisher: { '@id': orgId } },
+  { '@type': 'WebPage', '@id': `${canonical}#webpage`, url: canonical, name: title, description, inLanguage, isPartOf: { '@id': `${studio.url}/#website` }, about: { '@id': orgId } },
+  business,
+];
+if (home) {
+  graph.push({
+    '@type': 'FAQPage',
+    '@id': `${canonical}#faq`,
+    inLanguage,
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q[lang], acceptedAnswer: { '@type': 'Answer', text: f.a[lang] } })),
+  });
+}
+const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
 ---
 
 <!doctype html>
@@ -53,6 +82,10 @@ const jsonLd = {
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ui.meta.ogAlt[lang]} />
+    <meta property="og:locale:alternate" content={lang === 'en' ? 'es_US' : 'en_US'} />
     <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_US'} />
     <meta name="twitter:card" content="summary_large_image" />
 

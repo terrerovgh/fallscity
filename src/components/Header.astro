@@ -6,31 +6,25 @@ interface Props {
   lang: Lang;
   /** This page's path in each language, for the language switch. */
   paths: Record<Lang, string>;
-  /** Section links only make sense on the home page. */
-  sections?: boolean;
 }
-const { lang, paths, sections = true } = Astro.props;
+const { lang, paths } = Astro.props;
 const home = homePath[lang];
 const links = [
   ['work', ui.nav.work],
   ['services', ui.nav.services],
-  ['process', ui.nav.process],
-  ['contact', ui.nav.contact],
+  ['faq', ui.nav.faq],
 ] as const;
 ---
 <header class="site-header">
   <div class="wrap">
     <Logo href={home} />
     <nav class="nav" aria-label={ui.nav.label[lang]}>
-      {
-        sections && (
-          <ul>
-            {links.map(([id, label]) => (
-              <li><a href={`${home}#${id}`}>{label[lang]}</a></li>
-            ))}
-          </ul>
-        )
-      }
+      <ul>
+        {links.map(([id, label]) => (
+          <li><a href={`${home}#${id}`}>{label[lang]}</a></li>
+        ))}
+      </ul>
+      <a class="btn primary small" href={`${home}#contact`}>{ui.nav.cta[lang]}</a>
       <div class="lang" role="group" aria-label={ui.nav.langLabel[lang]}>
         {
           langs.map((l) => (

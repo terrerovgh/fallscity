@@ -3,19 +3,19 @@ import { Picture } from 'astro:assets';
 import { projects, shot, ui, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-// Three projects, as they look on a phone.
+// Three live projects, as they look on a phone.
 const featured = ['nina', 'tony', 'leey'].map((id) => projects.find((p) => p.id === id)!);
 ---
 <section class="hero" aria-labelledby="hero-title">
   <div class="wrap">
     <div>
-      <p class="eyebrow">{ui.hero.eyebrow[lang]}</p>
       <h1 id="hero-title">{ui.hero.title[lang]}</h1>
       <p class="lead">{ui.hero.lead[lang]}</p>
       <div class="actions">
         <a class="btn primary" href="#contact">{ui.hero.cta[lang]}</a>
         <a class="btn ghost" href="#work">{ui.hero.secondary[lang]}</a>
       </div>
+      <p class="where">{ui.hero.where[lang]}</p>
     </div>
     <div class="hero-phones">
       {
@@ -26,7 +26,7 @@ const featured = ['nina', 'tony', 'leey'].map((id) => projects.find((p) => p.id 
               formats={['avif', 'webp']}
               widths={[160, 240, 360, 480]}
               sizes="(min-width: 62rem) 200px, 30vw"
-              alt={`${p.domain} ${ui.work.mobileAlt[lang]}`}
+              alt={`${p.domain}, ${p.kind[lang]}, ${ui.work.mobileAlt[lang]}`}
               loading="eager"
               fetchpriority={i === 1 ? 'high' : undefined}
             />

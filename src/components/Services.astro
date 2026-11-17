@@ -3,27 +3,19 @@ import { Picture } from 'astro:assets';
 import { services, shot, tools, ui, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-
-const icons: Record<string, string> = {
-  messaging: '<path d="M5 7h22v15H13l-6 5v-5H5z"/><path d="M10 12h12M10 16.5h8"/>',
-  control: '<rect x="5" y="5" width="22" height="22" rx="3"/><path d="M5 12h22M12 12v15"/><path d="M16 18h7M16 22h5"/>',
-  care: '<path d="M16 4l10 4v7c0 6.5-4.3 11.2-10 13-5.7-1.8-10-6.5-10-13V8z"/><path d="M11.5 16l3.2 3.2 6-6.4"/>',
-};
 ---
 <section class="section" id="services" aria-labelledby="services-title">
   <div class="wrap">
     <header class="section-head">
-      <p class="eyebrow">{ui.services.eyebrow[lang]}</p>
       <h2 id="services-title">{ui.services.title[lang]}</h2>
       <p>{ui.services.lead[lang]}</p>
     </header>
 
-    <ol class="services-list">
+    <ul class="services-list">
       {
-        services.map((s, i) => (
+        services.map((s) => (
           <li class="service reveal">
             <div>
-              <p class="num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</p>
               <h3>{s.title[lang]}</h3>
               <p>{s.body[lang]}</p>
             </div>
@@ -39,30 +31,26 @@ const icons: Record<string, string> = {
                     loading="lazy"
                   />
                 </div>
-                <figcaption>
-                  {ui.services.exampleLabel[lang]} {s.example.caption[lang]}
-                </figcaption>
+                <figcaption>{s.example.caption[lang]}</figcaption>
               </figure>
             )}
           </li>
         ))
       }
-    </ol>
+    </ul>
 
     <div class="tools">
       <h3 class="tools-title">{ui.services.toolsTitle[lang]}</h3>
-      <ul>
+      <ul class="cards">
         {
           tools.map((t) => (
             <li class="reveal">
-              <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true" set:html={icons[t.id]} />
               <h4>{t.title[lang]}</h4>
               <p>{t.body[lang]}</p>
             </li>
           ))
         }
       </ul>
-      <p class="note">{ui.services.note[lang]}</p>
     </div>
   </div>
 </section>

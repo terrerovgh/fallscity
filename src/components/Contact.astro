@@ -2,11 +2,10 @@
 import { studio, ui, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const mailto = `mailto:${studio.email}?subject=${encodeURIComponent(ui.contact.subject[lang])}`;
+const mailto = `mailto:${studio.email}?subject=${encodeURIComponent(ui.contact.subject[lang])}&body=${encodeURIComponent(ui.contact.body[lang])}`;
 ---
 <section class="section contact" id="contact" aria-labelledby="contact-title">
   <div class="wrap">
-    <p class="eyebrow">{ui.contact.eyebrow[lang]}</p>
     <h2 id="contact-title">{ui.contact.title[lang]}</h2>
     <p class="lead">{ui.contact.lead[lang]}</p>
     <a class="mail" href={mailto}>{studio.email}</a>

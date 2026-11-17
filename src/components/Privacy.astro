@@ -13,7 +13,7 @@ const copy = {
     sections: [
       ['What this site collects', 'This site has no forms, no accounts, no cookies, no analytics and no advertising trackers. It does not collect personal information while you browse.'],
       ['Hosting', 'The site is served by a hosting provider that may keep short-lived technical logs (such as IP address and request time) to deliver the pages and protect against abuse.'],
-      ['When you email us', `If you write to ${studio.email}, your message and email address are used only to reply and to discuss your project. They are not sold or shared for marketing.`],
+      ['When you send an email', `If you write to ${studio.email}, your message and email address are used only to reply and to discuss your project. They are not sold or shared for marketing.`],
       ['Questions', `Write to ${studio.email} to ask about or delete any message you sent.`],
     ],
   },
@@ -23,14 +23,14 @@ const copy = {
     sections: [
       ['Qué recoge este sitio', 'Este sitio no tiene formularios, cuentas, cookies, analítica ni rastreadores publicitarios. No recoge datos personales mientras navegas.'],
       ['Hosting', 'El sitio lo sirve un proveedor de hosting que puede guardar registros técnicos breves (como la dirección IP y la hora de la petición) para entregar las páginas y protegerlas de abusos.'],
-      ['Cuando nos escribes', `Si escribes a ${studio.email}, tu mensaje y tu correo se usan solo para responderte y hablar de tu proyecto. No se venden ni se comparten con fines de marketing.`],
+      ['Cuando envías un correo', `Si escribes a ${studio.email}, tu mensaje y tu correo se usan solo para responderte y hablar de tu proyecto. No se venden ni se comparten con fines de marketing.`],
       ['Preguntas', `Escribe a ${studio.email} para consultar o borrar cualquier mensaje que hayas enviado.`],
     ],
   },
 }[lang];
 ---
 <Base lang={lang} title={`${copy.title} · ${studio.name}`} description={copy.sections[0]![1]} paths={privacyPath}>
-  <Header lang={lang} paths={privacyPath} sections={false} />
+  <Header lang={lang} paths={privacyPath} />
   <main id="main" class="section">
     <div class="wrap prose">
       <h1>{copy.title}</h1>
