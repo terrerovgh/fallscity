@@ -1,0 +1,11 @@
+@font-face{font-family:'Hanken Grotesk';src:url('/fonts/hanken-grotesk-latin.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Serif';src:url('/fonts/instrument-serif-latin.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Instrument Serif';src:url('/fonts/instrument-serif-italic-latin.woff2') format('woff2');font-weight:400;font-style:italic;font-display:swap}
+:root{
+  --paper:#f2f2e9;--ink:#171814;--cobalt:#3155e7;--muted:#55584f;--line:#b9bbae;--soft:#e5e7dc;--error:#a52a22;--success:#246b45;
+  --font-display:'Instrument Serif',Georgia,serif;--font-body:'Hanken Grotesk','Trebuchet MS',sans-serif;
+  --step--1:.75rem;--step-0:1rem;--step-1:clamp(1.1rem,1vw + .8rem,1.3rem);--step-2:clamp(1.35rem,1.5vw + 1rem,1.85rem);--step-3:clamp(2.5rem,4vw + 1rem,4.75rem);--step-4:clamp(3.4rem,6.2vw + .8rem,7.2rem);
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.5rem;--space-6:2rem;--space-7:3rem;--space-8:4rem;--space-9:6rem;--space-10:9rem;
+  --radius:2px;--layer-header:20;--ease:cubic-bezier(.2,.75,.25,1);--duration:180ms;
+}
+@media(min-width:700px){:root{--step--1:.8125rem}}

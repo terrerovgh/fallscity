@@ -1,0 +1,19 @@
+---
+import Logo from './Logo.astro';
+import { localizePath, type Lang } from '../i18n';
+import { footerRoutes, routeLabels, tradeRoutes, ui } from '../data/ui';
+const { lang } = Astro.props as { lang: Lang };
+---
+<footer class="site-footer">
+  <div class="footer-cta wrap">
+    <p class="eyebrow eyebrow-light">{lang === 'en' ? 'Your work. Your domain. Your next chapter.' : 'Su trabajo. Su dominio. Su próxima etapa.'}</p>
+    <a class="footer-cta-link" href={localizePath(lang, 'contact')}>{ui[lang].cta}<span aria-hidden="true">↗</span></a>
+    <a class="footer-email" href="mailto:info@fallscity.dev">info@fallscity.dev</a>
+  </div>
+  <div class="footer-grid wrap">
+    <div><a href={localizePath(lang, 'home')}><Logo class="footer-logo" mono /></a><p>{ui[lang].location}</p></div>
+    <nav aria-label={ui[lang].footerNavigation}><p class="footer-label">Falls City</p>{footerRoutes.map((key) => <a href={localizePath(lang, key)}>{routeLabels[lang][key]}</a>)}</nav>
+    <nav aria-label={lang === 'en' ? 'Websites for other trades' : 'Páginas para otros oficios'}><p class="footer-label">{lang === 'en' ? 'Other trades' : 'Otros oficios'}</p>{tradeRoutes.map((key) => <a href={localizePath(lang, key)}>{routeLabels[lang][key]}</a>)}</nav>
+  </div>
+  <div class="footer-bottom wrap"><span>© {new Date().getFullYear()} {ui[lang].copyright}</span><span>EN / ES · USA</span></div>
+</footer>

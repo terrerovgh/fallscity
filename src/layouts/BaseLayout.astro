@@ -1,78 +1,59 @@
 ---
-import '@fontsource-variable/fraunces';
-import '@fontsource-variable/public-sans';
-import '../styles/global.css';
-import SEO from '../components/SEO.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import SiteFooter from '../components/SiteFooter.astro';
-import type { Crumb, PageType } from '../lib/seo';
-import { alternatesFor, langFromPath, langTag, ui } from '../i18n';
-import { site } from '../config/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { business } from '../config/business';
+import { htmlLang, localizePath, type Lang, type RouteKey } from '../i18n';
+import { routeLabels, ui } from '../data/ui';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/components.css';
+import '../styles/motion.css';
 
 interface Props {
+  lang: Lang;
+  route: RouteKey;
   title: string;
   description: string;
   noindex?: boolean;
-  pathname?: string;
-  pageType?: PageType;
-  breadcrumbs?: Crumb[];
-  structuredData?: Record<string, unknown>[];
 }
-
-const {
-  title,
-  description,
-  noindex = false,
-  pathname,
-  pageType,
-  breadcrumbs,
-  structuredData = [],
-} = Astro.props;
-
-// The language comes from the URL (/es/... is Spanish). Every indexable page
-// exists in both languages, so each one declares both as hreflang alternates.
-const lang = langFromPath(Astro.url.pathname);
-const alternates = noindex ? [] : alternatesFor(pathname ?? Astro.url.pathname);
+const { lang, route, title, description, noindex = false } = Astro.props;
+const canonical = `${business.url}${localizePath(lang, route)}`;
+const social = `${business.url}/brand/social-${lang}.png`;
+const homeSchema = route === 'home' ? [
+  { '@type': 'Organization', '@id': `${business.url}/#organization`, name: business.legalName, url: business.url, email: business.email, areaServed: business.areaServed },
+  { '@type': 'WebSite', '@id': `${business.url}/#website`, url: business.url, name: business.legalName, publisher: { '@id': `${business.url}/#organization` }, inLanguage: ['en-US', 'es-US'] },
+] : [];
+const schema = route !== 'home' ? { '@type': 'WebPage', name: title, description, url: canonical, inLanguage: htmlLang(lang), isPartOf: { '@id': `${business.url}/#website` }, breadcrumb: { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: routeLabels[lang].home, item: `${business.url}${localizePath(lang, 'home')}` }, { '@type': 'ListItem', position: 2, name: routeLabels[lang][route], item: canonical }] } } : undefined;
 ---
-
 <!doctype html>
-<html lang={langTag[lang]}>
-  <head>
-    {import.meta.env.PROD && (
-      <Fragment>
-        <script is:inline async src={`https://www.googletagmanager.com/gtm.js?id=${site.googleTagId}`}></script>
-        <script is:inline>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-        </script>
-      </Fragment>
-    )}
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="generator" content={Astro.generator} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <SEO
-      title={title}
-      description={description}
-      noindex={noindex}
-      pathname={pathname}
-      pageType={pageType}
-      breadcrumbs={breadcrumbs}
-      structuredData={structuredData}
-      lang={langTag[lang]}
-      imageAlt={ui[lang].socialImageAlt}
-      alternates={alternates}
-    />
-    <script is:inline>document.documentElement.classList.add('js');</script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main-content">{ui[lang].skipLink}</a>
-    <SiteHeader />
-    <main id="main-content">
-      <slot />
-    </main>
-    <SiteFooter />
-  </body>
+<html lang={htmlLang(lang)}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  {noindex && <meta name="robots" content="noindex,nofollow" />}
+  {!noindex && <><link rel="alternate" hreflang="en-US" href={`${business.url}${localizePath('en', route)}`} /><link rel="alternate" hreflang="es-US" href={`${business.url}${localizePath('es', route)}`} /><link rel="alternate" hreflang="x-default" href={`${business.url}${localizePath('en', route)}`} /></>}
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={social} />
+  <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'es_US'} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/brand/favicon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+  <link rel="preload" href="/fonts/hanken-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/fonts/instrument-serif-latin.woff2" as="font" type="font/woff2" crossorigin />
+  {route === 'home' && <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', '@graph': homeSchema })} />}
+  {schema && <script type="application/ld+json" set:html={JSON.stringify({ '@context': 'https://schema.org', ...schema })} />}
+</head>
+<body>
+  <a class="skip-link" href="#main">{ui[lang].skip}</a>
+  <Header lang={lang} route={route} />
+  <main id="main"><slot /></main>
+  <Footer lang={lang} />
+</body>
 </html>

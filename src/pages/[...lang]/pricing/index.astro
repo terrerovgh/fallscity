@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import Plans from '../../../components/Plans.astro';
+import FaqList from '../../../components/FaqList.astro';
+import { pricingMetadata, careIncludes, careScopeNote } from '../../../data/pricing';
+import { pricingFaqKeys, pickFaqs } from '../../../data/faqs';
+import type { Lang } from '../../../i18n';
+export function getStaticPaths() { return [{ params: { lang: undefined }, props: { lang: 'en' } }, { params: { lang: 'es' }, props: { lang: 'es' } }]; }
+const { lang } = Astro.props as { lang: Lang };
+const copy = {
+  en: { eyebrow: 'Pricing / No hidden recurring fee', title: 'Know the build price and what comes next.', intro: 'Two sizes of the same service: a custom website, your admin panel, and the ongoing technical care that keeps it working.', visual: 'Build + care', careTitle: 'What the recurring fee covers', faqTitle: 'Pricing, ownership, and extras.' },
+  es: { eyebrow: 'Precios / Sin cuota recurrente oculta', title: 'Conozca el precio de desarrollo y lo que viene después.', intro: 'Dos tamaños del mismo servicio: una página a medida, su panel de administración y el cuidado técnico continuo que la mantiene funcionando.', visual: 'Desarrollo + cuidado', careTitle: 'Qué cubre la cuota recurrente', faqTitle: 'Precios, propiedad y extras.' },
+}[lang];
+---
+<BaseLayout lang={lang} route="pricing" title={pricingMetadata[lang].title} description={pricingMetadata[lang].description}>
+  <PageHero lang={lang} route="pricing" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro} tone="blue"><div class="price-hero-art"><span>{copy.visual}</span><strong>$650</strong><i>+</i><strong>$49<small>/mo</small></strong><p>{lang === 'en' ? 'Artist starting point. Studio pricing is shown below.' : 'Punto de partida para Artista. Abajo aparece el precio de Estudio.'}</p></div></PageHero>
+  <section class="pricing-page wrap"><Plans lang={lang} detailed /></section>
+  <section class="care-section wrap"><div><p class="eyebrow">{lang === 'en' ? 'Recurring care' : 'Cuidado recurrente'}</p><h2>{copy.careTitle}</h2><p>{careScopeNote[lang]}</p></div><ul>{careIncludes[lang].map((item, index) => <li><span>0{index + 1}</span>{item}</li>)}</ul></section>
+  <section class="faq-section wrap"><div class="section-heading"><p class="eyebrow">FAQ</p><h2>{copy.faqTitle}</h2></div><FaqList items={pickFaqs(lang, pricingFaqKeys)} /></section>
+</BaseLayout>

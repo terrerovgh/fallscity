@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import ContentSections from '../../../components/ContentSections.astro';
+import { localSeoPage } from '../../../data/pages';
+import type { Lang } from '../../../i18n';
+export function getStaticPaths() { return [{ params: { lang: undefined }, props: { lang: 'en' } }, { params: { lang: 'es' }, props: { lang: 'es' } }]; }
+const { lang } = Astro.props as { lang: Lang };
+const copy = localSeoPage[lang];
+---
+<BaseLayout lang={lang} route="local-seo" title={copy.metadata.title} description={copy.metadata.description}>
+  <PageHero lang={lang} route="local-seo" eyebrow={copy.eyebrow} title={copy.h1} intro={copy.intro}>
+    <div class="seo-hero-diagram"><p>{lang === 'en' ? 'A useful page, understood clearly' : 'Una página útil, entendida con claridad'}</p><div class="seo-line"><span>01</span><strong>{lang === 'en' ? 'Your work' : 'Su trabajo'}</strong><small>{lang === 'en' ? 'Real portfolio & styles' : 'Portafolio y estilos reales'}</small></div><div class="seo-line"><span>02</span><strong>{lang === 'en' ? 'Your business' : 'Su negocio'}</strong><small>{lang === 'en' ? 'Services & public details' : 'Servicios y datos públicos'}</small></div><div class="seo-line"><span>03</span><strong>{lang === 'en' ? 'Your place' : 'Su ubicación'}</strong><small>{lang === 'en' ? 'Accurate local context' : 'Contexto local preciso'}</small></div><p class="seo-note">{lang === 'en' ? 'No promised positions. No artificial city pages.' : 'Sin posiciones prometidas. Sin páginas artificiales por ciudad.'}</p></div>
+  </PageHero>
+  <section class="seo-content wrap"><ContentSections sections={copy.sections} /></section>
+</BaseLayout>

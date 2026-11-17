@@ -1,311 +1,61 @@
 ---
-import { isFormConfigured, site } from '../config/site';
-import { langFromPath, localizePath } from '../i18n';
-
-const lang = langFromPath(Astro.url.pathname);
-
-const copy = {
-  en: {
-    eyebrow: 'Project inquiry',
-    heading: 'Tell us what you have in mind.',
-    intro: 'Required fields are marked “required.” Please avoid including sensitive information.',
-    notConfiguredStrong: 'Online inquiries are not configured yet.',
-    notConfigured: 'No message can be sent from this page right now. The form will be enabled after the site owner completes the secure form-provider setup.',
-    legend: 'Project inquiry details',
-    required: '(required)',
-    optional: '(optional)',
-    name: 'Name',
-    email: 'Email',
-    business: 'Business name',
-    service: 'What can we help with?',
-    choose: 'Choose a service',
-    services: {
-      'new-website': 'A new business website',
-      'website-redesign': 'An existing website redesign',
-      'seo-foundations': 'SEO foundations',
-      'domain-hosting-ssl': 'Domain, hosting, or SSL setup',
-      maintenance: 'Website maintenance',
-      'not-sure': 'Not sure yet',
-    },
-    details: 'Project details',
-    detailsHint: 'What does your business do, what do you need, and is there an existing website? Please use at least 30 characters.',
-    honeypot: 'Leave this field empty',
-    consentBefore: 'I have read the',
-    consentLink: 'privacy notice',
-    consentAfter: 'and agree that Falls City Dev Studio may use these details to respond to my inquiry.',
-    footer: 'We only use your details to reply to your inquiry. They won’t be added to a marketing list.',
-    submit: 'Send Project Inquiry',
-  },
-  es: {
-    eyebrow: 'Consulta de proyecto',
-    heading: 'Cuéntenos qué tiene en mente.',
-    intro: 'Los campos obligatorios están marcados como «obligatorio». Por favor no incluya información sensible.',
-    notConfiguredStrong: 'Las consultas en línea todavía no están configuradas.',
-    notConfigured: 'Por ahora no se pueden enviar mensajes desde esta página. El formulario se activará cuando el dueño del sitio termine de configurar el proveedor seguro de formularios.',
-    legend: 'Detalles de la consulta',
-    required: '(obligatorio)',
-    optional: '(opcional)',
-    name: 'Nombre',
-    email: 'Correo electrónico',
-    business: 'Nombre del negocio',
-    service: '¿En qué le podemos ayudar?',
-    choose: 'Elija un servicio',
-    services: {
-      'new-website': 'Una página web nueva para mi negocio',
-      'website-redesign': 'Rediseñar mi página actual',
-      'seo-foundations': 'Bases de SEO',
-      'domain-hosting-ssl': 'Dominio, hosting o SSL',
-      maintenance: 'Mantenimiento web',
-      'not-sure': 'Todavía no lo sé',
-    },
-    details: 'Detalles del proyecto',
-    detailsHint: '¿Qué hace su negocio, qué necesita y ya tiene una página web? Escriba al menos 30 caracteres.',
-    honeypot: 'Deje este campo vacío',
-    consentBefore: 'Leí el',
-    consentLink: 'aviso de privacidad',
-    consentAfter: 'y acepto que Falls City Dev Studio use estos datos para responder a mi consulta.',
-    footer: 'Solo usamos sus datos para responder a su consulta. No los agregamos a ninguna lista de marketing.',
-    submit: 'Enviar consulta',
-  },
+import type { Lang } from '../i18n';
+import { extras } from '../data/pricing';
+import { localizePath } from '../i18n';
+const { lang } = Astro.props as { lang: Lang };
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
+const configured = Boolean(siteKey) && import.meta.env.PUBLIC_INQUIRY_ENABLED === 'true';
+const labels = {
+  en: { name: 'Your name', email: 'Email address', business: 'Business name (optional)', instagram: 'Instagram (optional)', trade: 'What best describes your business?', booking: 'How do clients book today? (optional)', extras: 'Extras you may want to discuss', description: 'What should your website make easier?', privacy: 'I have read the privacy draft and consent to the information being used to respond to my inquiry.', send: 'Send inquiry', sending: 'Sending…', notConfigured: 'Form delivery is not configured in this local build. The fields are available to review, but submission is disabled. Please email info@fallscity.dev.', success: 'The delivery provider accepted your inquiry. This confirms acceptance for delivery, not arrival in the inbox.', error: 'The inquiry could not be sent. Your entries are still here; please retry or email info@fallscity.dev.', choose: 'Choose one', noBooking: 'Not specified', required: 'Required', optional: 'Optional' },
+  es: { name: 'Su nombre', email: 'Correo electrónico', business: 'Nombre del negocio (opcional)', instagram: 'Instagram (opcional)', trade: '¿Qué describe mejor su negocio?', booking: '¿Cómo reservan sus clientes hoy? (opcional)', extras: 'Extras que quizá quiera comentar', description: '¿Qué quiere que su página web facilite?', privacy: 'He leído el borrador de privacidad y acepto que se use la información para responder a mi consulta.', send: 'Enviar consulta', sending: 'Enviando…', notConfigured: 'El envío del formulario no está configurado en esta versión local. Puede revisar los campos, pero el envío está desactivado. Escriba a info@fallscity.dev.', success: 'El proveedor aceptó su consulta para su envío. Esto no confirma que haya llegado al buzón.', error: 'No se pudo enviar la consulta. Sus datos siguen aquí; inténtelo de nuevo o escriba a info@fallscity.dev.', choose: 'Elija una opción', noBooking: 'Sin especificar', required: 'Obligatorio', optional: 'Opcional' },
 }[lang];
-
-// Messages used by the client-side script below.
-const messages = {
-  en: {
-    success: 'Thank you. Your project inquiry has been sent to Falls City Dev Studio.',
-    error: 'Your inquiry could not be sent. Please review your entries and try again.',
-    name: 'Enter your name using 2 to 80 characters.',
-    email: 'Enter a valid email address.',
-    service: 'Choose the service that best fits your project.',
-    details: 'Enter between 30 and 3,000 characters about your project.',
-    privacyConsent: 'Please agree to the privacy notice before sending.',
-    turnstile: 'Please complete the spam-protection check before sending.',
-    sending: 'Sending...',
-    sendingStatus: 'Sending your inquiry...',
-    failed: 'Your inquiry could not be sent. Please review the form and try again.',
-    sent: 'Thank you. Your project inquiry has been sent.',
-    network: 'The inquiry could not be sent because of a network or server problem. Your entries are still here; please try again.',
-  },
-  es: {
-    success: 'Gracias. Su consulta se envió a Falls City Dev Studio.',
-    error: 'No se pudo enviar su consulta. Revise los datos e intente de nuevo.',
-    name: 'Escriba su nombre con 2 a 80 caracteres.',
-    email: 'Escriba un correo electrónico válido.',
-    service: 'Elija el servicio que mejor describe su proyecto.',
-    details: 'Escriba entre 30 y 3.000 caracteres sobre su proyecto.',
-    privacyConsent: 'Acepte el aviso de privacidad antes de enviar.',
-    turnstile: 'Complete la verificación contra spam antes de enviar.',
-    sending: 'Enviando...',
-    sendingStatus: 'Enviando su consulta...',
-    failed: 'No se pudo enviar su consulta. Revise el formulario e intente de nuevo.',
-    sent: 'Gracias. Su consulta fue enviada.',
-    network: 'No se pudo enviar la consulta por un problema de red o del servidor. Sus datos siguen aquí; intente de nuevo.',
-  },
-}[lang];
+const trades = { en: [['tattoo-artist', 'Independent tattoo artist'], ['tattoo-studio', 'Tattoo studio'], ['barbershop', 'Barbershop'], ['salon', 'Hair salon'], ['nails', 'Nail salon or artist'], ['piercing', 'Piercing studio'], ['other', 'Other']], es: [['tattoo-artist', 'Tatuador independiente'], ['tattoo-studio', 'Estudio de tatuaje'], ['barbershop', 'Barbería'], ['salon', 'Salón de belleza'], ['nails', 'Salón o artista de uñas'], ['piercing', 'Estudio de piercing'], ['other', 'Otro']] }[lang];
+const bookings = { en: [['instagram-dm', 'Instagram messages'], ['booking-app', 'A booking app'], ['phone-text', 'Phone or text'], ['walk-in', 'Walk-ins'], ['other', 'Other']], es: [['instagram-dm', 'Mensajes de Instagram'], ['booking-app', 'Una aplicación de reservas'], ['phone-text', 'Teléfono o mensajes'], ['walk-in', 'Sin cita'], ['other', 'Otro']] }[lang];
 ---
-
-<form class="inquiry-form" id="inquiry-form" action="/api/inquiry" method="post" data-inquiry-form data-messages={JSON.stringify(messages)} data-submit-label={copy.submit}>
-  <input type="hidden" name="lang" value={lang} />
-  <div class="inquiry-form__intro">
-    <p class="eyebrow">{copy.eyebrow}</p>
-    <h2>{copy.heading}</h2>
-    <p class="muted small">{copy.intro}</p>
+<form class="inquiry-form" method="post" action="/api/inquiry" data-inquiry-form data-configured={configured ? 'true' : 'false'}>
+  <div class:list={['form-availability', { configured }]} role="note">{configured ? (lang === 'en' ? 'Your inquiry is sent securely after anti-spam verification.' : 'Su consulta se envía tras una comprobación contra spam.') : labels.notConfigured}</div>
+  <div class="form-grid">
+    <label><span>{labels.name}</span><input type="text" name="name" minlength="2" maxlength="80" autocomplete="name" required /></label>
+    <label><span>{labels.email}</span><input type="email" name="email" maxlength="254" autocomplete="email" required /></label>
+    <label><span>{labels.business}</span><input type="text" name="business" maxlength="120" autocomplete="organization" /></label>
+    <label><span>{labels.instagram}</span><input type="text" name="instagram" maxlength="60" autocomplete="off" /></label>
+    <label><span>{labels.trade}</span><select name="trade" required><option value="">{labels.choose}</option>{trades.map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+    <label><span>{labels.booking}</span><select name="bookingMethod"><option value="">{labels.noBooking}</option>{bookings.map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
   </div>
-
-  {!isFormConfigured && (
-    <p class="form-notice" data-type="error">
-      <strong>{copy.notConfiguredStrong}</strong> {copy.notConfigured}
-    </p>
-  )}
-
-  <fieldset disabled={!isFormConfigured}>
-    <legend class="sr-only">{copy.legend}</legend>
-    <div class="form-grid">
-      <div class="form-field">
-        <label for="name">{copy.name} <span>{copy.required}</span></label>
-        <input id="name" name="name" type="text" autocomplete="name" maxlength="80" required aria-describedby="name-error" />
-        <span class="form-field__error" id="name-error" data-error-for="name"></span>
-      </div>
-
-      <div class="form-field">
-        <label for="email">{copy.email} <span>{copy.required}</span></label>
-        <input id="email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="email-error" />
-        <span class="form-field__error" id="email-error" data-error-for="email"></span>
-      </div>
-
-      <div class="form-field">
-        <label for="business">{copy.business} <span>{copy.optional}</span></label>
-        <input id="business" name="business" type="text" autocomplete="organization" maxlength="120" aria-describedby="business-error" />
-        <span class="form-field__error" id="business-error" data-error-for="business"></span>
-      </div>
-
-      <div class="form-field">
-        <label for="service">{copy.service} <span>{copy.required}</span></label>
-        <select id="service" name="service" required aria-describedby="service-error">
-          <option value="">{copy.choose}</option>
-          {Object.entries(copy.services).map(([value, label]) => <option value={value}>{label}</option>)}
-        </select>
-        <span class="form-field__error" id="service-error" data-error-for="service"></span>
-      </div>
-
-      <div class="form-field form-field--full">
-        <label for="details">{copy.details} <span>{copy.required}</span></label>
-        <textarea id="details" name="details" minlength="30" maxlength="3000" required aria-describedby="details-hint details-error"></textarea>
-        <span class="form-field__hint" id="details-hint">{copy.detailsHint}</span>
-        <span class="form-field__error" id="details-error" data-error-for="details"></span>
-      </div>
-
-      <div class="honeypot" aria-hidden="true">
-        <label for="company-website">{copy.honeypot}</label>
-        <input id="company-website" name="companyWebsite" type="text" tabindex="-1" autocomplete="off" />
-      </div>
-      <input type="hidden" name="startedAt" value="" data-started-at />
-
-      <div class="form-field form-field--full">
-        <label class="form-consent">
-          <input id="privacy-consent" name="privacyConsent" type="checkbox" value="yes" required aria-describedby="privacyConsent-error" />
-          <span>{copy.consentBefore} <a href={localizePath('/privacy/', lang)}>{copy.consentLink}</a> {copy.consentAfter} <span>{copy.required}</span></span>
-        </label>
-        <span class="form-field__error" id="privacyConsent-error" data-error-for="privacyConsent"></span>
-      </div>
-    </div>
-
-    {isFormConfigured && (
-      <div class="cf-turnstile" data-sitekey={site.turnstileSiteKey} data-theme="light" data-language={lang}></div>
-    )}
-
-    <div class="form-footer">
-      <p class="small muted">{copy.footer}</p>
-      <button class="button" type="submit" data-submit-button>{copy.submit}</button>
-    </div>
-  </fieldset>
-
-  <p class="form-status" role="status" aria-live="polite" tabindex="-1" hidden data-form-status></p>
+  <fieldset class="extras-fieldset"><legend>{labels.extras}</legend><div>{extras[lang].map((extra) => <label><input type="checkbox" name="extras" value={extra.id} /><span>{extra.label}</span></label>)}</div></fieldset>
+  <label class="description-field"><span>{labels.description}</span><textarea name="description" minlength="20" maxlength="3000" rows="7" required></textarea><small>{lang === 'en' ? '20–3000 characters. Do not include medical, payment, or other sensitive information.' : '20–3000 caracteres. No incluya información médica, de pagos ni otros datos sensibles.'}</small></label>
+  <div class="honeypot" aria-hidden="true"><label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+  <input type="hidden" name="startedAt" value="" data-started-at />
+  {configured && <div class="cf-turnstile" data-sitekey={siteKey} data-theme="light"></div>}
+  <label class="privacy-check"><input type="checkbox" name="privacy" value="true" required /><span>{labels.privacy} <a href={localizePath(lang, 'privacy')}>{lang === 'en' ? 'Read the draft' : 'Leer el borrador'}</a>.</span></label>
+  <p class="form-status" role="status" aria-live="polite" data-form-status></p>
+  <button class="button button-dark form-submit" type="submit" disabled={!configured}>{configured ? labels.send : (lang === 'en' ? 'Submission not configured' : 'Envío no configurado')}<span aria-hidden="true">↗</span></button>
 </form>
-
-{isFormConfigured && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
-
+{configured && <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
 <script>
-  declare global {
-    interface Window {
-      turnstile?: { reset: () => void };
-    }
-  }
-
   const form = document.querySelector<HTMLFormElement>('[data-inquiry-form]');
-
-  if (form && !form.querySelector<HTMLFieldSetElement>('fieldset')?.disabled) {
-    const submitButton = form.querySelector<HTMLButtonElement>('[data-submit-button]');
-    const status = form.querySelector<HTMLParagraphElement>('[data-form-status]');
-    const startedAt = form.querySelector<HTMLInputElement>('[data-started-at]');
-    const fields = ['name', 'email', 'business', 'service', 'details', 'privacyConsent'] as const;
-    type MessageKey = 'success' | 'error' | 'name' | 'email' | 'service' | 'details' | 'privacyConsent' | 'turnstile' | 'sending' | 'sendingStatus' | 'failed' | 'sent' | 'network';
-    const t = JSON.parse(form.dataset.messages ?? '{}') as Record<MessageKey, string>;
-    const submitLabel = form.dataset.submitLabel ?? '';
-
-    form.noValidate = true;
-    if (startedAt) startedAt.value = String(Date.now());
-
-    const setStatus = (message: string, type: 'success' | 'error' | 'progress') => {
-      if (!status) return;
-      status.hidden = false;
-      status.textContent = message;
-      status.dataset.type = type;
-      status.setAttribute('role', type === 'error' ? 'alert' : 'status');
-    };
-
-    const inquiryResult = new URLSearchParams(window.location.search).get('inquiry');
-    if (inquiryResult === 'success') {
-      setStatus(t.success, 'success');
-    } else if (inquiryResult === 'error') {
-      setStatus(t.error, 'error');
+  const startedAt = document.querySelector<HTMLInputElement>('[data-started-at]');
+  if (startedAt) startedAt.value = String(Date.now());
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (form.dataset.configured !== 'true' || !form.reportValidity()) return;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+    if (button) button.disabled = true;
+    const data = new FormData(form);
+    const payload: Record<string, unknown> = Object.fromEntries(data.entries());
+    payload.extras = data.getAll('extras');
+    payload.privacy = data.get('privacy') === 'true';
+    try {
+      const response = await fetch('/api/inquiry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const result = await response.json() as { code?: string };
+      if (!response.ok) throw new Error(result.code || 'request_failed');
+      if (status) { status.textContent = document.documentElement.lang === 'es-US' ? 'El proveedor aceptó su consulta para su envío. Esto no confirma que haya llegado al buzón.' : 'The delivery provider accepted your inquiry. This confirms acceptance for delivery, not arrival in the inbox.'; status.dataset.state = 'success'; }
+      form.reset();
+    } catch {
+      if (status) { status.textContent = document.documentElement.lang === 'es-US' ? 'No se pudo enviar la consulta. Sus datos siguen aquí; inténtelo de nuevo o escriba a info@fallscity.dev.' : 'The inquiry could not be sent. Your entries are still here; please retry or email info@fallscity.dev.'; status.dataset.state = 'error'; }
+    } finally {
+      if (button) button.disabled = false;
     }
-
-    const setError = (name: string, message: string) => {
-      const field = form.elements.namedItem(name);
-      const control = field instanceof RadioNodeList ? null : field;
-      const error = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
-      if (control instanceof HTMLElement) control.setAttribute('aria-invalid', message ? 'true' : 'false');
-      if (error) error.textContent = message;
-    };
-
-    const validate = (data: FormData) => {
-      let valid = true;
-      const name = String(data.get('name') ?? '').trim();
-      const email = String(data.get('email') ?? '').trim();
-      const service = String(data.get('service') ?? '');
-      const details = String(data.get('details') ?? '').trim();
-
-      fields.forEach((field) => setError(field, ''));
-
-      if (name.length < 2 || name.length > 80) {
-        setError('name', t.name);
-        valid = false;
-      }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
-        setError('email', t.email);
-        valid = false;
-      }
-      if (!service) {
-        setError('service', t.service);
-        valid = false;
-      }
-      if (details.length < 30 || details.length > 3000) {
-        setError('details', t.details);
-        valid = false;
-      }
-      if (data.get('privacyConsent') !== 'yes') {
-        setError('privacyConsent', t.privacyConsent);
-        valid = false;
-      }
-      if (!String(data.get('cf-turnstile-response') ?? '')) {
-        setStatus(t.turnstile, 'error');
-        valid = false;
-      }
-
-      if (!valid) {
-        const firstInvalid = form.querySelector<HTMLElement>('[aria-invalid="true"]');
-        firstInvalid?.focus();
-      }
-      return valid;
-    };
-
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const data = new FormData(form);
-      if (!validate(data) || !submitButton) return;
-
-      submitButton.disabled = true;
-      submitButton.textContent = t.sending;
-      setStatus(t.sendingStatus, 'progress');
-
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          body: data,
-          headers: { Accept: 'application/json' },
-        });
-        const result = await response.json() as { message?: string; errors?: Record<string, string> };
-
-        Object.entries(result.errors ?? {}).forEach(([name, message]) => setError(name, message));
-
-        if (!response.ok) {
-          setStatus(result.message ?? t.failed, 'error');
-          window.turnstile?.reset();
-          return;
-        }
-
-        form.reset();
-        window.turnstile?.reset();
-        if (startedAt) startedAt.value = String(Date.now());
-        setStatus(result.message ?? t.sent, 'success');
-        status?.focus();
-      } catch {
-        setStatus(t.network, 'error');
-      } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = submitLabel;
-      }
-    });
-  }
+  });
 </script>

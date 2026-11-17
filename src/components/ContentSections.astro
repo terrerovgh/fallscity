@@ -1,0 +1,5 @@
+---
+import type { PageSection } from '../data/pages';
+const { sections, variant = 'numbered' } = Astro.props as { sections: PageSection[]; variant?: 'numbered' | 'legal' };
+---
+<div class:list={['content-sections', `content-${variant}`]}>{sections.map((section, index) => <section id={section.id}><span class="content-index">{String(index + 1).padStart(2, '0')}</span><div><h2>{section.title}</h2>{section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}{section.bullets && <ul>{section.bullets.map((bullet) => <li>{bullet}</li>)}</ul>}</div></section>)}</div>

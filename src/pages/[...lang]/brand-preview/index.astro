@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Logo from '../../../components/Logo.astro';
+import PublishingDiagram from '../../../components/PublishingDiagram.astro';
+import type { Lang } from '../../../i18n';
+export function getStaticPaths() { return [{ params: { lang: undefined }, props: { lang: 'en' } }, { params: { lang: 'es' }, props: { lang: 'es' } }]; }
+const { lang } = Astro.props as { lang: Lang };
+---
+<BaseLayout lang={lang} route="brand-preview" title="Falls City — Brand system" description="Internal preview of the Falls City identity, typography, color, logo variants, and functional diagrams." noindex>
+  <section class="brand-preview-hero wrap"><p class="eyebrow">Internal / Noindex</p><h1>A frame for the work.</h1><p>Falls City Dev Studio · Identity, type, color, and functional illustration.</p></section>
+  <section class="brand-logo-lab wrap"><div class="logo-on-paper"><Logo /></div><div class="logo-on-dark"><Logo mono /></div><div class="logo-variants"><Logo variant="wordmark" /><Logo variant="compact" /><Logo variant="compact" mono /></div><div class="symbol-sizes"><img src="/brand/symbol-16.png" width="16" height="16" alt="Symbol at 16 pixels" /><img src="/brand/symbol-24.png" width="24" height="24" alt="Symbol at 24 pixels" /><img src="/brand/symbol-32.png" width="32" height="32" alt="Symbol at 32 pixels" /></div></section>
+  <section class="brand-type wrap"><div><p class="eyebrow">Display / Instrument Serif</p><p class="type-sample">A website worthy <em>of your work.</em></p><p class="type-sample">Una web a la altura <em>de su trabajo.</em></p></div><div><p class="eyebrow">Text / Hanken Grotesk</p><h2>$1,400 <small>+ $99/mes</small></h2><p>Portafolio, textos y anuncios. Reservas, depósitos y cuidado técnico continuo.</p><p>Artist / Studio · EN / ES · 50% / 50%</p></div></section>
+  <section class="brand-colors wrap"><div><span>#F2F2E9</span></div><div><span>#171814</span></div><div><span>#3155E7</span></div><div><span>#E5E7DC</span></div></section>
+  <section class="brand-diagram wrap"><PublishingDiagram lang={lang} /></section>
+</BaseLayout>

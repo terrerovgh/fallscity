@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import PublishingDiagram from '../../../components/PublishingDiagram.astro';
+import ContentSections from '../../../components/ContentSections.astro';
+import FaqList from '../../../components/FaqList.astro';
+import { panelPage } from '../../../data/pages';
+import { panelFaqKeys, pickFaqs } from '../../../data/faqs';
+import type { Lang } from '../../../i18n';
+export function getStaticPaths() { return [{ params: { lang: undefined }, props: { lang: 'en' } }, { params: { lang: 'es' }, props: { lang: 'es' } }]; }
+const { lang } = Astro.props as { lang: Lang };
+const copy = panelPage[lang];
+---
+<BaseLayout lang={lang} route="panel" title={copy.metadata.title} description={copy.metadata.description}>
+  <PageHero lang={lang} route="panel" eyebrow={copy.eyebrow} title={copy.h1} intro={copy.intro}>
+    <div class="panel-hero-diagram"><p>{copy.diagram.label}</p>{copy.diagram.steps.map((step, index) => <div><span>0{index + 1}</span><strong>{step.title}</strong><i aria-hidden="true">↓</i></div>)}<small>{copy.diagram.disclaimer}</small></div>
+  </PageHero>
+  <section class="panel-edit wrap"><ContentSections sections={[copy.sections[0]!]} /></section>
+  <section class="panel-publishing"><div class="wrap"><ContentSections sections={[copy.sections[1]!]} /><PublishingDiagram lang={lang} /></div></section>
+  <section class="wrap panel-rest"><ContentSections sections={copy.sections.slice(2)} /></section>
+  <section class="faq-section wrap"><div class="section-heading"><p class="eyebrow">FAQ</p><h2>{lang === 'en' ? 'Control without confusion.' : 'Control sin confusiones.'}</h2></div><FaqList items={pickFaqs(lang, panelFaqKeys)} /></section>
+</BaseLayout>

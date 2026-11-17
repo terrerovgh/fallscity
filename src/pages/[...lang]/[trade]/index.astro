@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FaqList from '../../../components/FaqList.astro';
+import Plans from '../../../components/Plans.astro';
+import { trades, type TradeId } from '../../../data/trades';
+import { localizePath, type Lang, type RouteKey } from '../../../i18n';
+export function getStaticPaths() {
+  const ids: TradeId[] = ['barbershops', 'salons', 'nails', 'piercing'];
+  return ids.flatMap((trade) => [{ params: { lang: undefined, trade }, props: { lang: 'en', trade } }, { params: { lang: 'es', trade }, props: { lang: 'es', trade } }]);
+}
+const { lang, trade } = Astro.props as { lang: Lang; trade: TradeId };
+const copy = trades[trade][lang];
+---
+<BaseLayout lang={lang} route={trade as RouteKey} title={copy.title} description={copy.description}>
+  <section class="trade-hero"><div class="wrap"><p class="eyebrow">{copy.eyebrow}</p><h1 set:html={copy.heroTitle} /><div class="trade-hero-bottom"><p>{copy.heroCopy}</p><a class="button button-dark" href={localizePath(lang, 'contact')}>{lang === 'en' ? 'Talk about your business' : 'Hablemos de su negocio'} ↗</a></div><ol class="trade-service-strip">{copy.sections.slice(0, 4).map((section, index) => <li><span>0{index + 1}</span>{section}</li>)}</ol></div></section>
+  <section class="trade-problems wrap"><p class="eyebrow">{lang === 'en' ? 'Built around the daily work' : 'Creada alrededor del trabajo diario'}</p><div>{copy.problems.map((problem, index) => <article><span>0{index + 1}</span><h2>{problem.title}</h2><p>{problem.copy}</p></article>)}</div></section>
+  <section class="trade-blueprint"><div class="wrap"><div><p class="eyebrow">{lang === 'en' ? 'The useful structure' : 'La estructura útil'}</p><h2>{lang === 'en' ? 'Everything has a clear place.' : 'Todo tiene un lugar claro.'}</h2><p>{lang === 'en' ? 'The site presents your real content and links to the tools you already use. Custom booking systems and other extras are scoped separately.' : 'La página presenta su contenido real y enlaza a las herramientas que ya usa. Los sistemas de reservas a medida y otros extras se cotizan por separado.'}</p></div><ol>{copy.sections.map((section, index) => <li><span>{String(index + 1).padStart(2, '0')}</span>{section}</li>)}</ol></div></section>
+  <section class="trade-pricing wrap"><div class="section-heading"><p class="eyebrow">{lang === 'en' ? 'The same two plans' : 'Los mismos dos planes'}</p><h2>{lang === 'en' ? 'A clear starting point.' : 'Un punto de partida claro.'}</h2></div><Plans lang={lang} /></section>
+  <section class="faq-section wrap"><div class="section-heading"><p class="eyebrow">FAQ</p><h2>{lang === 'en' ? 'Questions for your business.' : 'Preguntas para su negocio.'}</h2></div><FaqList items={copy.faqs} /></section>
+</BaseLayout>

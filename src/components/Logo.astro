@@ -1,0 +1,33 @@
+---
+import geometry from '../config/brand-geometry.json';
+
+interface Props {
+  variant?: 'horizontal' | 'compact' | 'wordmark';
+  mono?: boolean;
+  label?: string;
+  class?: string;
+}
+const { variant = 'horizontal', mono = false, label = 'Falls City Dev Studio', class: className = '' } = Astro.props;
+const scale = 30 / geometry.wordmark.height;
+const width = 48 + geometry.wordmark.width * scale;
+---
+{variant === 'horizontal' && (
+  <svg class={className} viewBox={`0 0 ${width} 40`} role="img" aria-label={label}>
+    <path fill={mono ? 'currentColor' : 'var(--cobalt)'} d={geometry.symbol.paths[0]} />
+    <path fill="currentColor" d={geometry.symbol.paths[1]} />
+    <g transform={`translate(48 5) scale(${scale})`}>
+      <path fill="currentColor" transform={geometry.wordmark.transform} d={geometry.wordmark.path} />
+    </g>
+  </svg>
+)}
+{variant === 'compact' && (
+  <svg class={className} viewBox={geometry.symbol.viewBox} role="img" aria-label={label}>
+    <path fill={mono ? 'currentColor' : 'var(--cobalt)'} d={geometry.symbol.paths[0]} />
+    <path fill="currentColor" d={geometry.symbol.paths[1]} />
+  </svg>
+)}
+{variant === 'wordmark' && (
+  <svg class={className} viewBox={geometry.wordmark.viewBox} role="img" aria-label="Falls City">
+    <path fill="currentColor" transform={geometry.wordmark.transform} d={geometry.wordmark.path} />
+  </svg>
+)}

@@ -1,0 +1,16 @@
+---
+import type { Lang } from '../i18n';
+import { plans, pricingNote, extras, extrasNote } from '../data/pricing';
+import { localizePath } from '../i18n';
+const { lang, detailed = false } = Astro.props as { lang: Lang; detailed?: boolean };
+---
+<div class="plans">
+  {plans[lang].map((plan, index) => <article class="plan">
+    <div class="plan-head"><span class="plan-index">0{index + 1}</span><h3>{plan.name}</h3><p>{plan.audience}</p></div>
+    <div class="plan-prices"><p class="build-price"><span>{plan.buildLabel}</span><strong>{plan.build}</strong></p><p class="monthly-price"><strong>{plan.monthly}</strong><span>{plan.monthlyLabel}</span>{plan.annual && <small>{plan.annual}</small>}</p></div>
+    <ul class="plan-features">{plan.includes.map((item) => <li>{item}</li>)}</ul>
+    <a class="button button-dark" href={localizePath(lang, 'contact')}>{lang === 'en' ? `Discuss the ${plan.name} plan` : `Hablar del plan ${plan.name}`}<span aria-hidden="true">↗</span></a>
+  </article>)}
+</div>
+<p class="pricing-note">{pricingNote[lang]}</p>
+{detailed && <section class="extras-block"><h2>{lang === 'en' ? 'Extras, scoped to your business' : 'Extras, según su negocio'}</h2><ul>{extras[lang].map((extra) => <li>{extra.label}</li>)}</ul><p>{extrasNote[lang]}</p></section>}

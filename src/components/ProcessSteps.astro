@@ -1,0 +1,6 @@
+---
+import { processSteps } from '../data/process';
+import type { Lang } from '../i18n';
+const { lang, detailed = false } = Astro.props as { lang: Lang; detailed?: boolean };
+---
+<ol class="process-list">{processSteps[lang].map((step) => <li><span class="process-number">{step.number}</span><h3>{step.title}</h3><p>{step.summary}</p>{detailed && <><p>{step.description}</p><p class="client-role">{step.clientRole}</p></>}</li>)}</ol>

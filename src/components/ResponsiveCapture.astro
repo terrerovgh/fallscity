@@ -1,0 +1,25 @@
+---
+interface Props {
+  base: string;
+  alt: string;
+  priority?: boolean;
+  class?: string;
+  position?: string;
+}
+const { base, alt, priority = false, class: className = '', position = 'top' } = Astro.props;
+const assets = import.meta.glob('../assets/work/*.{avif,webp}', { eager: true, query: '?url', import: 'default' }) as Record<string, string>;
+const asset = (name: string) => {
+  const url = assets[`../assets/work/${name}`];
+  if (!url) throw new Error(`Missing capture: ${name}`);
+  return url;
+};
+const mobileWebp = asset(`${base}-mobile-390.webp`);
+const mobileAvif = asset(`${base}-mobile-390.avif`);
+const desktop = [480, 960, 1440].map((width) => ({ width, webp: asset(`${base}-desktop-${width}.webp`), avif: asset(`${base}-desktop-${width}.avif`) }));
+---
+<picture class={className}>
+  <source media="(max-width: 699px)" srcset={mobileAvif} type="image/avif" />
+  <source media="(max-width: 699px)" srcset={mobileWebp} type="image/webp" />
+  <source srcset={desktop.map(({ width, avif }) => `${avif} ${width}w`).join(', ')} sizes="(max-width: 1100px) 90vw, 62vw" type="image/avif" />
+  <img src={desktop[1]!.webp} srcset={desktop.map(({ width, webp }) => `${webp} ${width}w`).join(', ')} sizes="(max-width: 1100px) 90vw, 62vw" width="1440" height="900" alt={alt} loading={priority ? 'eager' : 'lazy'} fetchpriority={priority ? 'high' : undefined} decoding="async" style={`object-position:${position}`} />
+</picture>

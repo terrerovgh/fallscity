@@ -1,107 +1,89 @@
 # Falls City Dev Studio
 
-Official marketing website for Falls City Dev Studio, a Louisville web design and development studio. The canonical production origin is `https://fallscity.dev`.
+Sitio comercial bilingüe para tatuadores y estudios, construido con Astro estático, TypeScript, CSS propio y un Cloudflare Worker. La entrega es local; no se ha desplegado ni se ha enviado correo externo.
 
-## Technology
+## Arranque
 
-- Astro 7 with static output and strict TypeScript
-- Custom responsive CSS and self-hosted variable fonts
-- Cloudflare Worker for language routing and project inquiries
-- Cloudflare Turnstile and Resend for spam protection and delivery
-- Three.js for the optional homepage logo enhancement
+Requisitos: Node 22.12 o superior (verificado con Node 26.12.0).
 
-No client-side application framework, CMS, database, or analytics runtime is used.
-
-## Local development
-
-Requirements: a Node.js release supported by Astro 7 and npm.
-
-```sh
+```bash
 npm install
 npm run dev
 ```
 
-Available commands:
+Desarrollo: `http://localhost:4321/`.
 
-```sh
-npm run check      # Astro and TypeScript diagnostics
-npm run build      # Production build in dist/
-npm run preview    # Serve the static production build
-npm run audit:seo  # Validate the generated HTML in dist/
-npm test           # Check, build, and SEO audit
+```bash
+npm run check
+npm run build
+npm run preview
 ```
 
-Astro's development and preview servers do not run the Worker. Test language redirects and the inquiry endpoint through Wrangler after a build:
+Preview de producción estática: `http://localhost:4321/`. Astro preview no ejecuta el Worker. Para probar routing e inquiry con Workers, use `npm run test:worker`, que inicia Wrangler después de construir.
 
-```sh
-npm run build && npx wrangler dev
+## Verificación
+
+```bash
+npm test
+npm run audit:lighthouse
 ```
 
-## Project structure
+`npm test` incluye tipos, build, auditoría SEO, 32 grupos de Worker, rutas EN/ES en varios tamaños, Axe, interacciones, CTA móvil sin superposición, no-JS, reduced-motion y posiciones/reversa de scroll. Playwright puede requerir `npx playwright install chromium firefox webkit` en una máquina nueva.
 
-```text
-src/
-  assets/          Brand source files, skyline SVG, and portfolio screenshots
-  components/      Shared UI, navigation, metadata, and form components
-  config/          Business identity and public runtime configuration
-  data/            Services, process, FAQs, portfolio (in both languages), and logo geometry
-  i18n/            Language helpers, routing, and shared interface strings
-  layouts/         Global page layout
-  lib/             SEO helpers
-  pages/           Static routes
-  scripts/         Optional 3D logo enhancement
-  styles/          Design tokens and global responsive styles
-worker/            Cloudflare Worker: canonical host, language redirects, inquiry endpoint
-public/            Public brand assets, favicons, robots.txt, and headers
-scripts/           SVG generator and static SEO audit
+- Capturas: `artifacts/screenshots/`.
+- Recorrido móvil: `artifacts/video/falls-city-mobile-tour.webm`.
+- Evidencia de movimiento: `artifacts/motion/`.
+- Resultados UI/Axe/motores: `artifacts/qa/ui-results.json`.
+- Lighthouse y traza: `artifacts/lighthouse/`, `artifacts/performance/`.
+- Informe interpretado: `docs/qa-report.md`.
+
+## Marca
+
+```bash
+npm run brand
 ```
 
-## Environment configuration
+Regenera SVG/PNG desde `src/config/brand-geometry.json`. No edite exportaciones manualmente. Para cambiar las letras, los scripts Python `derive-wordmark.py` y `derive-social.py` reconstruyen la geometría desde las fuentes originales en `assets/fonts/`; requieren FontTools y Brotli en un entorno local. Las fuentes finales autoalojadas y licencias OFL están en `public/fonts/`.
 
-Copy `.env.example` to a local environment file and provide only the values needed for the environment. Never commit real credentials.
+Vista noindex: `/brand-preview/` y `/es/brand-preview/`.
 
-- `PUBLIC_TURNSTILE_SITE_KEY`: intentionally public browser key.
-- `TURNSTILE_SECRET_KEY`: server-only Turnstile secret.
-- `RESEND_API_KEY`: server-only Resend key.
-- `INQUIRY_TO_EMAIL`: private inquiry recipient.
-- `INQUIRY_FROM_EMAIL`: verified Resend sender.
+## Capturas de proyectos
 
-Without a public Turnstile key, the form stays disabled with a visible configuration notice. The endpoint returns success only after server validation, Turnstile verification, and confirmed delivery.
-
-## Artwork
-
-The homepage logo uses `src/data/logo-mark.ts` and `src/scripts/logo3d.ts`, with `public/brand/fallscity-mark.svg` as its static fallback. The enhancement is lazy-loaded and respects WebGL availability, Save-Data, page visibility, and reduced motion.
-
-The Louisville riverfront is a hand-drawn SVG without lettering. It appears in the mobile/tablet navbar, the desktop homepage hero, and the footer. Edit its generator rather than the generated file:
-
-```sh
-python3 scripts/louisville-skyline.py src/assets/brand/louisville-skyline.svg
+```bash
+npm run capture:portfolio
+node scripts/capture-portfolio.mjs --only=01-goodnina
+node scripts/capture-portfolio.mjs --portfolio-only
 ```
 
-The generator uses only Python's standard library. Keep its `583 × 115` viewBox synchronized with the skyline proportions in `src/styles/global.css`.
+Las nuevas capturas quedan como `captured-awaiting-visual-review` hasta que se abran y revisen. El manifest incluye origen, fecha, viewport, posición, hash y derivados. Tres sitios presentaron bloqueo Cloudflare durante esta entrega; consulte `docs/research.md`. Derechos de uso público pendientes de revisión antes del lanzamiento.
 
-Portfolio entries live in `src/data/portfolio.ts`. Their real desktop and mobile screenshots live in `src/assets/portfolio/`; Astro generates responsive AVIF/WebP variants during the build.
+## Formulario opcional
 
-## Deployment
+La versión local se muestra como **no configurada** y deshabilita el envío. `info@fallscity.dev` sigue disponible.
 
-Production runs as a Cloudflare Worker with static assets, built by Workers Builds from this repository and configured in `wrangler.jsonc`:
+Para una configuración real, después de revisión y autorización:
 
-- Build command: `npm run build`
-- Deploy command: `npx wrangler deploy`
-- Static assets: `dist/`, served through `worker/index.ts` (pages and `/api/*`); `/_astro/*` and `/brand/*` are served directly
-- Server variables and secrets are set in the Cloudflare dashboard and kept across deploys (`keep_vars`)
-- Production origin: `https://fallscity.dev`
+1. Configure el Worker con `TURNSTILE_SECRET_KEY`, `RESEND_API_KEY`, `INQUIRY_TO_EMAIL` e `INQUIRY_FROM_EMAIL` en `.dev.vars` para local o como secretos de Cloudflare para producción.
+2. Use un remitente Resend efectivamente verificado y una cuenta Turnstile autorizada.
+3. En el build de Astro, defina `PUBLIC_TURNSTILE_SITE_KEY` y `PUBLIC_INQUIRY_ENABLED=true`. Esta última variable solo habilita la UI; no sustituye los secretos del Worker.
+4. Pruebe con mocks y Wrangler. Nunca exponga secretos en variables `PUBLIC_*`.
 
-Configure public and server environment variables separately for preview and production. Verify real inquiry delivery before enabling the form publicly.
+Una respuesta `202 accepted` significa que Resend aceptó el mensaje para entrega, **no** que llegó al buzón. No hay base de datos de consultas en la web. No se activó analítica ni publicidad.
 
-## Content and SEO
+## Publicación pendiente de autorización
 
-The site is bilingual. Every page is generated in English (at the root) and Spanish (under `/es/`) from `src/pages/[...lang]/`; page copy lives beside the markup as `{ en, es }` objects, shared interface strings in `src/i18n/index.ts`, and both languages of the services, process, FAQ, and portfolio data in `src/data/`. Each indexable page declares reciprocal hreflang alternates, the sitemap includes them, and the SEO audit validates them.
+No se han ejecutado despliegue, DNS, compras ni configuración de proveedores. Antes de publicar:
 
-Visitors are sent to their language by `worker/language.ts`: an explicit choice from the EN/ES switcher (stored in a `lang` cookie) wins, otherwise the browser's `Accept-Language` decides. Crawlers and requests without a language preference are served the URL they asked for, so both versions can be indexed. The off-site local SEO checklist (Search Console, Google Business Profile, citations, reviews) lives in the owner's private knowledge base, outside this repository.
+- Revisión del propietario/legal de `/privacy/` y retención real.
+- Revisión de derechos de las capturas.
+- Configuración y verificación de Turnstile/Resend y remitente.
+- `npm test`, Lighthouse y revisión visual final sobre el build.
+- Después, con autorización expresa: `npm run build`, `npx wrangler deploy`, dominio `fallscity.dev` y comprobaciones en producción.
 
-Each indexable page owns one search intent and has unique metadata. Internal links use trailing slashes. Organization and WebSite structured data are emitted only on the homepage; other pages use the appropriate page and breadcrumb types.
+La configuración está en `wrangler.jsonc`: assets `dist`, Worker primero para páginas/API, exclusiones para `/_astro/*` y `/brand/*`. No hay carpeta Pages `functions/`.
 
-The sitemap is a single `/sitemap.xml`, generated by `src/pages/sitemap.xml.ts`: every indexable page in reading order, each English URL followed by its Spanish counterpart, with en-US, es-US, and x-default alternates. The old `/sitemap-index.xml` and `/sitemap-0.xml` addresses redirect to it (`public/_redirects`). It excludes noindex pages: `/privacy/` (in both languages) remains a visible draft and is excluded until owner/legal review is complete and `privacyIsDraft` in `src/config/site.ts` is set to false.
+## Contenido y mantenimiento
 
-Public copy must stay factual and focused on website design/development, SEO foundations, domains/hosting/SSL, and maintenance. Do not add unverified prices, testimonials, rankings, contact details, or guarantees.
+Precios y extras: `src/data/pricing.ts`. Proceso, FAQ, oficios y páginas: `src/data/`. Rutas: `src/i18n/index.ts`. No duplique importes ni prefijos `/es/` en páginas. La geometría de marca, datos comerciales y evidencia tienen una sola fuente de verdad.
+
+Más detalles: `docs/handoff.md`, `docs/brand-guide.md`, `docs/motion-spec.md`, `docs/decisions.md` y `docs/progress.md`.

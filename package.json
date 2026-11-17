@@ -3,23 +3,33 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "astro dev",
+    "check": "astro check",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check",
-    "audit:seo": "node scripts/seo-audit.mjs",
-    "test": "astro check && astro build && node scripts/seo-audit.mjs"
+    "brand": "node scripts/generate-brand.mjs",
+    "capture:portfolio": "node scripts/capture-portfolio.mjs",
+    "audit:seo": "node scripts/audit-seo.mjs",
+    "test:worker": "node scripts/test-worker.mjs",
+    "test:ui": "node scripts/test-ui.mjs && node scripts/test-motion.mjs",
+    "audit:lighthouse": "node scripts/audit-lighthouse.mjs",
+    "test": "npm run check && npm run build && npm run audit:seo && npm run test:worker && npm run test:ui"
   },
   "dependencies": {
-    "@fontsource-variable/fraunces": "5.3.0",
-    "@fontsource-variable/public-sans": "5.3.0",
-    "astro": "7.4.6",
-    "three": "0.180.0"
+    "astro": "7.4.12",
+    "sharp": "0.35.5"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.12",
-    "@types/three": "0.180.0",
-    "typescript": "6.0.3"
+    "@axe-core/playwright": "4.14.0",
+    "@cloudflare/workers-types": "5.20261116.1",
+    "lighthouse": "13.6.0",
+    "playwright": "1.65.1",
+    "typescript": "6.0.3",
+    "wrangler": "4.163.0"
   }
 }

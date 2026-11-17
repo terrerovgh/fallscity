@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ContentSections from '../../../components/ContentSections.astro';
+import { privacyPage } from '../../../data/pages';
+import type { Lang } from '../../../i18n';
+export function getStaticPaths() { return [{ params: { lang: undefined }, props: { lang: 'en' } }, { params: { lang: 'es' }, props: { lang: 'es' } }]; }
+const { lang } = Astro.props as { lang: Lang };
+const copy = privacyPage[lang];
+---
+<BaseLayout lang={lang} route="privacy" title={copy.metadata.title} description={copy.metadata.description} noindex>
+  <section class="privacy-hero wrap"><p class="eyebrow">{copy.eyebrow}</p><h1>{copy.h1}</h1><p>{copy.intro}</p><div class="draft-notice"><strong>{copy.draftNotice}</strong><span>{copy.effectiveDate}</span></div></section>
+  <section class="privacy-content wrap"><ContentSections sections={copy.sections} variant="legal" /><a class="button button-dark" href={copy.cta.href}>{copy.cta.label} ↗</a></section>
+</BaseLayout>

@@ -1,0 +1,19 @@
+@keyframes hero-frame{from{transform:translateY(0) scale(1.025)}to{transform:translateY(-1.5rem) scale(.97)}}
+@keyframes work-reveal{from{transform:translateY(2.5rem) scale(.975)}to{transform:translateY(0) scale(1)}}
+@keyframes publish-one{0%{transform:translateY(1rem)}18%,100%{transform:translateY(0)}}
+@keyframes publish-two{0%,18%{transform:translateY(1rem)}42%,100%{transform:translateY(0)}}
+@keyframes publish-three{0%,42%{transform:translateY(1rem)}68%,100%{transform:translateY(0)}}
+@keyframes publish-result{0%,64%{transform:translateY(1.5rem)}88%,100%{transform:translateY(0)}}
+@media(prefers-reduced-motion:no-preference){
+  @supports((animation-timeline:view()) and (animation-range:entry)){
+    .hero-art-frame{view-timeline-name:--hero-frame;view-timeline-axis:block}
+    .hero-art-frame picture{animation-name:hero-frame;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:--hero-frame;animation-range:cover 0% cover 55%}
+    .work-image{animation-name:work-reveal;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view(block);animation-range:entry 5% cover 32%}
+    .product-story{view-timeline-name:--product-story;view-timeline-axis:block;timeline-scope:--product-story}
+    .publish-node:nth-child(1){animation-name:publish-one;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:--product-story;animation-range:cover 0% cover 100%}
+    .publish-node:nth-child(2){animation-name:publish-two;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:--product-story;animation-range:cover 0% cover 100%}
+    .publish-node:nth-child(3){animation-name:publish-three;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:--product-story;animation-range:cover 0% cover 100%}
+    .publishing-result{animation-name:publish-result;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:--product-story;animation-range:cover 0% cover 100%}
+  }
+}
+@media(max-width:699px){.work-image{animation-range:entry 0% cover 25%}.publishing-result{animation-name:none}}

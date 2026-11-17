@@ -1,0 +1,53 @@
+---
+import Logo from './Logo.astro';
+import { localizePath, oppositeLang, type Lang, type RouteKey } from '../i18n';
+import { mainRoutes, routeLabels, ui } from '../data/ui';
+const { lang, route } = Astro.props as { lang: Lang; route: RouteKey };
+const other = oppositeLang(lang);
+---
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand-link" href={localizePath(lang, 'home')} aria-label={`${ui[lang].back} — Falls City`}><Logo class="header-logo" /></a>
+    <nav class="desktop-nav" aria-label={ui[lang].navigation}>
+      {mainRoutes.map((key) => <a href={localizePath(lang, key)} aria-current={route === key ? 'page' : undefined}>{routeLabels[lang][key]}</a>)}
+    </nav>
+    <div class="header-actions">
+      <a class="language-link" href={`${localizePath(other, route)}?lang=${other}`} hreflang={other === 'en' ? 'en-US' : 'es-US'} data-lang-link={other} aria-label={ui[lang].languageLabel}>{other === 'en' ? 'EN' : 'ES'}</a>
+      <button class="menu-button" type="button" data-menu-open aria-haspopup="dialog">{ui[lang].menu}<span aria-hidden="true">+</span></button>
+    </div>
+  </div>
+</header>
+<noscript><style>.menu-button{display:none}</style><nav class="nojs-nav" aria-label={ui[lang].navigation}>{mainRoutes.map((key) => <a href={localizePath(lang, key)}>{routeLabels[lang][key]}</a>)}</nav></noscript>
+<dialog class="menu-dialog" closedby="any" aria-labelledby="menu-title" data-menu-dialog>
+  <div class="menu-top"><span id="menu-title">{ui[lang].menu}</span><button type="button" class="menu-close" data-menu-close autofocus>{ui[lang].close}<span aria-hidden="true">×</span></button></div>
+  <nav aria-label={ui[lang].navigation} class="dialog-nav">
+    {mainRoutes.map((key, index) => <a href={localizePath(lang, key)}><span>0{index + 1}</span>{routeLabels[lang][key]}</a>)}
+    <a href={localizePath(lang, 'process')}><span>05</span>{routeLabels[lang].process}</a>
+    <a href={localizePath(lang, 'about')}><span>06</span>{routeLabels[lang].about}</a>
+  </nav>
+  <div class="menu-foot"><a href={`${localizePath(other, route)}?lang=${other}`} data-lang-link={other}>{ui[lang].language}</a><a href="mailto:info@fallscity.dev">info@fallscity.dev</a></div>
+</dialog>
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-menu-dialog]');
+  const open = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+  const close = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+  open?.addEventListener('click', () => dialog?.showModal());
+  close?.addEventListener('click', () => dialog?.close());
+  dialog?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => dialog.close()));
+  matchMedia('(min-width: 900px)').addEventListener('change', (event) => { if (event.matches && dialog?.open) dialog.close(); });
+  if (dialog && !('closedBy' in HTMLDialogElement.prototype)) {
+    let outside = false;
+    const isOutside = (event: PointerEvent) => {
+      const rect = dialog.getBoundingClientRect();
+      return event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+    };
+    dialog.addEventListener('pointerdown', (event) => { outside = isOutside(event); });
+    dialog.addEventListener('pointerup', (event) => { if (outside && isOutside(event)) dialog.close(); });
+  }
+  document.querySelectorAll<HTMLAnchorElement>('[data-lang-link]').forEach((link) => {
+    const target = new URL(link.href);
+    target.search = location.search;
+    target.searchParams.set('lang', link.dataset.langLink ?? '');
+    link.href = target.href;
+  });
+</script>

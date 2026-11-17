@@ -1,8 +1,0 @@
-# Old sitemap addresses (from the previous @astrojs/sitemap setup) point to the
-# single sitemap, so any Search Console submission of them keeps working.
-/sitemap-index.xml /sitemap.xml 301
-/sitemap-0.xml /sitemap.xml 301
-
-# Spanish-friendly address for the tattoo page (the page itself is /es/tattoo/).
-/es/tatuajes/ /es/tattoo/ 301
-/es/tatuajes /es/tattoo/ 301

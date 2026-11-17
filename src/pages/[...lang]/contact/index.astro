@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ContactForm from '../../../components/ContactForm.astro';
+import { contactPage } from '../../../data/pages';
+import type { Lang } from '../../../i18n';
+export function getStaticPaths() { return [{ params: { lang: undefined }, props: { lang: 'en' } }, { params: { lang: 'es' }, props: { lang: 'es' } }]; }
+const { lang } = Astro.props as { lang: Lang };
+const copy = contactPage[lang];
+---
+<BaseLayout lang={lang} route="contact" title={copy.metadata.title} description={copy.metadata.description}>
+  <section class="contact-hero wrap"><p class="eyebrow">{copy.eyebrow}</p><h1>{copy.h1}</h1><p>{copy.intro}</p><a class="contact-email" href={`mailto:${copy.email}`}>{copy.email} ↗</a></section>
+  <section class="contact-layout wrap"><ContactForm lang={lang} /><aside class="contact-aside"><section><span>01</span><h2>{copy.sections[0]!.title}</h2><p>{copy.sections[0]!.paragraphs[0]}</p><ul>{copy.sections[0]!.bullets?.map((item) => <li>{item}</li>)}</ul></section><section><span>02</span><h2>{copy.sections[1]!.title}</h2><p>{copy.sections[1]!.paragraphs[0]}</p></section><section><span>03</span><h2>{copy.sections[3]!.title}</h2><p>{copy.sections[3]!.paragraphs[0]}</p></section></aside></section>
+</BaseLayout>

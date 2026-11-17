@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import ProcessSteps from '../../../components/ProcessSteps.astro';
+import { processMetadata, processSteps } from '../../../data/process';
+import { localizePath, type Lang } from '../../../i18n';
+export function getStaticPaths() { return [{ params: { lang: undefined }, props: { lang: 'en' } }, { params: { lang: 'es' }, props: { lang: 'es' } }]; }
+const { lang } = Astro.props as { lang: Lang };
+const copy = {
+  en: { eyebrow: 'The working process', title: 'Four stages. A real site at the end.', intro: 'You bring the work and knowledge of your business. We organize the design, build, technical setup, and handover.', materials: 'What you bring', materialsCopy: 'Your Instagram or photos, your current booking method, business details, and one clear list of changes per review round. No technical specification required.', payment: 'A written quote comes before work: 50% to begin and 50% before launch. Two rounds of changes are included.', cta: 'Start with a conversation' },
+  es: { eyebrow: 'El proceso de trabajo', title: 'Cuatro etapas. Una página real al final.', intro: 'Usted aporta el trabajo y el conocimiento de su negocio. Nosotros organizamos el diseño, la construcción, la configuración técnica y la entrega.', materials: 'Qué aporta usted', materialsCopy: 'Su Instagram o fotografías, su método actual de reservas, los datos del negocio y una lista clara de cambios por cada ronda. No necesita preparar especificaciones técnicas.', payment: 'La cotización escrita llega antes de trabajar: 50% al inicio y 50% antes de publicar. Incluye dos rondas de cambios.', cta: 'Empezar con una conversación' },
+}[lang];
+---
+<BaseLayout lang={lang} route="process" title={processMetadata[lang].title} description={processMetadata[lang].description}>
+  <PageHero lang={lang} route="process" eyebrow={copy.eyebrow} title={copy.title} intro={copy.intro}><ol class="process-hero-orbit">{processSteps[lang].map((step) => <li><span>{step.number}</span>{step.title}</li>)}</ol></PageHero>
+  <section class="process-page wrap"><ProcessSteps lang={lang} detailed /></section>
+  <section class="process-materials"><div class="wrap"><p class="eyebrow">{copy.materials}</p><h2>{copy.materials}</h2><p>{copy.materialsCopy}</p><p>{copy.payment}</p><a class="button button-blue" href={localizePath(lang, 'contact')}>{copy.cta} ↗</a></div></section>
+</BaseLayout>

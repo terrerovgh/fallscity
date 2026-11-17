@@ -1,4 +1,9 @@
-import type { Lang } from '../i18n';
+export type Lang = 'en' | 'es';
+
+export interface PageMetadata {
+  title: string;
+  description: string;
+}
 
 export interface ProcessStep {
   number: string;
@@ -12,85 +17,72 @@ export const processSteps: Record<Lang, ProcessStep[]> = {
   en: [
     {
       number: '01',
-      title: 'Start with a conversation',
-      summary: 'Talk through the business, the website you need, and what is not working today.',
-      description:
-        'The first step is a practical discussion about your business, customers, services, and goals. You do not need to arrive with a technical specification or have every detail figured out.',
-      clientRole: 'Bring your questions, examples of what you like, and any existing website or brand materials.',
+      title: 'Talk',
+      summary: 'Share your Instagram and tell us how clients book today.',
+      description: 'We discuss your style, how clients reach you, and what you want the site to make easier. No technical knowledge is needed.',
+      clientRole: 'You provide: your Instagram, how you take bookings and deposits, and what the site should improve.',
     },
     {
       number: '02',
-      title: 'Define the scope',
-      summary: 'Turn the conversation into a clear proposal with agreed deliverables and responsibilities.',
-      description:
-        'The project scope sets out the pages, features, content needs, and technical work involved. It also identifies anything outside the project so expectations are clear before design and development begin.',
-      clientRole: 'Review the proposal, ask questions, and approve the scope before work starts.',
+      title: 'Quote',
+      summary: 'Receive a written quote with the plan, scope, and any extras.',
+      description: 'You receive the exact price in writing before any work begins. The build is paid 50% to start and 50% before launch.',
+      clientRole: 'You provide: your approval, along with the photos and business details we request.',
     },
     {
       number: '03',
-      title: 'Design and build',
-      summary: 'Shape the content and visual direction, then implement the website with care.',
-      description:
-        'The studio develops the page structure, design, and working website around the agreed scope. Decisions about layout, mobile behavior, accessibility, and performance are made during the build instead of being left for the end.',
-      clientRole: 'Provide the agreed business information, copy input, images, and timely feedback needed for the project.',
+      title: 'Build and review',
+      summary: 'We build the working site and you review it online.',
+      description: 'You review a private preview of the working site, not a static mockup. Two rounds of changes are included.',
+      clientRole: 'You provide: your requested changes, gathered into one list for each round.',
     },
     {
       number: '04',
-      title: 'Review and refine',
-      summary: 'Check the real website, gather feedback, and resolve the agreed revisions.',
-      description:
-        'You review the working site rather than trying to imagine the result from a static picture. The studio checks content, links, responsive layouts, forms, and technical details while incorporating the revisions defined in the project scope.',
-      clientRole: 'Review the agreed pages and features, then provide clear, consolidated feedback.',
-    },
-    {
-      number: '05',
-      title: 'Launch and look after it',
-      summary: 'Complete launch checks, connect the production setup, and decide what support you need next.',
-      description:
-        'After approval, the website is deployed and the domain, HTTPS, metadata, and key user paths are checked. If ongoing maintenance is part of your engagement, its scope is already clear; if not, you receive the agreed handoff.',
-      clientRole: 'Approve the finished website and coordinate any account or domain access needed for launch.',
+      title: 'Launch and handover',
+      summary: 'Your site is published on your domain, and you learn to use the panel.',
+      description: 'We check the domain, SSL, and search setup on the live site. Then we walk you through the panel so you can add work, edit text, and publish announcements yourself.',
+      clientRole: 'You provide: your final approval and a domain registered in your name. We can guide you through setting it up.',
     },
   ],
   es: [
     {
       number: '01',
-      title: 'Empezamos con una conversación',
-      summary: 'Hablamos de su negocio, de la página que necesita y de lo que hoy no está funcionando.',
-      description:
-        'El primer paso es una conversación práctica sobre su negocio, sus clientes, sus servicios y sus metas. No necesita llegar con una especificación técnica ni tener todos los detalles resueltos.',
-      clientRole: 'Traiga sus preguntas, ejemplos de lo que le gusta y cualquier página o material de marca que ya tenga.',
+      title: 'Hablamos',
+      summary: 'Comparta su Instagram y cuéntenos cómo reservan sus clientes hoy.',
+      description: 'Hablamos de su estilo, de cómo le contactan sus clientes y de qué quiere que la página facilite. No necesita conocimientos técnicos.',
+      clientRole: 'Usted aporta: su Instagram, cómo recibe reservas y depósitos, y qué debería mejorar la página.',
     },
     {
       number: '02',
-      title: 'Definimos el alcance',
-      summary: 'Convertimos la conversación en una propuesta clara, con entregables y responsabilidades acordados.',
-      description:
-        'El alcance del proyecto detalla las páginas, funciones, contenido y trabajo técnico. También deja claro lo que queda fuera del proyecto, para que las expectativas estén definidas antes de empezar el diseño y el desarrollo.',
-      clientRole: 'Revise la propuesta, haga sus preguntas y apruebe el alcance antes de que empiece el trabajo.',
+      title: 'Cotización',
+      summary: 'Reciba una cotización por escrito con el plan, el alcance y los extras.',
+      description: 'Recibe el precio exacto por escrito antes de empezar. La construcción se paga 50% al inicio y 50% antes de publicar.',
+      clientRole: 'Usted aporta: su aprobación, además de las fotos y los datos de su negocio que le pidamos.',
     },
     {
       number: '03',
-      title: 'Diseñamos y construimos',
-      summary: 'Damos forma al contenido y al estilo visual, y construimos la página con cuidado.',
-      description:
-        'El estudio desarrolla la estructura de las páginas, el diseño y la página funcionando, según el alcance acordado. Las decisiones sobre diseño, comportamiento en el teléfono, accesibilidad y velocidad se toman durante la construcción, no al final.',
-      clientRole: 'Entregue la información del negocio acordada, sus aportes para los textos, las imágenes y sus comentarios a tiempo.',
+      title: 'Construcción y revisión',
+      summary: 'Construimos la página y usted revisa cómo funciona en línea.',
+      description: 'Revisa una vista previa privada de la página en funcionamiento, no una imagen estática. Incluimos dos rondas de cambios.',
+      clientRole: 'Usted aporta: sus cambios, reunidos en una sola lista por ronda.',
     },
     {
       number: '04',
-      title: 'Revisamos y ajustamos',
-      summary: 'Revisamos la página real, recogemos sus comentarios y hacemos los cambios acordados.',
-      description:
-        'Usted revisa la página funcionando, en lugar de imaginar el resultado a partir de una imagen. El estudio revisa el contenido, los enlaces, la adaptación a pantallas, los formularios y los detalles técnicos, e incorpora los cambios definidos en el alcance.',
-      clientRole: 'Revise las páginas y funciones acordadas, y envíe sus comentarios de forma clara y en un solo grupo.',
-    },
-    {
-      number: '05',
-      title: 'Publicamos y la cuidamos',
-      summary: 'Hacemos las revisiones finales, publicamos y decidimos qué soporte necesita después.',
-      description:
-        'Tras su aprobación, se publica la página y se revisan el dominio, el HTTPS, los metadatos y los recorridos principales de los visitantes. Si el mantenimiento forma parte del acuerdo, su alcance ya está claro; si no, recibe la entrega acordada.',
-      clientRole: 'Apruebe la página terminada y coordine el acceso a las cuentas o al dominio necesarios para publicarla.',
+      title: 'Publicación y entrega',
+      summary: 'Su página se publica en su dominio y usted aprende a usar el panel.',
+      description: 'Revisamos el dominio, el SSL y la configuración para buscadores en la página publicada. Después le explicamos el panel para que pueda añadir trabajos, editar textos y publicar anuncios.',
+      clientRole: 'Usted aporta: su aprobación final y un dominio registrado a su nombre. Podemos orientarle para configurarlo.',
     },
   ],
+};
+
+export const processMetadata: Record<Lang, PageMetadata> = {
+  en: {
+    title: 'Our Website Design Process | Falls City',
+    description: 'From the first conversation to a written quote, two review rounds, and launch on your own domain. See the four steps and what we need from you.',
+  },
+  es: {
+    title: 'Proceso de diseño web | Falls City',
+    description: 'De la primera conversación a la cotización escrita, dos rondas de revisión y publicación en su propio dominio. Conozca las cuatro etapas y qué necesitamos de usted.',
+  },
 };

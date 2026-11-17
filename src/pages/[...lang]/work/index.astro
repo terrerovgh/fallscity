@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/PageHero.astro';
+import ResponsiveCapture from '../../../components/ResponsiveCapture.astro';
+import { workPage } from '../../../data/pages';
+import { projects } from '../../../data/portfolio';
+import type { Lang } from '../../../i18n';
+export function getStaticPaths() { return [{ params: { lang: undefined }, props: { lang: 'en' } }, { params: { lang: 'es' }, props: { lang: 'es' } }]; }
+const { lang } = Astro.props as { lang: Lang };
+const copy = workPage[lang];
+const details = ['gallery', 'gallery', 'artists'];
+---
+<BaseLayout lang={lang} route="work" title={copy.metadata.title} description={copy.metadata.description}>
+  <PageHero lang={lang} route="work" eyebrow={copy.eyebrow} title={copy.h1} intro={copy.intro}><div class="work-hero-index">{projects.map((project, index) => <a href={`#${project.id}`} aria-label={`${lang === 'en' ? 'Go to' : 'Ir a'} ${project.name}`}>0{index + 1}</a>)}<p>{lang === 'en' ? 'Six public projects. Open the real websites.' : 'Seis proyectos públicos. Abra las páginas reales.'}</p></div></PageHero>
+  <section class="work-index-page wrap">{projects.map((project, index) => <article class="work-entry" id={project.id}><div class="work-entry-head"><span>0{index + 1}</span><p>{project.kind[lang]}</p><a href={project.url} target="_blank" rel="noopener noreferrer">{project.domain} ↗</a></div><div class="work-entry-main"><div><h2>{project.name}</h2><p>{project.description[lang]}</p><p class="work-evidence">{project.evidence[lang]}</p></div>{project.captureStatus === 'verified' ? <a class="work-entry-image" href={project.url} target="_blank" rel="noopener noreferrer"><ResponsiveCapture base={project.imageBase} alt={`${project.name}: ${project.evidence[lang]}`} /></a> : <a class="work-entry-unavailable" href={project.url} target="_blank" rel="noopener noreferrer"><span>{lang === 'en' ? 'Public website' : 'Página pública'}</span><strong>{project.domain}</strong><span>{lang === 'en' ? 'Open without screenshot' : 'Abrir sin captura'} ↗</span></a>}</div>{index < 3 && project.captureStatus === 'verified' && <figure class="work-detail"><ResponsiveCapture base={`${project.imageBase.replace('-home', `-${details[index]}`)}`} alt={`${project.name}: ${lang === 'en' ? 'additional public feature view' : 'vista pública adicional'}`} /><figcaption>{lang === 'en' ? 'Additional public view' : 'Vista pública adicional'} · {project.domain}</figcaption></figure>}</article>)}</section>
+</BaseLayout>

@@ -1,0 +1,22 @@
+---
+import ResponsiveCapture from './ResponsiveCapture.astro';
+import type { Lang } from '../i18n';
+const { lang, compact = false } = Astro.props as { lang: Lang; compact?: boolean };
+const copy = {
+  en: { label: 'How it works · Concept illustration', caption: 'The diagram explains the publishing flow. The gallery below is a verified public website, not an admin screen.', steps: [['01', 'Upload', 'Add new work and its details.'], ['02', 'Review', 'Check the image, text, order, and style.'], ['03', 'Publish', 'Make the approved content visible on your site.']], result: 'The public result', domain: 'goodnina.com · Public gallery with style filters' },
+  es: { label: 'Esquema del funcionamiento · Ilustración conceptual', caption: 'El esquema explica el flujo de publicación. La galería inferior es una página pública verificada, no una pantalla del panel.', steps: [['01', 'Subir', 'Agregue trabajo nuevo y sus detalles.'], ['02', 'Revisar', 'Compruebe imagen, texto, orden y estilo.'], ['03', 'Publicar', 'Muestre el contenido aprobado en su página.']], result: 'El resultado público', domain: 'goodnina.com · Galería pública con filtros por estilo' },
+}[lang];
+---
+<figure class:list={['publishing-figure', { compact }]}>
+  <figcaption><strong>{copy.label}</strong><span>{copy.caption}</span></figcaption>
+  <div class="publishing-canvas">
+    <div class="publishing-steps">
+      {copy.steps.map(([number, title, text]) => <div class="publish-node"><span class="publish-number">{number}</span><div><h3>{title}</h3><p>{text}</p></div><span class="publish-mark" aria-hidden="true">↘</span></div>)}
+    </div>
+    <div class="publishing-result">
+      <p class="mini-label">{copy.result}</p>
+      <ResponsiveCapture base="01-goodnina-gallery" alt={lang === 'en' ? 'Public Nina Romero gallery showing floral, ornamental, lettering, and fine-line filters above tattoo photographs' : 'Galería pública de Nina Romero con filtros de floral, ornamental, lettering y línea fina sobre fotografías de tatuajes'} />
+      <p class="capture-caption">{copy.domain}</p>
+    </div>
+  </div>
+</figure>
