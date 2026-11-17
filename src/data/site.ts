@@ -64,13 +64,13 @@ export const projects: Project[] = [
   },
   {
     id: 'tony',
-    name: 'Anthony Nine',
-    domain: 'tonytattoo.com',
-    url: 'https://tonytattoo.com/',
-    kind: { en: 'Tattoo artist · Black & grey and color', es: 'Tatuador · Blanco y negro y color' },
+    name: 'Tony Pixel Tattoo',
+    domain: 'tonypixeltattoo.com',
+    url: 'https://tonypixeltattoo.com/',
+    kind: { en: 'Tattoo artist · Montevideo, Uruguay', es: 'Tatuador · Montevideo, Uruguay' },
     summary: {
-      en: 'A dark, portfolio-first site with a video section and a booking form that collects the details the artist needs before he replies.',
-      es: 'Una web oscura centrada en el portafolio, con sección de video y un formulario de reserva que recoge los datos que el artista necesita antes de responder.',
+      en: 'The site of Antonio “Tony” Otero, a realism artist at Tempel Tattoo Studio: a portfolio filtered by style, artist and studio details, a page for each specialty, and a booking form that opens WhatsApp with the request already written.',
+      es: 'La web de Antonio «Tony» Otero, tatuador de realismo en Tempel Tattoo Studio: portafolio filtrado por estilo, datos del artista y del estudio, una página por especialidad y un formulario de turnos que abre WhatsApp con la consulta ya escrita.',
     },
     pages: [
       { id: 'home', label: { en: 'Home', es: 'Inicio' } },
@@ -174,7 +174,7 @@ export const services: Service[] = [
       en: 'Every inquiry arrives complete and organized: who they are, what they want and how to reach them. Keep track of each client from first message to return visit.',
       es: 'Cada consulta llega completa y ordenada: quién es, qué quiere y cómo contactarle. Sigue a cada cliente desde el primer mensaje hasta la próxima visita.',
     },
-    example: { site: 'tony', page: 'book', caption: { en: 'tonytattoo.com, booking form', es: 'tonytattoo.com, formulario de reserva' } },
+    example: { site: 'tony', page: 'book', caption: { en: 'tonypixeltattoo.com, booking form that opens WhatsApp', es: 'tonypixeltattoo.com, formulario de turnos que abre WhatsApp' } },
   },
 ];
 

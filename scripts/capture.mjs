@@ -15,8 +15,8 @@ const SITES = {
     pages: [['home', '/'], ['gallery', '/galeria'], ['book', '/', '#agendar']],
   },
   tony: {
-    base: 'https://tonytattoo.com',
-    pages: [['home', '/'], ['portfolio', '/', '#portfolio'], ['book', '/', '#booking']],
+    base: 'https://tonypixeltattoo.com',
+    pages: [['home', '/'], ['portfolio', '/', '#portfolio'], ['book', '/', '#turnos']],
   },
   leey: {
     base: 'https://leeyrealty.com',
