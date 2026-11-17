@@ -1,4 +1,9 @@
 ---
+// Benefits carousel, CSS only (see src/styles/benefits.css).
+// Fallback (reduced motion or no :has()): a static grid with every card and its illustration.
+// With motion: one slide at a time, advancing on its own. The radios jump to a slide and stop
+// the rotation; the stacked "stop" labels each point at the slide showing at that moment.
+import BenefitArt from './BenefitArt.astro';
 import { benefits, ui, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -9,15 +14,36 @@ const { lang } = Astro.props;
       <h2 id="benefits-title">{ui.benefits.title[lang]}</h2>
       <p>{ui.benefits.lead[lang]}</p>
     </header>
-    <ul class="points">
-      {
-        benefits.map((b) => (
-          <li class="reveal">
-            <h3>{b.title[lang]}</h3>
-            <p>{b.body[lang]}</p>
-          </li>
-        ))
-      }
-    </ul>
+    <div class="carousel reveal" style={`--n: ${benefits.length}`}>
+      <ul class="slides">
+        {
+          benefits.map((b, i) => (
+            <li class="slide" style={`--i: ${i}`}>
+              <BenefitArt id={b.id} />
+              <div class="slide-text an">
+                <h3>{b.title[lang]}</h3>
+                <p>{b.body[lang]}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="controls">
+        <div class="stops" aria-hidden="true">
+          {benefits.map((_, i) => <label class="stop" for={`benefit-${i}`} style={`--i: ${i}`} />)}
+        </div>
+        <fieldset class="dots">
+          <legend class="sr-only">{ui.benefits.pick[lang]}</legend>
+          {
+            benefits.map((b, i) => (
+              <label class="dot" style={`--i: ${i}`}>
+                <input type="radio" name="benefit" id={`benefit-${i}`} value={i} aria-label={b.title[lang]} />
+                <span class="bar" />
+              </label>
+            ))
+          }
+        </fieldset>
+      </div>
+    </div>
   </div>
 </section>

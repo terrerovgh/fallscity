@@ -32,8 +32,12 @@ export function shot(site: string, page: string, device: 'desktop' | 'mobile'): 
 }
 
 // ---- Benefits ------------------------------------------------------------
-export const benefits: { title: L; body: L }[] = [
+export type BenefitId = 'found' | 'convert' | 'trust' | 'time' | 'control' | 'one';
+
+/** `id` picks the animated illustration in src/components/BenefitArt.astro. */
+export const benefits: { id: BenefitId; title: L; body: L }[] = [
   {
+    id: 'found',
     title: { en: 'Clients find you first', es: 'Los clientes te encuentran primero' },
     body: {
       en: 'Pages built for what people search on Google, fast and easy to read, so you show up when someone near you needs what you offer.',
@@ -41,6 +45,7 @@ export const benefits: { title: L; body: L }[] = [
     },
   },
   {
+    id: 'convert',
     title: { en: 'More visits become clients', es: 'Más visitas se convierten en clientes' },
     body: {
       en: 'Your work shown at its best and a clear path to book, call or ask for a quote. Nobody gets lost on the way to hiring you.',
@@ -48,6 +53,7 @@ export const benefits: { title: L; body: L }[] = [
     },
   },
   {
+    id: 'trust',
     title: { en: 'A brand that earns trust', es: 'Una marca que inspira confianza' },
     body: {
       en: 'Your own domain, a professional design and a secure connection tell clients you take your business seriously before you say a word.',
@@ -55,6 +61,7 @@ export const benefits: { title: L; body: L }[] = [
     },
   },
   {
+    id: 'time',
     title: { en: 'Hours back every week', es: 'Horas libres cada semana' },
     body: {
       en: 'Quotes, reminders, follow-ups and invoices go out on their own. Less time answering the same questions, more time for the work you get paid for.',
@@ -62,6 +69,7 @@ export const benefits: { title: L; body: L }[] = [
     },
   },
   {
+    id: 'control',
     title: { en: 'You stay in control', es: 'Tú tienes el control' },
     body: {
       en: 'Change photos, prices and news yourself from a simple panel. Your domain and your content stay in your name.',
@@ -69,6 +77,7 @@ export const benefits: { title: L; body: L }[] = [
     },
   },
   {
+    id: 'one',
     title: { en: 'One person responsible for everything', es: 'Una sola persona responsable de todo' },
     body: {
       en: 'Design, hosting, security and updates in the same hands. No agency, no middlemen, no passing your problem from one person to the next.',
@@ -365,6 +374,7 @@ export const ui = {
       en: 'A good website is not an expense. It is the employee that never closes.',
       es: 'Una buena web no es un gasto. Es el empleado que nunca cierra.',
     },
+    pick: { en: 'Show a benefit', es: 'Mostrar un beneficio' },
   },
   work: {
     title: { en: 'Real sites, working today', es: 'Webs reales, funcionando hoy' },

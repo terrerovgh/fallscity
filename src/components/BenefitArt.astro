@@ -1,0 +1,212 @@
+---
+// One decorative illustration per benefit. Static markup = the finished scene (shown as-is with
+// reduced motion); the classes on `.an` elements give each its animation in benefits.css.
+// CSS transforms replace an SVG transform attribute, so animated parts never carry one: when
+// they need an offset, a wrapping <g transform> holds it.
+import type { BenefitId } from '../data/site';
+interface Props { id: BenefitId }
+const { id } = Astro.props;
+
+const ticks = Array.from({ length: 12 }, (_, i) => {
+  const a = (i * Math.PI) / 6;
+  const r1 = i % 3 === 0 ? 62 : 67;
+  return { x1: 118 + r1 * Math.sin(a), y1: 130 - r1 * Math.cos(a), x2: 118 + 72 * Math.sin(a), y2: 130 - 72 * Math.cos(a) };
+});
+const tasks = [58, 112, 166];
+const hub = [
+  { x: 88, y: 62 },
+  { x: 312, y: 62 },
+  { x: 88, y: 198 },
+  { x: 312, y: 198 },
+];
+---
+<div class={`art art-${id}`} aria-hidden="true">
+  {id === 'found' && (
+    <svg viewBox="0 0 400 260">
+      <rect class="win" x="40" y="22" width="320" height="42" rx="21" />
+      <circle class="stk" cx="65" cy="43" r="7" />
+      <path class="stk" d="M70 48l6 6" />
+      <rect class="an f-query ink-f" x="88" y="38" width="150" height="10" rx="5" />
+      <g class="an f-o1">
+        <rect class="win" x="40" y="136" width="320" height="42" rx="10" />
+        <circle class="line-f" cx="62" cy="157" r="9" />
+        <rect class="muted-f" x="80" y="148" width="130" height="8" rx="4" />
+        <rect class="line-f" x="80" y="161" width="200" height="6" rx="3" />
+      </g>
+      <g class="an f-o2">
+        <rect class="win" x="40" y="188" width="320" height="42" rx="10" />
+        <circle class="line-f" cx="62" cy="209" r="9" />
+        <rect class="muted-f" x="80" y="200" width="110" height="8" rx="4" />
+        <rect class="line-f" x="80" y="213" width="180" height="6" rx="3" />
+      </g>
+      <g class="an f-you">
+        <rect class="soft stk-acc" x="40" y="84" width="320" height="42" rx="10" />
+        <circle class="acc" cx="62" cy="105" r="9" />
+        <rect class="ink-f" x="80" y="96" width="150" height="8" rx="4" />
+        <rect class="acc faint" x="80" y="109" width="200" height="6" rx="3" />
+        <g class="an f-pin">
+          <path class="acc" d="M334 116c-7-8-11-13-11-19a11 11 0 0 1 22 0c0 6-4 11-11 19z" />
+          <circle class="pap" cx="334" cy="97" r="4" />
+        </g>
+      </g>
+    </svg>
+  )}
+
+  {id === 'convert' && (
+    <svg viewBox="0 0 400 260">
+      <rect class="win" x="30" y="24" width="230" height="212" rx="12" />
+      <circle class="line-f" cx="46" cy="40" r="3.5" />
+      <circle class="line-f" cx="58" cy="40" r="3.5" />
+      <circle class="line-f" cx="70" cy="40" r="3.5" />
+      <rect class="an c-t1 soft" x="46" y="56" width="58" height="58" rx="6" />
+      <rect class="an c-t2 line-f" x="114" y="56" width="58" height="58" rx="6" />
+      <rect class="an c-t3 soft" x="182" y="56" width="58" height="58" rx="6" />
+      <path class="an c-t1 stk-acc" d="M54 104l14-16l10 10l8-6l12 12" />
+      <path class="an c-t3 stk-acc" d="M190 104l14-16l10 10l8-6l12 12" />
+      <rect class="ink-f" x="46" y="128" width="150" height="8" rx="4" />
+      <rect class="line-f" x="46" y="142" width="110" height="6" rx="3" />
+      <circle class="an c-ripple stk-acc" cx="101" cy="184" r="24" />
+      <g class="an c-btn">
+        <rect class="acc" x="46" y="168" width="110" height="32" rx="16" />
+        <rect class="pap" x="68" y="181" width="66" height="6" rx="3" />
+      </g>
+      <g class="an c-card">
+        <rect class="win" x="282" y="58" width="92" height="150" rx="12" />
+        <rect class="ink-f" x="296" y="72" width="50" height="6" rx="3" />
+        {[0, 1, 2].map((r) => [0, 1, 2].map((c) => (
+          <rect class={r === 1 && c === 1 ? 'acc' : 'line-f'} x={296 + c * 22} y={92 + r * 20} width="16" height="14" rx="3" />
+        )))}
+        <g class="an c-check">
+          <circle class="acc" cx="328" cy="180" r="14" />
+          <path class="stk-pap" d="M321 180l5 5l9-9" />
+        </g>
+      </g>
+      <g transform="translate(118 186)">
+        <path class="an c-cursor cursor" d="M0 0v20l5-5l4 9l4-2l-4-9h7z" />
+      </g>
+    </svg>
+  )}
+
+  {id === 'trust' && (
+    <svg viewBox="0 0 400 260">
+      <rect class="win" x="40" y="24" width="320" height="212" rx="12" />
+      <rect class="box" x="56" y="38" width="288" height="28" rx="14" />
+      <rect class="acc" x="70" y="51" width="14" height="11" rx="2" />
+      <path class="an t-shackle stk-acc" d="M73 51v-4a4 4 0 0 1 8 0v4" />
+      <rect class="an t-domain ink-f" x="94" y="48" width="120" height="8" rx="4" />
+      <g class="an t-b1">
+        <circle class="acc" cx="68" cy="96" r="12" />
+        <rect class="ink-f" x="88" y="92" width="64" height="8" rx="4" />
+      </g>
+      <g class="an t-b2">
+        <rect class="ink-f" x="56" y="124" width="160" height="12" rx="4" />
+        <rect class="ink-f" x="56" y="142" width="118" height="12" rx="4" />
+        <rect class="line-f" x="56" y="164" width="140" height="6" rx="3" />
+      </g>
+      <g class="an t-b3">
+        <rect class="acc" x="56" y="184" width="84" height="26" rx="13" />
+      </g>
+      <g class="an t-b4">
+        <rect class="soft" x="232" y="84" width="112" height="124" rx="10" />
+        <circle class="acc faint" cx="314" cy="112" r="10" />
+        <path class="acc faint" d="M232 186l34-40l26 28l16-14l36 30v8a10 10 0 0 1-10 10h-92a10 10 0 0 1-10-10z" />
+      </g>
+      <g class="an t-shield">
+        <path class="acc ring" d="M318 166l21 7v15c0 13-9 23-21 27c-12-4-21-14-21-27v-15z" />
+        <path class="stk-pap" d="M309 190l6 6l11-12" />
+      </g>
+    </svg>
+  )}
+
+  {id === 'time' && (
+    <svg viewBox="0 0 400 260">
+      <circle class="win" cx="118" cy="130" r="78" />
+      {ticks.map((t) => <line class="stk-muted" x1={t.x1} y1={t.y1} x2={t.x2} y2={t.y2} />)}
+      <path class="an t-arc stk-acc thick" pathLength="1" d="M118 34A96 96 0 0 0 34.9 178" />
+      <path class="an t-arrow stk-acc thick" d="M36 168.5l-1.1 9.5l-8.6-4.1" />
+      <line class="an t-hour stk thick" x1="118" y1="130" x2="150" y2="130" />
+      <line class="an t-min stk" x1="118" y1="130" x2="118" y2="78" />
+      <circle class="acc" cx="118" cy="130" r="5" />
+      {tasks.map((y, k) => (
+        <g class={`an t-r${k + 1}`}>
+          <rect class="win" x="228" y={y} width="150" height="44" rx="10" />
+          <rect class="soft" x="240" y={y + 10} width="24" height="24" rx="6" />
+          {k === 0 && <path class="stk-acc" d={`M246 ${y + 16}h12M246 ${y + 22}h12M246 ${y + 28}h7`} />}
+          {k === 1 && <path class="stk-acc" d={`M252 ${y + 15}c-4 0-6 3-6 7v4l-2 3h16l-2-3v-4c0-4-2-7-6-7zM250 ${y + 32}h4`} />}
+          {k === 2 && <path class="stk-acc" d={`M245 ${y + 17}h14v11h-14zM245 ${y + 18}l7 5l7-5`} />}
+          <rect class="muted-f" x="274" y={y + 14} width="56" height="7" rx="3.5" />
+          <rect class="line-f" x="274" y={y + 26} width="40" height="5" rx="2.5" />
+          <g class={`an t-c${k + 1}`}>
+            <circle class="acc" cx="356" cy={y + 22} r="10" />
+            <path class="stk-pap" d={`M351 ${y + 22}l3.5 3.5l6-6.5`} />
+          </g>
+        </g>
+      ))}
+    </svg>
+  )}
+
+  {id === 'control' && (
+    <svg viewBox="0 0 400 260">
+      <rect class="win" x="30" y="24" width="340" height="212" rx="12" />
+      <rect class="box" x="42" y="38" width="62" height="186" rx="8" />
+      <rect class="acc" x="52" y="54" width="42" height="7" rx="3.5" />
+      <rect class="line-f" x="52" y="74" width="42" height="7" rx="3.5" />
+      <rect class="line-f" x="52" y="94" width="42" height="7" rx="3.5" />
+      <rect class="line-f" x="116" y="40" width="120" height="96" rx="8" />
+      <path class="muted-f faint" d="M116 120l34-30l28 26l18-14l40 26a8 8 0 0 1-8 8h-104a8 8 0 0 1-8-8z" />
+      <g class="an k-photo">
+        <rect class="soft-solid" x="116" y="40" width="120" height="96" rx="8" />
+        <circle class="acc" cx="210" cy="64" r="10" />
+        <path class="acc faint" d="M116 116l38-36l26 26l16-14l40 36a8 8 0 0 1-8 8h-104a8 8 0 0 1-8-8z" />
+      </g>
+      <rect class="box" x="116" y="150" width="120" height="26" rx="6" />
+      <rect class="an k-price ink-f" x="126" y="160" width="64" height="7" rx="3.5" />
+      <rect class="line-f" x="252" y="51" width="60" height="7" rx="3.5" />
+      <rect class="acc" x="326" y="44" width="32" height="20" rx="10" />
+      <circle class="pap" cx="348" cy="54" r="7" />
+      <rect class="line-f" x="252" y="83" width="50" height="7" rx="3.5" />
+      <rect class="line-f" x="326" y="76" width="32" height="20" rx="10" />
+      <rect class="an k-track acc" x="326" y="76" width="32" height="20" rx="10" />
+      <circle class="an k-knob pap" cx="348" cy="86" r="7" />
+      <rect class="line-f" x="252" y="114" width="100" height="6" rx="3" />
+      <rect class="line-f" x="252" y="126" width="76" height="6" rx="3" />
+      <g class="an k-save">
+        <rect class="ink-f" x="252" y="150" width="106" height="26" rx="13" />
+        <rect class="pap" x="280" y="160" width="50" height="6" rx="3" />
+      </g>
+      <g class="an k-toast">
+        <rect class="soft stk-acc" x="252" y="192" width="106" height="28" rx="14" />
+        <circle class="acc" cx="268" cy="206" r="8" />
+        <path class="stk-pap" d="M264 206l3 3l5-5.5" />
+        <rect class="acc faint" x="282" y="203" width="60" height="6" rx="3" />
+      </g>
+      <g transform="translate(300 166)">
+        <path class="an k-cursor cursor" d="M0 0v20l5-5l4 9l4-2l-4-9h7z" />
+      </g>
+    </svg>
+  )}
+
+  {id === 'one' && (
+    <svg viewBox="0 0 400 260">
+      {hub.map((n, k) => <path class={`an o-l${k + 1} stk-line thick`} pathLength="1" d={`M200 130L${n.x} ${n.y}`} />)}
+      <circle class="an o-pulse stk-acc" cx="200" cy="130" r="36" />
+      <g class="an o-center">
+        <circle class="acc" cx="200" cy="130" r="36" />
+        <circle class="pap" cx="200" cy="120" r="10" />
+        <path class="pap" d="M182 150c1-11 8-17 18-17s17 6 18 17z" />
+      </g>
+      {hub.map((n, k) => (
+        <g class={`an o-n${k + 1}`}>
+          <circle class="win" cx={n.x} cy={n.y} r="30" />
+          {k === 0 && <path class="stk" d="M77 51h22a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2h-22a2 2 0 0 1-2-2v-18a2 2 0 0 1 2-2zM75 58h26M84 58v15" />}
+          {k === 1 && <path class="stk" d="M302 50h20a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-20a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM302 64h20a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-20a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM305 55h2M305 69h2" />}
+          {k === 2 && <path class="stk" d="M88 185l11 4v8c0 7-5 12-11 14c-6-2-11-7-11-14v-8zM83 197l4 4l7-7" />}
+          {k === 3 && <path class="stk" d="M302 196a10 10 0 0 1 18-6M322 200a10 10 0 0 1-18 6M320 184v6h-6M304 212v-6h6" />}
+          <g class={`an o-d${k + 1}`}>
+            <circle class="acc ring" cx={n.x + 22} cy={n.y - 21} r="7" />
+          </g>
+        </g>
+      ))}
+    </svg>
+  )}
+</div>
