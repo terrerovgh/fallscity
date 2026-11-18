@@ -1,0 +1,15 @@
+# Development mirror of fallscity.dev for Falls City OS (branch `staging` → https://fallscity.terrerov.com, tailnet only).
+# Runs the real Worker (routing, languages, inquiry endpoint) with `wrangler dev` over the built site.
+# Production does not use this file: Cloudflare Workers Builds deploys `main`.
+FROM node:22-bookworm
+WORKDIR /app
+ENV WRANGLER_SEND_METRICS=false ASTRO_TELEMETRY_DISABLED=1 CI=1
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY . .
+RUN npm run build
+EXPOSE 8080
+# Traefik terminates TLS and forwards plain HTTP; present requests to the Worker as https://<mirror host> so its
+# canonical-host redirect (http → https://fallscity.dev) does not fire on the mirror.
+ENV MIRROR_HOST=fallscity.terrerov.com
+CMD ["sh", "-c", "exec npx wrangler dev --ip 0.0.0.0 --port 8080 --local-upstream \"$MIRROR_HOST\" --upstream-protocol https --show-interactive-dev-session=false --log-level warn"]
