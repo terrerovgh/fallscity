@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { faqs, homePath, langs, privacyPath, services, steps, studio, tools, ui, type Lang } from '../data/site';
+import { faqs, homePath, langs, privacyPath, studio, ui, type Lang } from '../data/site';
 
 const sections = ['work', 'services', 'faq'] as const;
 
@@ -60,28 +60,6 @@ export function SectionHeading({ id, title, lead }: { id: string; title: string;
   return <header className="section-head" data-scroll-heading><h2 id={id}>{title}</h2>{lead && <p>{lead}</p>}</header>;
 }
 
-export function ServiceRows({ lang, kind }: { lang: Lang; kind: 'services' | 'tools' }) {
-  const items = kind === 'services' ? services : tools;
-  return (
-    <ul className={kind === 'services' ? 'service-rows' : 'service-tools'}>
-      {items.map(item => (
-        <li key={item.id}>
-          <h3>{item.title[lang]}</h3>
-          <p>{item.body[lang]}</p>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-export function ProcessSteps({ lang }: { lang: Lang }) {
-  return (
-    <ol className="process-steps">
-      {steps.map(step => <li key={step.title.en}><h3>{step.title[lang]}</h3><p>{step.body[lang]}</p></li>)}
-    </ol>
-  );
-}
-
 export function Questions({ lang }: { lang: Lang }) {
   return (
     <div className="faq-list">
@@ -107,11 +85,24 @@ export function SiteFooter({ lang }: { lang: Lang }) {
   return (
     <footer className="site-footer">
       <div className="wrap">
-        <p>© {new Date().getFullYear()} {studio.name}, Louisville, KY.</p>
-        <ul>
-          <li><a href={`mailto:${studio.email}`}>{studio.email}</a></li>
-          <li><a href={privacyPath[lang]}>{ui.footer.privacy[lang]}</a></li>
-        </ul>
+        <div className="footer-main">
+          <div className="footer-brand">
+            <a href={homePath[lang]}>
+              <img src="/brand/fallscity-inverse.svg" width="1024" height="187" alt={studio.name} />
+            </a>
+            <a className="footer-proposal" href={`${homePath[lang]}#contact`}>
+              {ui.nav.cta[lang]} <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <nav className="footer-nav" aria-label={ui.footer.nav[lang]}>
+            <NavLinks lang={lang} />
+            <ul>
+              <li><a href={`mailto:${studio.email}`}>{studio.email}</a></li>
+              <li><a href={privacyPath[lang]}>{ui.footer.privacy[lang]}</a></li>
+            </ul>
+          </nav>
+        </div>
+        <p className="footer-legal">© {new Date().getFullYear()} {studio.name} · Louisville, KY</p>
       </div>
     </footer>
   );

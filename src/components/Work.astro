@@ -9,16 +9,17 @@ const { lang } = Astro.props;
 ---
 <section class="section" id="work" aria-labelledby="work-title">
   <div class="wrap">
-    <SectionHeading id="work-title" title={ui.work.title[lang]} lead={ui.work.lead[lang]} />
-    <div class="work-list">
+    <SectionHeading id="work-title" title={ui.work.title[lang]} />
+    <div class="work-list carousel-track" data-carousel="7000" tabindex="0" role="group" aria-labelledby="work-title">
       {projects.map(project => (
-        <article class="project" data-scroll-project>
+        <article class="project" data-scroll-project data-carousel-slide>
           <a class="project-link" href={project.url} target="_blank" rel="noopener"
-            aria-label={`${ui.work.visit[lang]} ${project.name} (${project.domain}) ${ui.work.newTab[lang]}`}>
+            aria-label={`${ui.work.visit[lang]} ${project.name} ${ui.work.newTab[lang]}`} aria-describedby={`summary-${project.id}`}>
             <GlareHover client:media="(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)" className="project-art"
               width="100%" borderRadius="var(--radius)" glareColor="#d5e0ff" glareOpacity={0.2} glareSize={42} variant="sheen" transitionDuration={800}>
               <DeviceStage project={project} />
             </GlareHover>
+            <p class="project-summary" id={`summary-${project.id}`}>{project.summary[lang]}</p>
           </a>
         </article>
       ))}

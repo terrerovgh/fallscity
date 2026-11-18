@@ -1,0 +1,109 @@
+---
+import { Picture } from 'astro:assets';
+import { shot, type Lang } from '../data/site';
+
+interface Props { id: string; lang: Lang }
+const { id, lang } = Astro.props;
+const copy = {
+  en: {
+    search: 'fence installation near me', local: 'Fence installation', area: 'Service area',
+    inventory: 'Inventory', live: 'Live listing', updated: 'Updated', address: 'yourbusiness.com',
+    hosting: ['Domain', 'HTTPS', 'Hosting'], automation: ['Estimate', 'Quote', 'Invoice'],
+    clients: ['New inquiry', 'Follow-up', 'Appointment'], customer: 'Project inquiry',
+    reminders: ['Appointment tomorrow', 'Reminder sent'], dashboard: ['Appointments', 'Jobs', 'Payments', 'Records'],
+    maintenance: ['Updates', 'Backup', 'Security'],
+  },
+  es: {
+    search: 'instalación de cercas cerca de mí', local: 'Instalación de cercas', area: 'Zona de servicio',
+    inventory: 'Inventario', live: 'Anuncio publicado', updated: 'Actualizado', address: 'tunegocio.com',
+    hosting: ['Dominio', 'HTTPS', 'Hosting'], automation: ['Estimación', 'Cotización', 'Factura'],
+    clients: ['Consulta nueva', 'Seguimiento', 'Cita'], customer: 'Consulta de proyecto',
+    reminders: ['Tu cita es mañana', 'Recordatorio enviado'], dashboard: ['Citas', 'Trabajos', 'Pagos', 'Registros'],
+    maintenance: ['Actualizaciones', 'Copia de seguridad', 'Seguridad'],
+  },
+}[lang];
+---
+<div class:list={['service-visual', `visual-${id}`]} data-visual aria-hidden="true">
+  {id === 'design' && (
+    <div class="design-devices">
+      <div class="design-browser" data-visual-part>
+        <Picture src={shot('nina', 'gallery', 'desktop')} widths={[320, 480, 720]} formats={['avif', 'webp']} sizes="(min-width: 48rem) 33vw, 76vw" alt="" loading="lazy" />
+      </div>
+      <div class="design-phone" data-visual-part>
+        <Picture src={shot('nina', 'gallery', 'mobile')} widths={[120, 240]} formats={['avif', 'webp']} sizes="124px" alt="" loading="lazy" />
+      </div>
+    </div>
+  )}
+  {id === 'seo' && (
+    <div class="search-diagram">
+      <div class="visual-search" data-visual-part><i aria-hidden="true"></i>{copy.search}</div>
+      <div class="search-result" data-visual-part>
+        <span>{copy.area}</span>
+        <strong>{copy.local}</strong>
+      </div>
+      <div class="search-placeholder" data-visual-part></div>
+    </div>
+  )}
+  {id === 'content' && (
+    <div class="diagram-content">
+      <div class="inventory-panel visual-panel" data-visual-part>
+        <strong>{copy.inventory}</strong>
+        <div class="visual-lines"><i></i><i></i><i></i></div>
+      </div>
+      <span class="visual-arrow" data-visual-part>→</span>
+      <div class="listing-panel visual-panel" data-visual-part>
+        <Picture src={shot('leey', 'properties', 'desktop')} widths={[240, 480]} formats={['avif', 'webp']} sizes="240px" alt="" loading="lazy" />
+        <strong>{copy.live}</strong>
+        <span class="visual-status">✓ {copy.updated}</span>
+      </div>
+    </div>
+  )}
+  {id === 'hosting' && (
+    <div class="hosting-diagram">
+      <div class="hosting-address visual-panel" data-visual-part><span class="visual-lock"></span><strong>{copy.address}</strong></div>
+      <div class="hosting-layers">
+        {copy.hosting.map(label => <div data-visual-part><strong>{label}</strong><span class="visual-status">✓</span></div>)}
+      </div>
+    </div>
+  )}
+  {id === 'automation' && (
+    <div class="workflow-diagram">
+      {copy.automation.map((label, index) => (
+        <div class="workflow-step" data-visual-part>
+          <span class="workflow-paper">{index === 2 ? '✓' : <span class="visual-lines"><i></i><i></i></span>}</span>
+          <strong>{label}</strong>
+        </div>
+      ))}
+    </div>
+  )}
+  {id === 'clients' && (
+    <div class="client-board">
+      {copy.clients.map((label, index) => (
+        <div class="client-stage" data-visual-part>
+          <strong>{label}</strong>
+          <div class="client-ticket">
+            <i></i>
+            {index === 0 ? <span>{copy.customer}</span> : <span class="visual-lines"><i></i><i></i></span>}
+            {index === 2 && <span class="visual-status">✓</span>}
+          </div>
+        </div>
+      ))}
+    </div>
+  )}
+  {id === 'messaging' && (
+    <div class="messages-diagram">
+      <strong data-visual-part>{copy.reminders[0]}</strong>
+      <span class="visual-status" data-visual-part>✓ {copy.reminders[1]}</span>
+    </div>
+  )}
+  {id === 'control' && (
+    <div class="dashboard-diagram">
+      {copy.dashboard.map(label => <div data-visual-part><i></i><strong>{label}</strong></div>)}
+    </div>
+  )}
+  {id === 'care' && (
+    <div class="maintenance-diagram">
+      {copy.maintenance.map(label => <div data-visual-part><strong>{label}</strong><span class="visual-status">✓</span></div>)}
+    </div>
+  )}
+</div>

@@ -134,11 +134,11 @@ for (const width of [320, 390, 768, 1024, 1440]) {
         return {
           over: document.documentElement.scrollWidth - document.documentElement.clientWidth,
           contact: getComputedStyle(document.querySelector('.contact')).backgroundColor,
-          waves: getComputedStyle(hero.querySelector('.grainient-canvas')).display,
+          ribbon: hero.querySelector('.hero-ribbon img').naturalWidth,
           animated: hero.getAnimations({ subtree: true }).length,
         };
       });
-      check(layout.over === 0 && layout.waves === 'none' && layout.animated === 0, `static hero and no horizontal overflow ${label}`);
+      check(layout.over === 0 && layout.ribbon === 870 && layout.animated === 0, `static hero and no horizontal overflow ${label}`);
       check(layout.contact === expected.dark.background, `Ink contact band ${label}`);
     }
   }
@@ -155,43 +155,31 @@ for (const width of [320, 390, 768, 1024, 1440]) {
   const title = page.getByRole('heading', { level: 1, name: /Una web para conseguir más clientes/ });
   await title.locator('.split-word').first().waitFor();
   check(await title.isVisible(), 'Split Text animates the title while preserving its accessible name');
-  await page.locator('.hero > astro-island:not([ssr])').waitFor({ state: 'attached' });
-  const waveControl = page.locator('.waves-control');
-  if (await page.locator('.grainient-canvas').evaluate(canvas => Boolean(canvas.getContext('webgl2')))) {
-    await waveControl.click();
-    check(await waveControl.getAttribute('aria-label') === 'Reanudar animación de fondo', 'Grainient initializes and can be paused');
-  } else {
-    check(await waveControl.isHidden() && await page.locator('.hero-ribbon').isVisible(), 'hero displays its static fallback without WebGL2');
-  }
+  const ribbon = page.locator('.hero-ribbon');
+  check(await ribbon.locator('img').evaluate(image => image.decode().then(() => image.naturalWidth === 870)),
+    'hero loads the ribbon from the original logo');
+  check(await ribbon.evaluate(element => getComputedStyle(element, '::after').animationName === 'ribbon-light'),
+    'hero sheen uses CSS without WebGL');
   await page.locator('.project-art').first().hover();
   check(await page.locator('.project-art').first().locator('.glare-hover__glare').count() === 1, 'project preview uses Glare Hover');
   const benefitSlides = page.locator('#benefit-slides');
-  const benefitCarousel = page.locator('.benefits-carousel');
   await benefitSlides.scrollIntoViewIfNeeded();
-  await benefitCarousel.locator('[data-playing] .art-found').waitFor();
-  const firstAnimation = benefitCarousel.locator('.art-found .f-query');
+  await benefitSlides.locator('[data-playing] .art-found').waitFor();
   await page.waitForFunction(() => document.querySelector('.art-found .f-query').getAnimations().length === 1);
-  const startTime = await firstAnimation.evaluate(el => el.getAnimations()[0].startTime);
-  await page.getByRole('button', { name: 'Repetir ilustración' }).click();
-  await page.waitForFunction(time => {
-    const animation = document.querySelector('.art-found .f-query').getAnimations()[0];
-    return animation?.startTime > time;
-  }, startTime);
-  check(true, 'benefit illustration plays on entry and can be replayed');
-
-  await page.getByRole('button', { name: 'Siguiente beneficio' }).click();
-  await benefitCarousel.locator('[data-playing] .art-convert').waitFor();
-  check(await page.getByRole('button', { name: 'Más visitas se convierten en clientes' }).getAttribute('aria-current') === 'true', 'next updates the benefit and starts its own illustration');
+  check(true, 'first benefit illustration plays on entry');
   await benefitSlides.focus();
   await page.keyboard.press('End');
-  await benefitCarousel.locator('[data-playing] .art-one').waitFor();
-  check(await page.getByRole('button', { name: 'Siguiente beneficio' }).getAttribute('aria-disabled') === 'true', 'keyboard reaches the last benefit without wrapping');
-  await page.getByRole('button', { name: 'Tú tienes el control' }).click();
-  await benefitCarousel.locator('[data-playing] .art-control').waitFor();
-  check(await benefitCarousel.locator('.art').count() === 6, 'each benefit has its own visual scene');
-  await page.locator('#services').scrollIntoViewIfNeeded();
-  await page.locator('#services astro-island:not([ssr])').first().waitFor({ state: 'attached' });
-  check(true, 'services hydrate when scrolled into view');
+  await benefitSlides.locator('[data-playing] .art-one').waitFor();
+  await page.keyboard.press('ArrowLeft');
+  await benefitSlides.locator('[data-playing] .art-control').waitFor();
+  check(await benefitSlides.locator('.art').count() === 6, 'keyboard changes to the selected animated benefit');
+  check(await page.locator('#benefits button, #work button').count() === 0, 'both carousels omit visible controls');
+  await page.locator('.visual-design').scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => document.querySelector('.visual-design [data-visual-part]').style.opacity === '1');
+  check(await page.locator('#services [data-visual]').count() === 9, 'each service and tool has a visual');
+  await page.locator('[data-process-step]').last().scrollIntoViewIfNeeded();
+  await page.locator('[data-process-step][data-step-lit]').last().waitFor();
+  check(await page.locator('[data-process-step]').count() === 3, 'process shows three illustrated steps');
   const mail = page.locator('#contact .mail');
   await mail.scrollIntoViewIfNeeded();
   await page.waitForFunction(() => document.querySelector('.star-border__light').width > 300);
@@ -206,6 +194,56 @@ for (const width of [320, 390, 768, 1024, 1440]) {
   await page.waitForTimeout(1800);
   check(!(await hasStar()), 'Star Border finishes one pass and clears its drawing');
   check(errors.length === 0, `no browser runtime errors (${errors.join('; ')})`);
+  await ctx.close();
+}
+
+// Autoplay follows viewport visibility, and pauses on keyboard focus, mouse hover and touch.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'no-preference' });
+  const page = await ctx.newPage();
+  await page.clock.install();
+  await page.goto(base + '/');
+  const portfolio = page.locator('#work [data-carousel]');
+  const benefits = page.locator('#benefit-slides');
+  const index = track => track.evaluate(el => Math.round(el.scrollLeft / el.clientWidth));
+  const tick = async ms => {
+    await page.clock.runFor(ms);
+    await page.waitForTimeout(550);
+    await page.clock.runFor(350);
+  };
+  await portfolio.scrollIntoViewIfNeeded();
+  await portfolio.locator('[data-playing]').waitFor();
+  await page.mouse.move(1, 120);
+  await tick(7600);
+  check(await index(portfolio) === 1, 'portfolio autoplays after entering view');
+  await portfolio.hover();
+  await tick(7600);
+  check(await index(portfolio) === 1, 'mouse hover pauses portfolio autoplay');
+  await portfolio.focus();
+  await page.mouse.move(1, 120);
+  await page.keyboard.press('End');
+  await tick(600);
+  check(await index(portfolio) === 3, 'keyboard reaches the last portfolio project');
+  await tick(7600);
+  check(await index(portfolio) === 3, 'keyboard focus pauses portfolio autoplay');
+  await portfolio.evaluate(el => el.blur());
+  await tick(8200);
+  await page.waitForFunction(() => {
+    const track = document.querySelector('#work [data-carousel]');
+    return Math.abs(track.scrollLeft) < 1 && track.children.length === 4;
+  });
+  check(true, 'portfolio wraps and removes the temporary slide');
+
+  await benefits.scrollIntoViewIfNeeded();
+  await benefits.locator('[data-playing] .art-found').waitFor();
+  await tick(8600);
+  check(await index(benefits) === 1, 'benefits autoplays its next illustration');
+  await benefits.dispatchEvent('pointerdown', { pointerType: 'touch', bubbles: true });
+  await tick(8600);
+  check(await index(benefits) === 1, 'touch pauses the benefits carousel');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await tick(8600);
+  check(await index(benefits) === 1 && await benefits.locator('[data-playing]').count() === 0, 'reduced motion leaves the selected slide static');
   await ctx.close();
 }
 
@@ -359,10 +397,16 @@ for (const width of [320, 390, 768, 1024, 1440]) {
   await question.focus();
   await page.keyboard.press('Enter');
   check(await page.locator('.faq-list details[open]').first().locator('p').isVisible(), 'FAQ answers open from the keyboard');
-  check(await page.locator('#services .service-rows li').first().isVisible(), 'services render in reduced motion');
-  await page.getByRole('button', { name: 'Horas libres cada semana' }).click();
-  await page.waitForFunction(() => document.querySelector('[data-benefit-select="3"]').getAttribute('aria-current') === 'true');
-  check(await page.locator('[data-playing]').count() === 0, 'reduced motion still allows selecting the static illustrations');
+  check(await page.locator('#services .service-card').first().isVisible(), 'services render in reduced motion');
+  await page.locator('#benefit-slides').focus();
+  await page.keyboard.press('ArrowRight');
+  await page.waitForFunction(() => document.querySelector('#benefit-slides').scrollLeft > 0);
+  check(await page.locator('[data-playing]').count() === 0, 'keyboard works on the static carousel');
+
+  await page.goto(base + '/es/privacidad/');
+  const footer = page.getByRole('contentinfo');
+  check(await footer.getByRole('link', { name: 'Trabajos' }).getAttribute('href') === '/es/#work', 'legal page footer links to the localized portfolio');
+  check(await footer.getByRole('link', { name: 'Pedir una propuesta' }).getAttribute('href') === '/es/#contact', 'legal page footer links to the localized form');
 
   await ctx.close();
 }

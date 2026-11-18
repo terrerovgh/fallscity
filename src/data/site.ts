@@ -389,8 +389,6 @@ export const ui = {
     },
     cta: { en: 'Request a proposal', es: 'Pedir una propuesta' },
     secondary: { en: 'See the work', es: 'Ver proyectos' },
-    pause: { en: 'Pause background animation', es: 'Pausar animación de fondo' },
-    resume: { en: 'Resume background animation', es: 'Reanudar animación de fondo' },
   },
   benefits: {
     title: { en: 'What changes when your website works for you', es: 'Lo que cambia cuando tu web trabaja para ti' },
@@ -398,17 +396,9 @@ export const ui = {
       en: 'A good website is not an expense. It is the employee that never closes.',
       es: 'Una buena web no es un gasto. Es el empleado que nunca cierra.',
     },
-    previous: { en: 'Previous benefit', es: 'Beneficio anterior' },
-    next: { en: 'Next benefit', es: 'Siguiente beneficio' },
-    replay: { en: 'Replay illustration', es: 'Repetir ilustración' },
-    pick: { en: 'Choose a benefit', es: 'Elegir un beneficio' },
   },
   work: {
     title: { en: 'Websites out in the world.', es: 'Webs para negocios reales.' },
-    lead: {
-      en: 'See how each site looks on desktop and mobile.',
-      es: 'Mira cómo se ve cada web en computadora y en móvil.',
-    },
     visit: { en: 'Visit', es: 'Visitar' },
     newTab: { en: '(opens in a new tab)', es: '(se abre en una pestaña nueva)' },
   },
@@ -485,6 +475,7 @@ export const ui = {
     },
   },
   footer: {
+    nav: { en: 'Footer links', es: 'Enlaces del pie de página' },
     tagline: {
       en: 'Websites that win you clients and give you your time back.',
       es: 'Webs que te consiguen clientes y te devuelven tu tiempo.',

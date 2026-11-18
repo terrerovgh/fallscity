@@ -27,11 +27,36 @@ motion.add('(prefers-reduced-motion: no-preference)', () => {
     });
   }
 
-  const ribbon = document.querySelector<HTMLElement>('[data-hero-ribbon]');
-  if (ribbon) {
-    gsap.to(ribbon, {
-      y: -58, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.65 },
+  for (const visual of gsap.utils.toArray<HTMLElement>('[data-visual]')) {
+    gsap.from(visual.querySelectorAll('[data-visual-part]'), {
+      y: 14, scale: 0.94, opacity: 0.42, stagger: 0.19, duration: 0.66, ease: 'power3.out',
+      scrollTrigger: { trigger: visual, start: 'top 88%', once: true },
     });
   }
+
+  const process = document.querySelector<HTMLElement>('[data-process-timeline]');
+  const steps = gsap.utils.toArray<HTMLElement>('[data-process-step]');
+  if (process) {
+    gsap.fromTo(process, { '--process-progress': 0 }, {
+      '--process-progress': 1, ease: 'none',
+      scrollTrigger: { trigger: process, start: 'top 84%', end: 'bottom 56%', scrub: 0.45 },
+    });
+    for (const step of steps) {
+      ScrollTrigger.create({
+        trigger: step, start: 'top 84%', once: true,
+        onEnter: () => step.setAttribute('data-step-lit', ''),
+      });
+    }
+  }
+
+  const ribbon = document.querySelector<HTMLElement>('[data-hero-ribbon]');
+  if (ribbon) {
+    gsap.from(ribbon, { x: 15, scale: 0.93, opacity: 0.48, duration: 1.25, ease: 'power3.out' });
+    gsap.to(ribbon, {
+      y: () => -Math.min(52, ribbon.offsetHeight * 0.17), ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 0.65, invalidateOnRefresh: true },
+    });
+  }
+
+  return () => steps.forEach(step => step.removeAttribute('data-step-lit'));
 });

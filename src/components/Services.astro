@@ -1,22 +1,38 @@
 ---
-import { SectionHeading, ServiceRows } from './Site';
-import AnimatedContent from './react-bits/AnimatedContent';
-import { ui, type Lang } from '../data/site';
+import ServiceVisual from './ServiceVisual.astro';
+import { SectionHeading } from './Site';
+import { services, tools, ui, type Lang } from '../data/site';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 ---
 <section id="services" class="section" aria-labelledby="services-title">
-  <div class="wrap services-layout">
+  <div class="wrap">
     <SectionHeading id="services-title" title={ui.services.title[lang]} lead={ui.services.lead[lang]} />
-    <div>
-      <AnimatedContent client:visible trigger="mount" distance={16} duration={0.62} animateOpacity={false}>
-        <ServiceRows kind="services" lang={lang} />
-      </AnimatedContent>
-      <AnimatedContent client:visible trigger="mount" distance={14} duration={0.58} animateOpacity={false} className="service-extra">
-        <h3 class="service-extra-title">{ui.services.toolsTitle[lang]}</h3>
-        <ServiceRows kind="tools" lang={lang} />
-      </AnimatedContent>
+    <ul class="service-gallery" role="list">
+      {services.map(service => (
+        <li class="service-card">
+          <ServiceVisual id={service.id} lang={lang} />
+          <div class="service-copy">
+            <h3>{service.title[lang]}</h3>
+            <p>{service.body[lang]}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+    <div class="service-extra">
+      <h3 class="service-extra-title">{ui.services.toolsTitle[lang]}</h3>
+      <ul class="service-gallery service-gallery-compact" role="list">
+        {tools.map(service => (
+          <li class="service-card">
+            <ServiceVisual id={service.id} lang={lang} />
+            <div class="service-copy">
+              <h4>{service.title[lang]}</h4>
+              <p>{service.body[lang]}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   </div>
 </section>

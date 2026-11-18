@@ -2,7 +2,7 @@
 
 Bilingual site for Falls City Dev Studio, featuring real client projects in desktop and mobile previews, a benefits carousel, and a contact form for project proposals.
 
-Astro prerenders the pages in English at `/` and Spanish at `/es/`. React Bits supplies the visual effects. GSAP ScrollTrigger animates the headings, brand ribbon and portfolio screens. The benefits carousel uses six illustrated scenes and supports reduced motion. The logo wordmark is derived from the original Falls City logo.
+Astro prerenders the pages in English at `/` and Spanish at `/es/`. React Bits supplies the visual effects and GSAP ScrollTrigger animates the headings, diagrams, process timeline and portfolio screens. The portfolio and benefits carousels advance in view and pause on hover, keyboard focus or touch. Their slides are available with native scrolling in reduced motion. The hero ribbon uses the blue artwork extracted from the original logo.
 
 ## Commands
 
@@ -23,7 +23,7 @@ Playwright uses the browsers in `~/.cache/ms-playwright` (`npx playwright instal
 
 Bilingual page copy and illustration labels are maintained in `src/data/site.ts`. The site follows local time, with the light theme from 07:00 through 18:59 and the dark theme at night. The default without JavaScript is light.
 
-React Bits components and their license live in `src/components/react-bits/`. Grainient powers the home ribbon with its grain set to zero. The optional React Bits Starter registry requires `REACTBITS_LICENSE_KEY` for future component installation. The production build has no dependency on Starter credentials.
+React Bits components and their license live in `src/components/react-bits/`. The optional React Bits Starter registry requires `REACTBITS_LICENSE_KEY` for future component installation. The production build has no dependency on Starter credentials.
 
 ### Screenshots
 `src/assets/work/<site>-<page>-<desktop|mobile>.jpg`, made by `scripts/capture.mjs` (1440×900 @1.5x and 390×844 @2x). Astro turns them into AVIF/WebP at build time. To add a project: add its pages to `SITES` in the capture script, run it, then add the project to `projects` in `site.ts`.

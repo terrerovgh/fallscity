@@ -1,7 +1,6 @@
 ---
 import { HeroCopy } from './Site';
 import SplitText from './react-bits/SplitText';
-import HeroWaves from './HeroWaves';
 import { ui, type Lang } from '../data/site';
 
 interface Props { lang: Lang }
@@ -9,7 +8,6 @@ const { lang } = Astro.props;
 const copy = ui.hero;
 ---
 <section class="hero" aria-labelledby="hero-title">
-  <HeroWaves client:media="(prefers-reduced-motion: no-preference)" pauseLabel={copy.pause[lang]} resumeLabel={copy.resume[lang]} />
   <div class="wrap">
     <HeroCopy lang={lang}>
       <SplitText client:media="(prefers-reduced-motion: no-preference)" tag="span" text={copy.title[lang]} splitType="words" trigger="load" duration={0.62} delay={42} textAlign="left" mask={false} />
@@ -17,5 +15,10 @@ const copy = ui.hero;
         <SplitText client:media="(prefers-reduced-motion: no-preference)" tag="span" text={copy.titleAccent[lang]} splitType="words" trigger="load" duration={0.78} delay={64} textAlign="left" mask={false} />
       </span>
     </HeroCopy>
+    <div class="hero-artwork" aria-hidden="true">
+      <div class="hero-ribbon" data-hero-ribbon>
+        <img src="/brand/fallscity-ribbon.webp" width="870" height="362" alt="" fetchpriority="high" />
+      </div>
+    </div>
   </div>
 </section>

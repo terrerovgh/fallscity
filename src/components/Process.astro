@@ -1,7 +1,6 @@
 ---
-import { ProcessSteps, SectionHeading } from './Site';
-import AnimatedContent from './react-bits/AnimatedContent';
-import { ui, type Lang } from '../data/site';
+import { SectionHeading } from './Site';
+import { steps, ui, type Lang } from '../data/site';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -9,8 +8,34 @@ const { lang } = Astro.props;
 <section id="process" class="section" aria-labelledby="process-title">
   <div class="wrap">
     <SectionHeading id="process-title" title={ui.process.title[lang]} />
-    <AnimatedContent client:visible trigger="mount" distance={16} duration={0.65} animateOpacity={false}>
-      <ProcessSteps lang={lang} />
-    </AnimatedContent>
+    <ol class="process-steps" data-process-timeline>
+      {steps.map((step, index) => (
+        <li class="process-step" data-process-step>
+          <span class="process-node" aria-hidden="true">{index + 1}</span>
+          <div class:list={['process-scene', `process-scene-${index + 1}`]} data-visual aria-hidden="true">
+            {index === 0 && (
+              <>
+                <span class="process-bubble" data-visual-part><i></i><i></i><i></i></span>
+                <span class="process-checklist" data-visual-part><i>✓</i><i>✓</i><i>✓</i></span>
+              </>
+            )}
+            {index === 1 && (
+              <>
+                <div class="process-browser" data-visual-part><i></i><i></i><i></i><span></span></div>
+                <span class="process-review" data-visual-part>✓</span>
+              </>
+            )}
+            {index === 2 && (
+              <>
+                <div class="process-launch-ring" data-visual-part><span>↗</span></div>
+                <div class="process-launch-bars" data-visual-part><i></i><i></i><i></i><i></i></div>
+              </>
+            )}
+          </div>
+          <h3>{step.title[lang]}</h3>
+          <p>{step.body[lang]}</p>
+        </li>
+      ))}
+    </ol>
   </div>
 </section>

@@ -12,10 +12,10 @@ const copy = ui.benefits;
 <section id="benefits" class="section" aria-labelledby="benefits-title">
   <div class="wrap">
     <SectionHeading id="benefits-title" title={copy.title[lang]} />
-    <div class="benefits-carousel" data-benefits-carousel>
-      <ul id="benefit-slides" class="benefit-slides" data-benefit-slides tabindex="0" aria-labelledby="benefits-title">
+    <div class="benefits-carousel">
+      <ul id="benefit-slides" class="benefit-slides carousel-track" data-carousel="8000" role="list" tabindex="0" aria-labelledby="benefits-title">
         {benefits.map(benefit => (
-          <li class="benefit-slide" data-benefit-slide data-benefit-title={benefit.title[lang]}>
+          <li class="benefit-slide" data-carousel-slide data-palette={benefit.id}>
             <SpotlightCard client:media="(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)"
               className="benefit-card" spotlightColor="var(--accent)" intensity={0.12} borderGlow={0.5} proximity={0} flare={false}>
               <div class="benefit-story">
@@ -23,34 +23,13 @@ const copy = ui.benefits;
                 <p>{benefit.body[lang]}</p>
               </div>
               <div class="benefit-scene">
+                <div class="benefit-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
                 <BenefitArt id={benefit.id} lang={lang} />
               </div>
             </SpotlightCard>
           </li>
         ))}
       </ul>
-      <div class="benefit-controls" data-benefit-controls hidden>
-        <button type="button" class="benefit-replay" data-benefit-replay>
-          <span aria-hidden="true">↻</span><span class="benefit-replay-label">{copy.replay[lang]}</span>
-        </button>
-        <div class="benefit-pagination" role="group" aria-label={copy.pick[lang]}>
-          {benefits.map((benefit, index) => (
-            <button type="button" class="benefit-dot" data-benefit-select={index}
-              aria-controls="benefit-slides" aria-label={benefit.title[lang]} aria-current={index === 0 ? 'true' : undefined}>
-              <span aria-hidden="true"></span>
-            </button>
-          ))}
-        </div>
-        <div class="benefit-arrows">
-          <button type="button" data-benefit-step="-1" aria-label={copy.previous[lang]} aria-controls="benefit-slides" aria-disabled="true"><span aria-hidden="true">←</span></button>
-          <button type="button" data-benefit-step="1" aria-label={copy.next[lang]} aria-controls="benefit-slides"><span aria-hidden="true">→</span></button>
-        </div>
-      </div>
-      <p class="sr-only" data-benefit-status aria-live="polite" aria-atomic="true"></p>
     </div>
   </div>
 </section>
-
-<script>
-  import '../scripts/benefits-carousel';
-</script>
