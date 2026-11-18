@@ -1,8 +1,8 @@
 # Falls City Dev Studio · fallscity.dev
 
-Minimalist landing page for the studio: websites, SEO, hosting and business tools for tattoo artists, barbershops and beauty salons. It shows real projects (desktop and phone screenshots) and explains each service. No public prices; contact is by email (`info@fallscity.dev`).
+Bilingual site for Falls City Dev Studio, featuring real client projects in desktop and mobile previews, a benefits carousel, and a contact form for project proposals.
 
-Static Astro 7 and hand-written CSS, served by a small Cloudflare Worker (`worker/index.ts`). Client JavaScript: the contact form (`src/scripts/inquiry.ts`) and Google Tag Manager. English at `/`, Spanish at `/es/`.
+Astro prerenders the pages in English at `/` and Spanish at `/es/`. React Bits supplies the visual effects. GSAP ScrollTrigger animates the headings, brand ribbon and portfolio screens. The benefits carousel uses six illustrated scenes and supports reduced motion. The logo wordmark is derived from the original Falls City logo.
 
 ## Commands
 
@@ -21,7 +21,9 @@ Playwright uses the browsers in `~/.cache/ms-playwright` (`npx playwright instal
 
 ## Content
 
-Everything visible is in `src/data/site.ts` as `{ en, es }`: projects, services, process steps and interface copy. Components in `src/components/` hold layout only. Do not add invented clients, results, reviews or prices.
+Bilingual page copy and illustration labels are maintained in `src/data/site.ts`. The site follows local time, with the light theme from 07:00 through 18:59 and the dark theme at night. The default without JavaScript is light.
+
+React Bits components and their license live in `src/components/react-bits/`. Grainient powers the home ribbon with its grain set to zero. The optional React Bits Starter registry requires `REACTBITS_LICENSE_KEY` for future component installation. The production build has no dependency on Starter credentials.
 
 ### Screenshots
 `src/assets/work/<site>-<page>-<desktop|mobile>.jpg`, made by `scripts/capture.mjs` (1440×900 @1.5x and 390×844 @2x). Astro turns them into AVIF/WebP at build time. To add a project: add its pages to `SITES` in the capture script, run it, then add the project to `projects` in `site.ts`.

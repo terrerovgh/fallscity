@@ -6,6 +6,7 @@
 }
 
 html {
+  background-color: var(--paper);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-padding-top: 5rem;
@@ -144,11 +145,12 @@ a {
     color 0.15s;
 
   &.primary {
-    background: var(--ink);
+    background: var(--accent);
+    border-color: var(--accent);
     color: var(--paper);
-    &:hover {
-      background: var(--accent);
-      border-color: var(--accent);
+    &:hover:not(:disabled) {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
     }
   }
 
@@ -158,7 +160,7 @@ a {
   }
 
   &.small {
-    min-height: 2.4rem;
+    min-height: 2.75rem;
     padding: 0.45rem 1rem;
     font-size: var(--step--1);
     white-space: nowrap;
@@ -171,8 +173,6 @@ a {
   top: 0;
   z-index: 50;
   background: color-mix(in srgb, var(--paper) 86%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
 
   & .wrap {
@@ -187,20 +187,21 @@ a {
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  font-weight: 650;
-  letter-spacing: -0.02em;
-  text-decoration: none;
-  white-space: nowrap;
+  flex: none;
+  min-height: 2.75rem;
+  width: 2.75rem;
 
-  & svg {
-    width: 1.6rem;
-    height: 1.6rem;
-    flex: none;
+  & picture,
+  & img {
+    width: 100%;
   }
-  & span span {
-    color: var(--muted);
-    font-weight: 500;
+
+  @media (width >= 24rem) {
+    width: 7rem;
+  }
+
+  @media (width >= 40rem) {
+    width: 15rem;
   }
 }
 
@@ -241,72 +242,6 @@ a {
   & a[aria-current='true'] {
     background: var(--ink);
     color: var(--paper);
-  }
-}
-
-@media (width < 52rem) {
-  .nav ul {
-    display: none;
-  }
-}
-
-@media (width < 30rem) {
-  .logo span span {
-    display: none;
-  }
-}
-
-/* Smallest phones: mark only; the name stays available to screen readers. */
-@media (width < 26rem) {
-  .logo > span {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
-  .nav {
-    gap: 0.5rem;
-  }
-}
-
-/* ---------- Hero ---------- */
-.hero {
-  padding-block: clamp(3rem, 2rem + 5vw, 6.5rem) clamp(3.5rem, 2rem + 6vw, 7rem);
-
-  & .wrap {
-    display: grid;
-    gap: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
-    align-items: center;
-    @media (width >= 62rem) {
-      grid-template-columns: 1.1fr 1fr;
-    }
-  }
-
-  & h1 {
-    font-size: clamp(2.3rem, 1.6rem + 2.8vw, 4rem);
-    letter-spacing: -0.035em;
-    margin-bottom: 1.4rem;
-  }
-
-  & .where {
-    margin-top: 1.75rem;
-    font-size: var(--step--1);
-    color: var(--muted);
-  }
-
-  & .lead {
-    font-size: var(--step-1);
-    color: var(--muted);
-    max-width: 34rem;
-  }
-
-  & .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 2rem;
   }
 }
 
@@ -390,254 +325,47 @@ a {
   }
 }
 
-.hero-phones {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  align-items: end;
-  gap: clamp(0.6rem, 0.3rem + 1.5vw, 1.4rem);
-  width: min(100%, 36rem);
-  margin-inline: auto;
-  container-type: inline-size;
+/* ---------- Work ---------- */
+#work {
+  padding-top: clamp(3.5rem, 2.75rem + 4vw, 6rem);
+  border-top: 1px solid var(--line);
 
-  & .phone {
-    position: static;
-    width: auto;
-    min-width: 0;
+  & .section-head {
+    max-width: none;
+    @media (width >= 52rem) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: end;
+      gap: 2.5rem;
+    }
   }
-  & .phone:nth-child(2) {
-    margin-bottom: 14%;
+
+  & .section-head p {
+    max-width: 35ch;
   }
 }
 
-/* ---------- Work ---------- */
 .work-list {
   display: grid;
-  gap: clamp(4rem, 3rem + 5vw, 7.5rem);
-}
+  gap: clamp(3rem, 2rem + 4vw, 5.5rem) clamp(1.25rem, 0.5rem + 2.5vw, 2.5rem);
 
-.project {
-  display: grid;
-  gap: clamp(1.75rem, 1rem + 3vw, 3.5rem);
-  align-items: center;
-
-  @media (width >= 62rem) {
-    grid-template-columns: 1.45fr 1fr;
-    &:nth-child(even) {
-      grid-template-columns: 1fr 1.45fr;
-      & .project-stage {
-        order: 2;
-      }
-    }
-  }
-
-  & .kind {
-    font-size: var(--step--1);
-    color: var(--muted);
-  }
-  & h3 {
-    font-size: var(--step-2);
-    margin-block: 0.35rem 0.9rem;
-  }
-  & .summary {
-    color: var(--muted);
-  }
-  & .visit {
-    display: inline-flex;
-    gap: 0.35rem;
-    margin-top: 1.5rem;
-    font-weight: 600;
-    text-decoration-color: var(--accent);
-    &:hover {
-      color: var(--accent);
-    }
-  }
-}
-
-/* Page switcher: a native radio group, styled as a segmented control. */
-.pages {
-  border: 0;
-  padding: 0;
-  margin: 1.5rem 0 0;
-  min-inline-size: 0;
-
-  & .options {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 2px;
-    padding: 3px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--surface);
-  }
-
-  & label {
-    position: relative;
-    padding: 0.4rem 0.95rem;
-    border-radius: 999px;
-    font-size: var(--step--1);
-    font-weight: 600;
-    color: var(--muted);
-    cursor: pointer;
-    transition:
-      color 0.15s,
-      background-color 0.15s;
-
-    &:hover {
-      color: var(--ink);
-    }
-    &:has(:checked) {
-      background: var(--ink);
-      color: var(--paper);
-    }
-    &:has(:focus-visible) {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-  }
-
-  & input {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-}
-
-/* Without :has() only the first page shows; with it, the checked radio picks the page. */
-.project-stage [data-page]:not(:first-child) {
-  display: none;
-}
-
-@supports selector(:has(*)) {
-  .project-stage [data-page] {
-    display: none;
-  }
-
-  .project:has(input[value='0']:checked) [data-page='0'],
-  .project:has(input[value='1']:checked) [data-page='1'],
-  .project:has(input[value='2']:checked) [data-page='2'],
-  .project:has(input[value='3']:checked) [data-page='3'] {
-    display: block;
-  }
-}
-
-/* ---------- Services ---------- */
-.services-list {
-  display: grid;
-  gap: clamp(3.5rem, 2.5rem + 4vw, 6rem);
-  padding: 0;
-  list-style: none;
-}
-
-.service {
-  display: grid;
-  gap: clamp(1.5rem, 1rem + 2vw, 3rem);
-  align-items: center;
-
-  @media (width >= 56rem) {
-    grid-template-columns: 1fr 1.25fr;
-    &:nth-child(even) .service-shot {
-      order: -1;
-    }
-  }
-
-  & h3 {
-    font-size: var(--step-2);
-    margin-bottom: 0.9rem;
-  }
-  & p {
-    color: var(--muted);
-    max-width: 32rem;
-  }
-}
-
-.service-shot {
-  & figcaption {
-    margin-top: 0.85rem;
-    font-size: var(--step--1);
-    color: var(--muted);
-  }
-  & .crop {
-    border-radius: var(--radius);
-    overflow: hidden;
-    border: 1px solid var(--line);
-    background: var(--surface);
-  }
-  & img {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    object-position: top;
-  }
-}
-
-.tools {
-  margin-top: clamp(4rem, 3rem + 4vw, 6.5rem);
-
-  & h3.tools-title {
-    font-size: var(--step-2);
-    margin-bottom: 1.75rem;
-  }
-}
-
-.cards {
-  display: grid;
-  gap: 1rem;
-  padding: 0;
-  list-style: none;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
-
-  & li {
-    padding: 1.75rem;
-    border-radius: var(--radius);
-    background: var(--surface);
-    border: 1px solid var(--line);
-  }
-  & :is(h3, h4) {
-    margin: 0 0 0.6rem;
-    font-size: var(--step-1);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-  }
-  & p {
-    color: var(--muted);
-    line-height: 1.6;
-  }
-}
-
-/* ---------- Benefits & process ---------- */
-.points {
-  display: grid;
-  gap: 1rem;
-  padding: 0;
-  list-style: none;
-  row-gap: 2.5rem;
-  column-gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
-  @media (width >= 40rem) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (width >= 62rem) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  & li {
-    padding-top: 1.5rem;
-    border-top: 2px solid var(--ink);
-  }
-  & h3 {
-    font-size: var(--step-1);
-    margin-bottom: 0.6rem;
-  }
-  & p {
-    color: var(--muted);
+  @media (width >= 52rem) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 /* ---------- Contact ---------- */
 .contact {
-  background: var(--ink);
-  color: var(--paper);
+  color-scheme: dark;
+  --paper: var(--paper-dark);
+  --ink: var(--ink-dark);
+  --accent: var(--accent-dark);
+  --accent-hover: var(--accent-hover-dark);
+  background: var(--paper);
+  color: var(--ink);
+
+  & .wrap {
+    position: relative;
+  }
 
   & h2 {
     font-size: var(--step-4);
@@ -648,7 +376,7 @@ a {
   & p.lead {
     font-size: var(--step-1);
     max-width: 36rem;
-    color: color-mix(in srgb, var(--paper) 72%, transparent);
+    color: var(--muted-dark);
   }
   & .mail {
     display: inline-block;
@@ -659,7 +387,7 @@ a {
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 0.18em;
-    text-decoration-color: color-mix(in srgb, var(--paper) 35%, transparent);
+    text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent);
     overflow-wrap: anywhere;
     &:hover {
       text-decoration-color: currentColor;
@@ -668,10 +396,7 @@ a {
   & .where {
     margin-top: 2rem;
     font-size: var(--step--1);
-    color: color-mix(in srgb, var(--paper) 60%, transparent);
-  }
-  & :focus-visible {
-    outline-color: var(--paper);
+    color: var(--muted-dark);
   }
 
   /* With the form: intro beside the form on wide screens. */
@@ -689,23 +414,19 @@ a {
   }
   & .or-email {
     margin-top: 2.5rem;
-    color: color-mix(in srgb, var(--paper) 72%, transparent);
+    color: var(--muted-dark);
   }
   &:not(.has-form) .or-email {
     display: none;
   }
 }
 
-/* Contact form (shown by src/scripts/inquiry.ts). Lives on the inverted contact band. */
+/* Contact form (shown by src/scripts/inquiry.ts). */
 .inquiry-wrap {
-  --field: color-mix(in srgb, var(--paper) 7%, transparent);
-  --edge: color-mix(in srgb, var(--paper) 32%, transparent);
-  --soft: color-mix(in srgb, var(--paper) 72%, transparent);
-  /* The band is dark in light mode and light in dark mode. */
+  --field: var(--surface-dark);
+  --edge: color-mix(in srgb, var(--ink) 44%, transparent);
+  --soft: var(--muted-dark);
   --alert: #ffb4a8;
-  @media (prefers-color-scheme: dark) {
-    --alert: #9b1c0c;
-  }
 
   &[hidden] {
     display: none;
@@ -750,7 +471,7 @@ a {
     border: 1px solid var(--edge);
     border-radius: 10px;
     background: var(--field);
-    color: var(--paper);
+    color: var(--ink);
     font: inherit;
     font-size: var(--step-0);
     transition: border-color 0.15s;
@@ -758,9 +479,9 @@ a {
       border-color: var(--soft);
     }
     &:focus-visible {
-      outline: 2px solid var(--paper);
+      outline: 2px solid var(--accent);
       outline-offset: 1px;
-      border-color: var(--paper);
+      border-color: var(--accent);
     }
     &[aria-invalid='true'] {
       border-color: var(--alert);
@@ -808,10 +529,10 @@ a {
       width: 1.15rem;
       height: 1.15rem;
       margin: 0.15rem 0 0;
-      accent-color: var(--paper);
+      accent-color: var(--accent);
     }
     & a {
-      color: var(--paper);
+      color: var(--ink);
     }
   }
   & .trap {
@@ -831,17 +552,9 @@ a {
     gap: 0.75rem 1.25rem;
   }
   & .send {
-    background: var(--paper);
-    color: var(--ink);
-    border-color: var(--paper);
     cursor: pointer;
     font: inherit;
     font-weight: 600;
-    &:hover:not(:disabled) {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: var(--paper);
-    }
     &:disabled {
       opacity: 0.75;
       cursor: progress;
@@ -877,7 +590,7 @@ a {
   gap: 0.9rem;
   padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
   border-radius: var(--radius);
-  border: 1px solid color-mix(in srgb, var(--paper) 25%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
 
   &[hidden] {
     display: none;
@@ -890,10 +603,10 @@ a {
     stroke-linecap: round;
     stroke-linejoin: round;
     & circle {
-      stroke: color-mix(in srgb, var(--paper) 35%, transparent);
+      stroke: color-mix(in srgb, var(--ink) 35%, transparent);
     }
     & path {
-      stroke: var(--paper);
+      stroke: var(--ink);
     }
   }
   & h3 {
@@ -903,19 +616,19 @@ a {
     }
   }
   & p {
-    color: color-mix(in srgb, var(--paper) 72%, transparent);
+    color: var(--muted-dark);
   }
   & .btn {
     margin-top: 0.5rem;
-    border-color: color-mix(in srgb, var(--paper) 45%, transparent);
-    color: var(--paper);
+    border-color: color-mix(in srgb, var(--ink) 45%, transparent);
+    color: var(--ink);
     background: transparent;
     cursor: pointer;
     font: inherit;
     font-weight: 600;
     &:hover {
-      background: var(--paper);
-      color: var(--ink);
+      background: var(--ink);
+      color: var(--paper);
     }
   }
 
@@ -1059,40 +772,5 @@ a {
   & p {
     color: var(--muted);
     margin-bottom: 0.8rem;
-  }
-}
-
-/* ---------- Motion (progressive, opt-in) ---------- */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: reveal linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 55%;
-    }
-  }
-
-  .hero-phones .phone {
-    animation: rise 0.9s var(--ease) both;
-    &:nth-child(2) {
-      animation-delay: 0.1s;
-    }
-    &:nth-child(3) {
-      animation-delay: 0.2s;
-    }
-  }
-}
-
-@keyframes reveal {
-  from {
-    opacity: 0;
-    translate: 0 2.5rem;
-  }
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    translate: 0 1.5rem;
   }
 }

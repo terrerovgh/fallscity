@@ -1,6 +1,8 @@
 ---
 // Contact: the email link always works. The form is rendered hidden and shown by
 // src/scripts/inquiry.ts only when the Worker reports that delivery is configured.
+import { ContactIntro } from './Site';
+import StarBorder from './react-bits/StarBorder';
 import { inquiry, privacyPath, studio, ui, type Lang } from '../data/site';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -11,13 +13,14 @@ const optional = `(${f.optional[lang]})`;
 ---
 <section class="section contact" id="contact" aria-labelledby="contact-title">
   <div class="wrap">
-    <div class="contact-intro">
-      <h2 id="contact-title">{ui.contact.title[lang]}</h2>
-      <p class="lead">{ui.contact.lead[lang]}</p>
-      <p class="or-email">{f.orEmail[lang]}</p>
-      <a class="mail" href={mailto}>{studio.email}</a>
-      <p class="where">{ui.contact.where[lang]}</p>
-    </div>
+    <ContactIntro lang={lang}>
+      <StarBorder client:media="(prefers-reduced-motion: no-preference)" as="a" href={mailto}
+        className="mail" once duration={1.45} radius={40} thickness={1.5} hover="none" clickPulse={false}
+        color="#9fb5ff" trailColor="#416aff" backgroundColor="#19233b" textColor="#f7f8fc" borderColor="#7889b5">
+        {studio.email} <span aria-hidden="true">↗</span>
+      </StarBorder>
+    </ContactIntro>
+    <div class="contact-ribbon" aria-hidden="true"></div>
 
     <div class="inquiry-wrap" data-inquiry-wrap hidden>
       <form class="inquiry" method="post" action="/api/inquiry" novalidate aria-label={f.label[lang]}
@@ -69,7 +72,7 @@ const optional = `(${f.optional[lang]})`;
         </div>
         <div class="turnstile" data-turnstile></div>
         <div class="actions">
-          <button class="btn send" type="submit">{f.send[lang]}</button>
+          <button class="btn primary send" type="submit">{f.send[lang]}</button>
           <p class="status" role="status" aria-live="polite" data-status></p>
         </div>
         <p class="send-error" data-error tabindex="-1" hidden>

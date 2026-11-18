@@ -1,22 +1,16 @@
 ---
-import { steps, ui, type Lang } from '../data/site';
+import { ProcessSteps, SectionHeading } from './Site';
+import AnimatedContent from './react-bits/AnimatedContent';
+import { ui, type Lang } from '../data/site';
+
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 ---
-<section class="section" id="process" aria-labelledby="process-title">
+<section id="process" class="section" aria-labelledby="process-title">
   <div class="wrap">
-    <header class="section-head">
-      <h2 id="process-title">{ui.process.title[lang]}</h2>
-    </header>
-    <ol class="points">
-      {
-        steps.map((s) => (
-          <li class="reveal">
-            <h3>{s.title[lang]}</h3>
-            <p>{s.body[lang]}</p>
-          </li>
-        ))
-      }
-    </ol>
+    <SectionHeading id="process-title" title={ui.process.title[lang]} />
+    <AnimatedContent client:visible trigger="mount" distance={16} duration={0.65} animateOpacity={false}>
+      <ProcessSteps lang={lang} />
+    </AnimatedContent>
   </div>
 </section>

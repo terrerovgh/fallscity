@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 11 432 176" role="img">
+  <title>Falls City</title>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      .letters { fill: #F7F8FC }
+      .ribbon { fill: #AEBBF3 }
+      .fold { fill: #6C84F4 }
+    }
+  </style>
+  <path class="ribbon" fill="#2A4CF5" d="M0 187 26 135H35C86 135 103 114 138 75C175 31 209 11 253 11C291 11 324 33 350 73C377 116 386 151 432 151V187H381C341 187 331 168 309 113C293 73 277 57 261 57C235 57 208 84 181 119C141 171 116 187 46 187Z"/>
+  <path class="fold" fill="#1F3AC6" d="M261 57C285 46 319 46 341.17 60.46C344.2 64.42 347.14 68.6 350 73C377 116 386 151 432 151V187H381C341 187 331 168 309 113C293 73 277 57 261 57Z"/>
+</svg>

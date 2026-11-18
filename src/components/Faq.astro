@@ -1,20 +1,16 @@
 ---
-import { faqs, ui, type Lang } from '../data/site';
+import { Questions, SectionHeading } from './Site';
+import AnimatedContent from './react-bits/AnimatedContent';
+import { ui, type Lang } from '../data/site';
+
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 ---
-<section class="section" id="faq" aria-labelledby="faq-title">
+<section id="faq" class="section" aria-labelledby="faq-title">
   <div class="wrap faq">
-    <h2 id="faq-title">{ui.faq.title[lang]}</h2>
-    <div class="faq-list">
-      {
-        faqs.map((f) => (
-          <details>
-            <summary>{f.q[lang]}</summary>
-            <p>{f.a[lang]}</p>
-          </details>
-        ))
-      }
-    </div>
+    <SectionHeading id="faq-title" title={ui.faq.title[lang]} />
+    <AnimatedContent client:visible trigger="mount" distance={12} duration={0.55} animateOpacity={false}>
+      <Questions lang={lang} />
+    </AnimatedContent>
   </div>
 </section>

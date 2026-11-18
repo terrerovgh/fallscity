@@ -1,56 +1,22 @@
 ---
-import { Picture } from 'astro:assets';
-import { services, shot, tools, ui, type Lang } from '../data/site';
+import { SectionHeading, ServiceRows } from './Site';
+import AnimatedContent from './react-bits/AnimatedContent';
+import { ui, type Lang } from '../data/site';
+
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 ---
-<section class="section" id="services" aria-labelledby="services-title">
-  <div class="wrap">
-    <header class="section-head">
-      <h2 id="services-title">{ui.services.title[lang]}</h2>
-      <p>{ui.services.lead[lang]}</p>
-    </header>
-
-    <ul class="services-list">
-      {
-        services.map((s) => (
-          <li class="service reveal">
-            <div>
-              <h3>{s.title[lang]}</h3>
-              <p>{s.body[lang]}</p>
-            </div>
-            {s.example && (
-              <figure class="service-shot">
-                <div class="crop">
-                  <Picture
-                    src={shot(s.example.site, s.example.page, 'desktop')}
-                    formats={['avif', 'webp']}
-                    widths={[480, 720, 960, 1280]}
-                    sizes="(min-width: 56rem) 660px, 92vw"
-                    alt=""
-                    loading="lazy"
-                  />
-                </div>
-                <figcaption>{s.example.caption[lang]}</figcaption>
-              </figure>
-            )}
-          </li>
-        ))
-      }
-    </ul>
-
-    <div class="tools">
-      <h3 class="tools-title">{ui.services.toolsTitle[lang]}</h3>
-      <ul class="cards">
-        {
-          tools.map((t) => (
-            <li class="reveal">
-              <h4>{t.title[lang]}</h4>
-              <p>{t.body[lang]}</p>
-            </li>
-          ))
-        }
-      </ul>
+<section id="services" class="section" aria-labelledby="services-title">
+  <div class="wrap services-layout">
+    <SectionHeading id="services-title" title={ui.services.title[lang]} lead={ui.services.lead[lang]} />
+    <div>
+      <AnimatedContent client:visible trigger="mount" distance={16} duration={0.62} animateOpacity={false}>
+        <ServiceRows kind="services" lang={lang} />
+      </AnimatedContent>
+      <AnimatedContent client:visible trigger="mount" distance={14} duration={0.58} animateOpacity={false} className="service-extra">
+        <h3 class="service-extra-title">{ui.services.toolsTitle[lang]}</h3>
+        <ServiceRows kind="tools" lang={lang} />
+      </AnimatedContent>
     </div>
   </div>
 </section>

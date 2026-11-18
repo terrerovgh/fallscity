@@ -7,52 +7,36 @@
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
 
   /* Raw palette */
-  --paper-light: #f6f5f2;
-  --paper-dark: #0e0f10;
+  --paper-light: #f7f8fc;
+  --paper-dark: #111726;
   --surface-light: #ffffff;
-  --surface-dark: #17191b;
-  --ink-light: #141414;
-  --ink-dark: #f1f0ec;
-  --muted-light: #5d5d58;
-  --muted-dark: #a3a39c;
-  --line-light: #e2e0da;
-  --line-dark: #2a2d30;
-  --accent-light: #1f6f6a;
-  --accent-dark: #6cc7bf;
+  --surface-dark: #1a202f;
+  --ink-light: var(--paper-dark);
+  --ink-dark: var(--paper-light);
+  --muted-light: #566176;
+  --muted-dark: #acb3c0;
+  --line-light: #e6eaf2;
+  --line-dark: #2d3240;
+  --accent-light: #2a4cf5;
+  --accent-dark: #aebbf3;
+  --ribbon-fold-dark: #6c84f4;
+  --accent-hover-light: #1f3ac6;
+  --accent-hover-dark: #c6cff6;
   --frame-light: #1b1c1e;
   --frame-dark: #2b2e31;
 
-  /* Semantic tokens (fallback first, then light-dark()) */
+  /* Semantic tokens. The unenhanced page uses the light palette. */
   --paper: var(--paper-light);
   --surface: var(--surface-light);
   --ink: var(--ink-light);
   --muted: var(--muted-light);
   --line: var(--line-light);
   --accent: var(--accent-light);
+  --accent-hover: var(--accent-hover-light);
   --frame: var(--frame-light);
-
-  @media (prefers-color-scheme: dark) {
-    --paper: var(--paper-dark);
-    --surface: var(--surface-dark);
-    --ink: var(--ink-dark);
-    --muted: var(--muted-dark);
-    --line: var(--line-dark);
-    --accent: var(--accent-dark);
-    --frame: var(--frame-dark);
-  }
-
-  @supports (color: light-dark(white, black)) {
-    --paper: light-dark(var(--paper-light), var(--paper-dark));
-    --surface: light-dark(var(--surface-light), var(--surface-dark));
-    --ink: light-dark(var(--ink-light), var(--ink-dark));
-    --muted: light-dark(var(--muted-light), var(--muted-dark));
-    --line: light-dark(var(--line-light), var(--line-dark));
-    --accent: light-dark(var(--accent-light), var(--accent-dark));
-    --frame: light-dark(var(--frame-light), var(--frame-dark));
-  }
 
   accent-color: var(--accent);
 
@@ -71,4 +55,16 @@
   --max: 76rem;
   --radius: 14px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --paper: var(--paper-dark);
+  --surface: var(--surface-dark);
+  --ink: var(--ink-dark);
+  --muted: var(--muted-dark);
+  --line: var(--line-dark);
+  --accent: var(--accent-dark);
+  --accent-hover: var(--accent-hover-dark);
+  --frame: var(--frame-dark);
 }

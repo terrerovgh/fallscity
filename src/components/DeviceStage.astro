@@ -1,49 +1,37 @@
 ---
-// A laptop browser window with a phone in front of it, both showing the same page.
 import { Picture } from 'astro:assets';
-import { shot } from '../data/site';
+import { shot, type Project } from '../data/site';
 
-interface Props {
-  site: string;
-  page: string;
-  domain: string;
-  /** Accessible description of the page, e.g. "goodnina.com, Home". */
-  label: string;
-  desktopAlt: string;
-  mobileAlt: string;
-  priority?: boolean;
-}
-const { site, page, domain, label, desktopAlt, mobileAlt, priority = false } = Astro.props;
-const loading = priority ? 'eager' : 'lazy';
-const fetchpriority = priority ? 'high' : undefined;
+interface Props { project: Project }
+const { project } = Astro.props;
+const devices = [
+  { id: 'desktop', frame: 'laptop', widths: [480, 720, 960, 1280], sizes: '(min-width: 81rem) 480px, (min-width: 52rem) 38vw, 76vw' },
+  { id: 'mobile', frame: 'phone', widths: [160, 240, 360, 480], sizes: '(min-width: 81rem) 135px, (min-width: 52rem) 11vw, 22vw' },
+] as const;
 ---
-<div class="stage">
-  <div class="laptop">
-    <div class="bar" aria-hidden="true">
-      <span class="dots"><i></i><i></i><i></i></span>
-      <span class="url">
-        <svg viewBox="0 0 12 12"><path d="M3.5 5V3.6a2.5 2.5 0 0 1 5 0V5M2.5 5h7v5.5h-7z" fill="none" stroke="currentColor" stroke-width="1.3" /></svg>
-        {domain}
-      </span>
+<div class="stage" aria-hidden="true">
+  {devices.map(device => (
+    <div class={device.frame}>
+      {device.id === 'desktop' && (
+        <div class="bar">
+          <span class="dots"><i></i><i></i><i></i></span>
+          <span class="url">{project.domain}</span>
+        </div>
+      )}
+      <div class="screen">
+        <div class="screen-track" data-screen-track>
+          {project.pages.map(page => (
+            <Picture
+              src={shot(project.id, page.id, device.id)}
+              formats={['avif', 'webp']}
+              widths={[...device.widths]}
+              sizes={device.sizes}
+              alt=""
+              loading="lazy"
+            />
+          ))}
+        </div>
+      </div>
     </div>
-    <Picture
-      src={shot(site, page, 'desktop')}
-      formats={['avif', 'webp']}
-      widths={[480, 720, 960, 1280, 1600]}
-      sizes="(min-width: 62rem) 640px, 92vw"
-      alt={`${label} ${desktopAlt}`}
-      loading={loading}
-      fetchpriority={fetchpriority}
-    />
-  </div>
-  <div class="phone">
-    <Picture
-      src={shot(site, page, 'mobile')}
-      formats={['avif', 'webp']}
-      widths={[160, 240, 360, 480]}
-      sizes="(min-width: 62rem) 180px, 27vw"
-      alt={`${label} ${mobileAlt}`}
-      loading={loading}
-    />
-  </div>
+  ))}
 </div>

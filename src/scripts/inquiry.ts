@@ -108,7 +108,7 @@ export async function initInquiry() {
     widgetId = api.render(q<HTMLElement>('[data-turnstile]'), {
       sitekey: siteKey,
       language: lang,
-      theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'light' : 'dark',
+      theme: 'dark',
       appearance: 'interaction-only',
       callback: setToken,
       'expired-callback': () => setToken(''),

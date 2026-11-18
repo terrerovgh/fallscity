@@ -1,38 +1,21 @@
 ---
-import { Picture } from 'astro:assets';
-import { projects, shot, ui, type Lang } from '../data/site';
+import { HeroCopy } from './Site';
+import SplitText from './react-bits/SplitText';
+import HeroWaves from './HeroWaves';
+import { ui, type Lang } from '../data/site';
+
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-// Three live projects, as they look on a phone.
-const featured = ['nina', 'tony', 'leey'].map((id) => projects.find((p) => p.id === id)!);
+const copy = ui.hero;
 ---
 <section class="hero" aria-labelledby="hero-title">
+  <HeroWaves client:media="(prefers-reduced-motion: no-preference)" pauseLabel={copy.pause[lang]} resumeLabel={copy.resume[lang]} />
   <div class="wrap">
-    <div>
-      <h1 id="hero-title">{ui.hero.title[lang]}</h1>
-      <p class="lead">{ui.hero.lead[lang]}</p>
-      <div class="actions">
-        <a class="btn primary" href="#contact">{ui.hero.cta[lang]}</a>
-        <a class="btn ghost" href="#work">{ui.hero.secondary[lang]}</a>
-      </div>
-      <p class="where">{ui.hero.where[lang]}</p>
-    </div>
-    <div class="hero-phones">
-      {
-        featured.map((p, i) => (
-          <div class="phone">
-            <Picture
-              src={shot(p.id, 'home', 'mobile')}
-              formats={['avif', 'webp']}
-              widths={[160, 240, 360, 480]}
-              sizes="(min-width: 62rem) 200px, 30vw"
-              alt={`${p.domain}, ${p.kind[lang]}, ${ui.work.mobileAlt[lang]}`}
-              loading="eager"
-              fetchpriority={i === 1 ? 'high' : undefined}
-            />
-          </div>
-        ))
-      }
-    </div>
+    <HeroCopy lang={lang}>
+      <SplitText client:media="(prefers-reduced-motion: no-preference)" tag="span" text={copy.title[lang]} splitType="words" trigger="load" duration={0.62} delay={42} textAlign="left" mask={false} />
+      <span class="hero-accent">
+        <SplitText client:media="(prefers-reduced-motion: no-preference)" tag="span" text={copy.titleAccent[lang]} splitType="words" trigger="load" duration={0.78} delay={64} textAlign="left" mask={false} />
+      </span>
+    </HeroCopy>
   </div>
 </section>

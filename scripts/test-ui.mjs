@@ -1,8 +1,9 @@
 // UI checks against a running preview: node scripts/test-ui.mjs [baseUrl]
-// Axe (light + dark), page switcher by mouse and keyboard, horizontal overflow, reduced motion.
+// Local-time themes, Axe, responsive layout, portfolio scroll and the inquiry form.
 import { chromium } from 'playwright';
 import { AxeBuilder } from '@axe-core/playwright';
 import { spawn, spawnSync } from 'node:child_process';
+import { mkdir } from 'node:fs/promises';
 
 // Without a base URL, serve the build with astro preview (or reuse the one already running:
 // Astro allows a single preview server per project and reports its URL).
@@ -38,61 +39,225 @@ const check = (ok, msg) => {
   if (!ok) failures++;
 };
 
+async function setThemeTime(page, theme) {
+  const hour = theme === 'light' ? '12' : '22';
+  await page.clock.setFixedTime(new Date(`2026-01-01T${hour}:00:00Z`));
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+}
+
+const themeState = (page) => page.evaluate(() => ({
+  theme: document.documentElement.dataset.theme,
+  scheme: getComputedStyle(document.documentElement).colorScheme,
+  schemeMeta: document.querySelector('meta[name="color-scheme"]').content,
+  bar: document.querySelector('meta[name="theme-color"]').content,
+  background: getComputedStyle(document.body).backgroundColor,
+}));
+const expected = {
+  light: { theme: 'light', scheme: 'light', schemeMeta: 'light', bar: '#f7f8fc', background: 'rgb(247, 248, 252)' },
+  dark: { theme: 'dark', scheme: 'dark', schemeMeta: 'dark', bar: '#111726', background: 'rgb(17, 23, 38)' },
+};
+async function checkTheme(page, theme, label, hasJavaScript = true) {
+  const state = await themeState(page);
+  const want = { ...expected[theme], theme: hasJavaScript ? theme : undefined };
+  check(Object.keys(want).every((key) => state[key] === want[key]), `${label} (${JSON.stringify(state)})`);
+}
+
+// Exercise both boundaries without reloading and use a local time different from UTC.
+{
+  const ctx = await browser.newContext({ timezoneId: 'America/New_York', colorScheme: 'light', reducedMotion: 'reduce' });
+  const page = await ctx.newPage();
+  await page.clock.install({ time: new Date('2026-01-01T11:59:00Z') });
+  await page.clock.pauseAt(new Date('2026-01-01T11:59:59Z'));
+  await page.goto(base + '/');
+  await checkTheme(page, 'dark', '06:59 local starts dark with a light system preference');
+  await page.clock.runFor(1_000);
+  await checkTheme(page, 'light', '07:00 switches to light on the open page');
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await checkTheme(page, 'light', 'changing the system preference leaves the time-based theme');
+  await page.clock.setSystemTime(new Date('2026-01-01T23:59:59Z'));
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+  await checkTheme(page, 'light', '18:59 local is still light');
+  await page.clock.runFor(1_000);
+  await checkTheme(page, 'dark', '19:00 switches to dark on the open page');
+  await page.clock.setSystemTime(new Date('2026-01-02T12:00:00Z'));
+  await checkTheme(page, 'dark', 'the clock changed while the tab timer was suspended');
+  await page.evaluate(() => document.dispatchEvent(new Event('visibilitychange')));
+  await checkTheme(page, 'light', 'returning to the visible tab refreshes the theme immediately');
+  await ctx.close();
+}
+
 for (const path of ['/', '/es/', '/privacy/', '/es/privacidad/']) {
-  for (const colorScheme of ['light', 'dark']) {
-    const ctx = await browser.newContext({ colorScheme, reducedMotion: 'reduce' });
+  for (const theme of ['light', 'dark']) {
+    const ctx = await browser.newContext({ timezoneId: 'UTC', reducedMotion: 'reduce' });
     const page = await ctx.newPage();
+    await setThemeTime(page, theme);
     await page.goto(base + path, { waitUntil: 'networkidle' });
+    await checkTheme(page, theme, `initial theme ${path} ${theme}`);
     const { violations } = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
-    check(violations.length === 0, `axe ${path} ${colorScheme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
+    check(violations.length === 0, `axe ${path} ${theme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
     await ctx.close();
   }
 }
 
-// Overflow at small widths
+// Responsive signatures, focus, reduced motion and overflow in both themes.
 for (const width of [320, 390, 768, 1024, 1440]) {
-  const ctx = await browser.newContext({ viewport: { width, height: 800 } });
+  const ctx = await browser.newContext({
+    viewport: { width, height: 800 },
+    timezoneId: 'UTC',
+    reducedMotion: 'reduce',
+  });
   const page = await ctx.newPage();
-  for (const path of ['/', '/es/']) {
-    await page.goto(base + path, { waitUntil: 'networkidle' });
-    const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-    check(over === 0, `no horizontal overflow ${path} @${width}px (${over})`);
+  for (const theme of ['light', 'dark']) {
+    await setThemeTime(page, theme);
+    await page.emulateMedia({ colorScheme: theme === 'light' ? 'dark' : 'light' });
+    for (const path of ['/', '/es/']) {
+      await page.goto(base + path);
+      const label = `${path} @${width}px ${theme}`;
+      const signature = width < 528 ? 'fallscity-symbol.svg' : theme === 'dark' ? 'fallscity-inverse.svg' : 'wordmark.webp';
+      const logo = await page.locator('.site-header .logo img:visible').evaluate((img) => ({
+        src: img.currentSrc,
+        loaded: img.complete && img.naturalWidth > 0,
+        scheme: getComputedStyle(img).colorScheme,
+      }));
+      check(logo.src.endsWith('/brand/' + signature) && logo.loaded && logo.scheme === theme, `signature ${label}`);
+      const cta = page.locator('.hero .primary');
+      await page.keyboard.press('Tab');
+      await cta.focus();
+      const focus = await cta.evaluate((el) => {
+        const style = getComputedStyle(el);
+        return [style.outlineStyle, style.outlineColor];
+      });
+      const accent = theme === 'light' ? 'rgb(42, 76, 245)' : 'rgb(174, 187, 243)';
+      check(focus[0] === 'solid' && focus[1] === accent, `hero action keyboard focus ${label}`);
+      const layout = await page.evaluate(() => {
+        const hero = document.querySelector('.hero');
+        return {
+          over: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          contact: getComputedStyle(document.querySelector('.contact')).backgroundColor,
+          waves: getComputedStyle(hero.querySelector('.grainient-canvas')).display,
+          animated: hero.getAnimations({ subtree: true }).length,
+        };
+      });
+      check(layout.over === 0 && layout.waves === 'none' && layout.animated === 0, `static hero and no horizontal overflow ${label}`);
+      check(layout.contact === expected.dark.background, `Ink contact band ${label}`);
+    }
   }
   await ctx.close();
 }
 
-// Page switcher
+// Normal motion hydrates the official effects, while the heading stays accessible.
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto(base + '/es/');
+  const title = page.getByRole('heading', { level: 1, name: /Una web para conseguir más clientes/ });
+  await title.locator('.split-word').first().waitFor();
+  check(await title.isVisible(), 'Split Text animates the title while preserving its accessible name');
+  await page.locator('.hero > astro-island:not([ssr])').waitFor({ state: 'attached' });
+  const waveControl = page.locator('.waves-control');
+  if (await page.locator('.grainient-canvas').evaluate(canvas => Boolean(canvas.getContext('webgl2')))) {
+    await waveControl.click();
+    check(await waveControl.getAttribute('aria-label') === 'Reanudar animación de fondo', 'Grainient initializes and can be paused');
+  } else {
+    check(await waveControl.isHidden() && await page.locator('.hero-ribbon').isVisible(), 'hero displays its static fallback without WebGL2');
+  }
+  await page.locator('.project-art').first().hover();
+  check(await page.locator('.project-art').first().locator('.glare-hover__glare').count() === 1, 'project preview uses Glare Hover');
+  const benefitSlides = page.locator('#benefit-slides');
+  const benefitCarousel = page.locator('.benefits-carousel');
+  await benefitSlides.scrollIntoViewIfNeeded();
+  await benefitCarousel.locator('[data-playing] .art-found').waitFor();
+  const firstAnimation = benefitCarousel.locator('.art-found .f-query');
+  await page.waitForFunction(() => document.querySelector('.art-found .f-query').getAnimations().length === 1);
+  const startTime = await firstAnimation.evaluate(el => el.getAnimations()[0].startTime);
+  await page.getByRole('button', { name: 'Repetir ilustración' }).click();
+  await page.waitForFunction(time => {
+    const animation = document.querySelector('.art-found .f-query').getAnimations()[0];
+    return animation?.startTime > time;
+  }, startTime);
+  check(true, 'benefit illustration plays on entry and can be replayed');
+
+  await page.getByRole('button', { name: 'Siguiente beneficio' }).click();
+  await benefitCarousel.locator('[data-playing] .art-convert').waitFor();
+  check(await page.getByRole('button', { name: 'Más visitas se convierten en clientes' }).getAttribute('aria-current') === 'true', 'next updates the benefit and starts its own illustration');
+  await benefitSlides.focus();
+  await page.keyboard.press('End');
+  await benefitCarousel.locator('[data-playing] .art-one').waitFor();
+  check(await page.getByRole('button', { name: 'Siguiente beneficio' }).getAttribute('aria-disabled') === 'true', 'keyboard reaches the last benefit without wrapping');
+  await page.getByRole('button', { name: 'Tú tienes el control' }).click();
+  await benefitCarousel.locator('[data-playing] .art-control').waitFor();
+  check(await benefitCarousel.locator('.art').count() === 6, 'each benefit has its own visual scene');
+  await page.locator('#services').scrollIntoViewIfNeeded();
+  await page.locator('#services astro-island:not([ssr])').first().waitFor({ state: 'attached' });
+  check(true, 'services hydrate when scrolled into view');
+  const mail = page.locator('#contact .mail');
+  await mail.scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => document.querySelector('.star-border__light').width > 300);
+  const hasStar = () => mail.locator('canvas').evaluate(canvas => {
+    const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+    return pixels.some((value, index) => index % 4 === 3 && value > 0);
+  });
+  await page.waitForFunction(() => {
+    const canvas = document.querySelector('.star-border__light');
+    return canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data.some((value, index) => index % 4 === 3 && value > 0);
+  });
+  await page.waitForTimeout(1800);
+  check(!(await hasStar()), 'Star Border finishes one pass and clears its drawing');
+  check(errors.length === 0, `no browser runtime errors (${errors.join('; ')})`);
+  await ctx.close();
+}
+
+// Each portfolio link previews desktop and mobile together and scrolls both with the page.
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   const page = await ctx.newPage();
   await page.goto(base + '/', { waitUntil: 'networkidle' });
-  const project = page.locator('.project').first();
-  const visible = async () => project.locator('[data-page]').evaluateAll((els) => els.filter((e) => getComputedStyle(e).display !== 'none').map((e) => e.dataset.page));
-  check(JSON.stringify(await visible()) === '["0"]', 'only first page visible initially');
-  await project.getByText('Gallery', { exact: true }).click();
-  check(JSON.stringify(await visible()) === '["1"]', 'click "Gallery" shows page 1 only');
-  const img = project.locator('[data-page="1"] .laptop img');
-  await img.scrollIntoViewIfNeeded();
-  await page.waitForFunction((el) => el.complete && el.naturalWidth > 0, await img.elementHandle());
-  check(true, 'gallery screenshot loads after switching');
-  await project.locator('input[value="1"]').focus();
-  await page.keyboard.press('ArrowRight');
-  check(JSON.stringify(await visible()) === '["2"]', 'ArrowRight moves to page 2');
-  const focusRing = await project.locator('label:has(input[value="2"])').evaluate((el) => getComputedStyle(el).outlineStyle);
-  check(focusRing === 'solid', 'keyboard focus is visible on the switcher');
+  const projects = page.locator('.project');
+  check(await projects.count() === 4, 'four projects appear in the portfolio');
+  const project = projects.first();
+  const tracks = project.locator('[data-screen-track]');
+  const offset = async () => tracks.evaluateAll(elements => elements.map(element =>
+    new DOMMatrix(getComputedStyle(element).transform).m42
+  ));
+  check((await offset()).every(value => value === 0), 'both screens start on their first capture');
+  await project.evaluate(element => {
+    window.scrollTo({ top: element.getBoundingClientRect().top + scrollY - innerHeight * 0.35, behavior: 'instant' });
+  });
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll('.project:first-child [data-screen-track]')].every(track =>
+      new DOMMatrix(getComputedStyle(track).transform).m42 < -40
+    ),
+  );
+  check(await tracks.count() === 2, 'page scroll moves the content inside both screens');
+  const previewImage = await project.locator('.laptop img').first().boundingBox();
+  check(previewImage?.width > 260 && previewImage?.height > 150, 'desktop capture fills the project preview');
+  const link = project.getByRole('link', { name: /Nina Romero/ });
+  await page.keyboard.press('Tab');
+  await link.focus();
+  check(await link.evaluate(element => getComputedStyle(element).outlineStyle === 'solid'), 'project link has visible keyboard focus');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll('.project:first-child [data-screen-track]')].every(track =>
+      getComputedStyle(track).transform === 'none'
+    ),
+  );
+  check(true, 'reducing motion resets both screens to the first capture');
   await ctx.close();
 }
 
-// No JS: page still renders all sections and the switcher still works (CSS only)
+// No JS: every section, client link and the first snapshot in each device remains available.
 {
-  const ctx = await browser.newContext({ javaScriptEnabled: false });
+  const ctx = await browser.newContext({ javaScriptEnabled: false, colorScheme: 'dark' });
   const page = await ctx.newPage();
   await page.goto(base + '/es/');
+  await checkTheme(page, 'light', 'no-JS uses light even with a dark system preference', false);
   const n = await page.locator('main section').count();
   check(n === 7, `no-JS renders 7 sections (${n})`);
-  await page.locator('.project').nth(1).getByText('Portafolio', { exact: true }).click();
-  const shown = await page.locator('.project').nth(1).locator('[data-page]').evaluateAll((els) => els.filter((e) => getComputedStyle(e).display !== 'none').map((e) => e.dataset.page));
-  check(JSON.stringify(shown) === '["1"]', 'no-JS switcher works');
+  check(await page.locator('.project-link').count() === 4, 'no-JS displays all project links');
+  const image = page.locator('.project .phone img').first();
+  check((await image.getAttribute('src'))?.includes('nina-home-mobile') && await image.isVisible(), 'no-JS displays the first mobile capture');
   await ctx.close();
 }
 
@@ -111,7 +276,7 @@ for (const width of [320, 390, 768, 1024, 1440]) {
 
 // Contact form flow with the Worker and Turnstile mocked
 {
-  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, timezoneId: 'UTC' });
   const page = await ctx.newPage();
   let posted;
   let reply = { status: 422, body: { ok: false, code: 'validation_error', fields: { email: 'invalid' } } };
@@ -160,62 +325,45 @@ for (const width of [320, 390, 768, 1024, 1440]) {
   check((await page.locator('[data-sent-body]').textContent()).includes('ada@example.com'), 'success panel confirms the reply address');
   check(await page.evaluate(() => document.activeElement?.matches('[data-sent-title]')), 'focus moves to the success message');
   check(await page.evaluate(() => localStorage.getItem('fallscity-inquiry-draft')) === null, 'draft is cleared after sending');
-  for (const colorScheme of ['light', 'dark']) {
-    await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  for (const theme of ['light', 'dark']) {
+    await setThemeTime(page, theme);
     const { violations } = await new AxeBuilder({ page }).include('#contact').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
-    check(violations.length === 0, `axe contact success ${colorScheme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
+    check(violations.length === 0, `axe contact success ${theme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
   }
   await page.getByRole('button', { name: 'Enviar otro mensaje' }).click();
   check(await form.isVisible() && (await form.getByLabel('Tu nombre').inputValue()) === '', '"send another" brings back an empty form');
   await form.getByRole('button', { name: 'Enviar mensaje' }).click();
-  for (const colorScheme of ['light', 'dark']) {
-    await page.emulateMedia({ colorScheme });
+  for (const theme of ['light', 'dark']) {
+    await setThemeTime(page, theme);
     const { violations } = await new AxeBuilder({ page }).include('#contact').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
-    check(violations.length === 0, `axe contact form with errors ${colorScheme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
+    check(violations.length === 0, `axe contact form with errors ${theme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
   }
+  await mkdir(new URL('../artifacts/qa/', import.meta.url), { recursive: true });
   await page.locator('#contact').screenshot({ path: new URL('../artifacts/qa/contact-form-errors.png', import.meta.url).pathname });
   await ctx.close();
 }
 
-// Benefits carousel (motion allowed): one slide at a time, auto-advance, manual pick, axe
+// The native mobile menu and FAQ remain operable with reduced motion.
 {
-  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'no-preference' });
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
-  await page.goto(base + '/', { waitUntil: 'networkidle' });
-  const car = page.locator('.carousel');
-  await car.scrollIntoViewIfNeeded();
-  const shown = () => car.locator('.slide').evaluateAll((els) => els.map((e, i) => [i, +getComputedStyle(e).opacity]).filter(([, o]) => o > 0.5).map(([i]) => i));
-  // Jump the CSS timeline instead of waiting: t seconds into the cycle.
-  const at = (t) => page.evaluate((ms) => document.getAnimations().forEach((a) => { if (a.animationName !== 'reveal') { a.pause(); a.currentTime = ms; } }), t * 1000);
-  await at(3);
-  check(JSON.stringify(await shown()) === '[0]', 'carousel shows only slide 0 at 3s');
-  await at(6 * 4 + 3);
-  check(JSON.stringify(await shown()) === '[4]', 'carousel advances to slide 4 at 27s');
-  await page.evaluate(() => document.getAnimations().forEach((a) => a.play()));
-  await car.getByRole('radio', { name: 'A brand that earns trust' }).check();
-  await page.waitForTimeout(700);
-  check(JSON.stringify(await shown()) === '[2]', 'picking a dot shows slide 2');
-  const running = await car.locator('.slide').evaluateAll((els) => els.filter((e) => getComputedStyle(e).animationName === 'benefit-slide').length);
-  check(running === 0, 'picking a dot stops the rotation');
-  await page.keyboard.press('ArrowRight');
-  await page.waitForTimeout(700);
-  check(JSON.stringify(await shown()) === '[3]', 'ArrowRight moves the carousel to slide 3');
-  await page.waitForTimeout(6000);
-  for (const colorScheme of ['light', 'dark']) {
-    await page.emulateMedia({ colorScheme });
-    const { violations } = await new AxeBuilder({ page }).include('#benefits').withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze();
-    check(violations.length === 0, `axe carousel ${colorScheme}${violations.map((v) => `\n     ${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`).join('')}`);
-  }
-  await ctx.close();
-}
+  await page.goto(base + '/es/');
+  const menu = page.getByLabel('Menú', { exact: true });
+  await menu.focus();
+  await page.keyboard.press('Enter');
+  check(await page.locator('.mobile-nav').getAttribute('open') !== null, 'mobile navigation opens from the keyboard');
+  await page.locator('.mobile-nav').getByRole('link', { name: 'Preguntas' }).click();
+  check(new URL(page.url()).hash === '#faq', 'mobile navigation reaches the FAQ');
+  const question = page.locator('.faq-list summary').first();
+  await question.focus();
+  await page.keyboard.press('Enter');
+  check(await page.locator('.faq-list details[open]').first().locator('p').isVisible(), 'FAQ answers open from the keyboard');
+  check(await page.locator('#services .service-rows li').first().isVisible(), 'services render in reduced motion');
+  await page.getByRole('button', { name: 'Horas libres cada semana' }).click();
+  await page.waitForFunction(() => document.querySelector('[data-benefit-select="3"]').getAttribute('aria-current') === 'true');
+  check(await page.locator('[data-playing]').count() === 0, 'reduced motion still allows selecting the static illustrations');
 
-// Reduced motion: reveal content is fully visible without scrolling
-{
-  const ctx = await browser.newContext({ reducedMotion: 'reduce' });
-  const page = await ctx.newPage();
-  await page.goto(base + '/', { waitUntil: 'networkidle' });
-  const hidden = await page.locator('.reveal').evaluateAll((els) => els.filter((e) => getComputedStyle(e).opacity !== '1').length);
-  check(hidden === 0, `reduced motion: all .reveal at opacity 1 (${hidden} not)`);
   await ctx.close();
 }
 

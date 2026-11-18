@@ -1,49 +1,56 @@
 ---
-// Benefits carousel, CSS only (see src/styles/benefits.css).
-// Fallback (reduced motion or no :has()): a static grid with every card and its illustration.
-// With motion: one slide at a time, advancing on its own. The radios jump to a slide and stop
-// the rotation; the stacked "stop" labels each point at the slide showing at that moment.
+import '../styles/benefit-art.css';
 import BenefitArt from './BenefitArt.astro';
+import { SectionHeading } from './Site';
+import SpotlightCard from './react-bits/SpotlightCard';
 import { benefits, ui, type Lang } from '../data/site';
+
 interface Props { lang: Lang }
 const { lang } = Astro.props;
+const copy = ui.benefits;
 ---
-<section class="section" id="benefits" aria-labelledby="benefits-title">
+<section id="benefits" class="section" aria-labelledby="benefits-title">
   <div class="wrap">
-    <header class="section-head">
-      <h2 id="benefits-title">{ui.benefits.title[lang]}</h2>
-      <p>{ui.benefits.lead[lang]}</p>
-    </header>
-    <div class="carousel reveal" style={`--n: ${benefits.length}`}>
-      <ul class="slides">
-        {
-          benefits.map((b, i) => (
-            <li class="slide" style={`--i: ${i}`}>
-              <BenefitArt id={b.id} />
-              <div class="slide-text an">
-                <h3>{b.title[lang]}</h3>
-                <p>{b.body[lang]}</p>
+    <SectionHeading id="benefits-title" title={copy.title[lang]} />
+    <div class="benefits-carousel" data-benefits-carousel>
+      <ul id="benefit-slides" class="benefit-slides" data-benefit-slides tabindex="0" aria-labelledby="benefits-title">
+        {benefits.map(benefit => (
+          <li class="benefit-slide" data-benefit-slide data-benefit-title={benefit.title[lang]}>
+            <SpotlightCard client:media="(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)"
+              className="benefit-card" spotlightColor="var(--accent)" intensity={0.12} borderGlow={0.5} proximity={0} flare={false}>
+              <div class="benefit-story">
+                <h3>{benefit.title[lang]}</h3>
+                <p>{benefit.body[lang]}</p>
               </div>
-            </li>
-          ))
-        }
+              <div class="benefit-scene">
+                <BenefitArt id={benefit.id} lang={lang} />
+              </div>
+            </SpotlightCard>
+          </li>
+        ))}
       </ul>
-      <div class="controls">
-        <div class="stops" aria-hidden="true">
-          {benefits.map((_, i) => <label class="stop" for={`benefit-${i}`} style={`--i: ${i}`} />)}
+      <div class="benefit-controls" data-benefit-controls hidden>
+        <button type="button" class="benefit-replay" data-benefit-replay>
+          <span aria-hidden="true">↻</span><span class="benefit-replay-label">{copy.replay[lang]}</span>
+        </button>
+        <div class="benefit-pagination" role="group" aria-label={copy.pick[lang]}>
+          {benefits.map((benefit, index) => (
+            <button type="button" class="benefit-dot" data-benefit-select={index}
+              aria-controls="benefit-slides" aria-label={benefit.title[lang]} aria-current={index === 0 ? 'true' : undefined}>
+              <span aria-hidden="true"></span>
+            </button>
+          ))}
         </div>
-        <fieldset class="dots">
-          <legend class="sr-only">{ui.benefits.pick[lang]}</legend>
-          {
-            benefits.map((b, i) => (
-              <label class="dot" style={`--i: ${i}`}>
-                <input type="radio" name="benefit" id={`benefit-${i}`} value={i} aria-label={b.title[lang]} />
-                <span class="bar" />
-              </label>
-            ))
-          }
-        </fieldset>
+        <div class="benefit-arrows">
+          <button type="button" data-benefit-step="-1" aria-label={copy.previous[lang]} aria-controls="benefit-slides" aria-disabled="true"><span aria-hidden="true">←</span></button>
+          <button type="button" data-benefit-step="1" aria-label={copy.next[lang]} aria-controls="benefit-slides"><span aria-hidden="true">→</span></button>
+        </div>
       </div>
+      <p class="sr-only" data-benefit-status aria-live="polite" aria-atomic="true"></p>
     </div>
   </div>
 </section>
+
+<script>
+  import '../scripts/benefits-carousel';
+</script>

@@ -1,7 +1,7 @@
 ---
 import '../styles/tokens.css';
 import '../styles/base.css';
-import '../styles/benefits.css';
+import '../styles/redesign.css';
 import { faqs, services, studio, tools, ui, type Lang } from '../data/site';
 
 interface Props {
@@ -62,6 +62,40 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
 <html lang={lang === 'en' ? 'en-US' : 'es-US'}>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f7f8fc" />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const scheme = document.querySelector('meta[name="color-scheme"]');
+        const bar = document.querySelector('meta[name="theme-color"]');
+        const paper = bar.content;
+        let timer;
+
+        function updateTheme() {
+          const now = new Date();
+          const hour = now.getHours();
+          const theme = hour >= 7 && hour < 19 ? 'light' : 'dark';
+          if (root.dataset.theme !== theme) {
+            root.dataset.theme = theme;
+            scheme.content = theme;
+            bar.content = theme === 'dark' ? '#111726' : paper;
+          }
+
+          // Align to the local minute and keep checking if the device clock changes.
+          clearTimeout(timer);
+          timer = setTimeout(updateTheme, 60_000 - now.getSeconds() * 1_000 - now.getMilliseconds());
+        }
+
+        updateTheme();
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) updateTheme();
+        });
+        window.addEventListener('pageshow', updateTheme);
+        window.addEventListener('focus', updateTheme);
+      })();
+    </script>
     <script is:inline define:vars={{ gtm: studio.googleTagId }}>
       // Google Tag Manager, only on the production host (not previews or localhost).
       if (location.hostname === 'fallscity.dev') {
@@ -73,10 +107,6 @@ const jsonLd = { '@context': 'https://schema.org', '@graph': graph };
         document.head.append(s);
       }
     </script>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f6f5f2" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0e0f10" />
     <title>{title}</title>
     <meta name="description" content={description} />
     {home && <meta name="msvalidate.01" content={studio.bingSiteVerification} />}

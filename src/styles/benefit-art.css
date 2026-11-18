@@ -1,50 +1,16 @@
-/* ---------- Benefits: illustrations and carousel ----------
-   Static first: a grid of cards whose illustrations show their finished scene.
-   With motion allowed and :has() supported, it becomes a carousel that advances on its own
-   (CSS only). Timing model:
-   - every slide runs `benefit-slide` over the whole cycle (--dwell × --n), offset by its index;
-   - every animated part (.an) loops once per --dwell, starting together, so each illustration
-     restarts exactly when its slide comes in.
-   The percentages in benefit-slide / benefit-bar / benefit-stop assume 6 slides (100 / 6). */
-
-.slides {
-  display: grid;
-  row-gap: 2.5rem;
-  column-gap: clamp(1rem, 0.5rem + 2vw, 2.5rem);
-  padding: 0;
-  list-style: none;
-  @media (width >= 40rem) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (width >= 62rem) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.slide {
-  & .art {
-    margin-bottom: 1.25rem;
-  }
-  & h3 {
-    font-size: var(--step-1);
-    margin-bottom: 0.6rem;
-  }
-  & p {
-    color: var(--muted);
-  }
-}
-
-.controls {
-  display: none;
-}
-
 /* ---------- Illustrations ---------- */
 .art {
   aspect-ratio: 400 / 260;
-  border-radius: var(--radius);
-  border: 1px solid var(--line);
-  background: var(--surface);
   overflow: hidden;
+
+  & text {
+    font-size: 13px;
+    font-weight: 650;
+  }
+
+  & .small-art-text {
+    font-size: 10px;
+  }
 
   & svg {
     display: block;
@@ -75,7 +41,7 @@
     fill: var(--accent);
   }
   & .pap {
-    fill: var(--paper);
+    fill: #121d43;
   }
   & .soft {
     fill: var(--accent);
@@ -103,7 +69,7 @@
     stroke: var(--accent);
   }
   & .stk-pap {
-    stroke: var(--paper);
+    stroke: #121d43;
     stroke-width: 2.5;
   }
   & .stk-muted {
@@ -134,269 +100,80 @@
   }
 }
 
-/* ---------- Carousel (motion allowed + :has()) ---------- */
+.f-query { --a: f-query; transform-origin: left center; }
+.f-o1 { --a: f-o1; }
+.f-o2 { --a: f-o2; }
+.f-you { --a: f-you; }
+.f-pin { --a: f-pin; }
+
+.c-t1 { --a: c-t1; }
+.c-t2 { --a: c-t2; }
+.c-t3 { --a: c-t3; }
+.c-cursor { --a: c-cursor; transform-origin: 0 0; }
+.c-btn { --a: c-btn; }
+.c-ripple { --a: c-ripple; }
+.c-card { --a: c-card; }
+.c-check { --a: c-check; }
+
+.t-domain { --a: t-domain; transform-origin: left center; }
+.t-shackle { --a: t-shackle; }
+.t-b1 { --a: t-b1; }
+.t-b2 { --a: t-b2; }
+.t-b3 { --a: t-b3; }
+.t-b4 { --a: t-b4; }
+.t-shield { --a: t-shield; }
+
+.t-arc { --a: t-arc; }
+.t-arrow { --a: t-arrow; }
+.t-min, .t-hour { transform-box: view-box; transform-origin: 118px 130px; }
+.t-min { --a: t-min; }
+.t-hour { --a: t-hour; }
+.t-r1 { --a: t-r1; }
+.t-r2 { --a: t-r2; }
+.t-r3 { --a: t-r3; }
+.t-c1 { --a: t-c1; }
+.t-c2 { --a: t-c2; }
+.t-c3 { --a: t-c3; }
+
+.k-cursor { --a: k-cursor; transform-origin: 0 0; }
+.k-knob { --a: k-knob; }
+.k-track { --a: k-track; }
+.k-photo { --a: k-photo; }
+.k-price { --a: k-price; transform-origin: left center; }
+.k-save { --a: k-save; }
+.k-toast { --a: k-toast; }
+
+.o-center { --a: o-center; }
+.o-pulse { --a: o-pulse; }
+.o-l1 { --a: o-l1; }
+.o-l2 { --a: o-l2; }
+.o-l3 { --a: o-l3; }
+.o-l4 { --a: o-l4; }
+.o-n1 { --a: o-n1; }
+.o-n2 { --a: o-n2; }
+.o-n3 { --a: o-n3; }
+.o-n4 { --a: o-n4; }
+.o-d1 { --a: o-d1; }
+.o-d2 { --a: o-d2; }
+.o-d3 { --a: o-d3; }
+.o-d4 { --a: o-d4; }
+
 @media (prefers-reduced-motion: no-preference) {
-  @supports selector(:has(*)) {
-    .carousel {
-      --dwell: 6s;
-      --cycle: calc(var(--dwell) * var(--n, 6));
-    }
+  [data-playing] .art .an {
+    animation: var(--a) 4.4s var(--ease) both;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
 
-    .slides {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .slide {
-      grid-area: 1 / 1;
-      display: grid;
-      gap: 1.5rem;
-      align-content: start;
-      align-items: center;
-      animation: benefit-slide var(--cycle) linear infinite both;
-      animation-delay: calc(var(--i) * var(--dwell) - var(--cycle));
-
-      @media (width >= 48rem) {
-        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-        align-content: center;
-        gap: clamp(2rem, 1rem + 3vw, 4.5rem);
-      }
-
-      & .art {
-        margin: 0;
-      }
-      & h3 {
-        font-size: var(--step-2);
-        margin-bottom: 0.9rem;
-      }
-      & p {
-        max-width: 30rem;
-      }
-    }
-
-    /* Each animated part names its keyframes in --a. --gate turns them off (manual mode). */
-    .an {
-      animation: var(--gate, var(--a)) var(--dwell) var(--ease) var(--iter, infinite) both;
-      transform-box: fill-box;
-      transform-origin: center;
-    }
-    .slide-text {
-      --a: benefit-text;
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-top: 1.75rem;
-    }
-
-    /* Pause: six stacked labels, each visible while its slide shows; clicking one picks that slide. */
-    .stops {
-      display: grid;
-      flex: none;
-    }
-    .stop {
-      grid-area: 1 / 1;
-      display: grid;
-      place-items: center;
-      width: 2.75rem;
-      height: 2.75rem;
-      border-radius: 50%;
-      border: 1px solid var(--line);
-      background: var(--surface);
-      cursor: pointer;
-      animation: benefit-stop var(--cycle) linear infinite both;
-      animation-delay: calc(var(--i) * var(--dwell) - var(--cycle));
-      transition: border-color 0.15s;
-      &::before {
-        content: '';
-        width: 10px;
-        height: 12px;
-        border-inline: 3.5px solid var(--ink);
-      }
-      &:hover {
-        border-color: var(--ink);
-      }
-    }
-
-    .dots {
-      display: flex;
-      flex: 1;
-      max-width: 22rem;
-      gap: 0.25rem;
-      border: 0;
-      margin: 0;
-      padding: 0;
-      min-inline-size: 0;
-    }
-    .dot {
-      position: relative;
-      flex: 1 1 0;
-      display: grid;
-      align-items: center;
-      min-width: 1.5rem;
-      height: 2.75rem;
-      padding-inline: 0.15rem;
-      border-radius: 4px;
-      cursor: pointer;
-
-      & input {
-        position: absolute;
-        inset: 0;
-        margin: 0;
-        opacity: 0;
-        cursor: pointer;
-        z-index: 1;
-      }
-      &:has(:focus-visible) {
-        outline: 2px solid var(--accent);
-        outline-offset: 2px;
-      }
-      &:hover .bar {
-        background: var(--muted);
-      }
-    }
-    .bar {
-      position: relative;
-      height: 4px;
-      border-radius: 2px;
-      background: var(--line);
-      overflow: hidden;
-      transition: background-color 0.15s;
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: var(--accent);
-        transform-origin: left;
-        animation: benefit-bar var(--cycle) linear infinite both;
-        animation-delay: calc(var(--i) * var(--dwell) - var(--cycle));
-      }
-    }
-
-    /* Hold still while someone reads or uses the controls (only in auto mode). */
-    .carousel:not(:has(.dot input:checked)):is(:focus-within, :has(.slide-text:hover, .controls:hover)) {
-      & :is(.slide, .an, .stop),
-      & .bar::after {
-        animation-play-state: paused;
-      }
-    }
-
-    /* Manual mode: a picked slide stops the rotation; its illustration plays once. */
-    .carousel:has(.dot input:checked) {
-      & .slide {
-        animation: none;
-        opacity: 0;
-        --gate: none;
-        --iter: 1;
-      }
-      & .stops {
-        display: none;
-      }
-      & .bar::after {
-        animation: none;
-        scale: 0 1;
-      }
-      & .dot:has(:checked) .bar::after {
-        scale: 1 1;
-      }
-    }
-    .carousel:has(input[value='0']:checked) .slide:nth-child(1),
-    .carousel:has(input[value='1']:checked) .slide:nth-child(2),
-    .carousel:has(input[value='2']:checked) .slide:nth-child(3),
-    .carousel:has(input[value='3']:checked) .slide:nth-child(4),
-    .carousel:has(input[value='4']:checked) .slide:nth-child(5),
-    .carousel:has(input[value='5']:checked) .slide:nth-child(6) {
-      opacity: 1;
-      animation: benefit-in 0.5s var(--ease) both;
-      --gate: initial;
-    }
-
-    /* Per-part timing */
-    .f-query { --a: f-query; transform-origin: left center; }
-    .f-o1 { --a: f-o1; }
-    .f-o2 { --a: f-o2; }
-    .f-you { --a: f-you; }
-    .f-pin { --a: f-pin; }
-
-    .c-t1 { --a: c-t1; }
-    .c-t2 { --a: c-t2; }
-    .c-t3 { --a: c-t3; }
-    .c-cursor { --a: c-cursor; transform-origin: 0 0; }
-    .c-btn { --a: c-btn; }
-    .c-ripple { --a: c-ripple; }
-    .c-card { --a: c-card; }
-    .c-check { --a: c-check; }
-
-    .t-domain { --a: t-domain; transform-origin: left center; }
-    .t-shackle { --a: t-shackle; }
-    .t-b1 { --a: t-b1; }
-    .t-b2 { --a: t-b2; }
-    .t-b3 { --a: t-b3; }
-    .t-b4 { --a: t-b4; }
-    .t-shield { --a: t-shield; }
-
-    .t-arc { --a: t-arc; }
-    .t-arrow { --a: t-arrow; }
-    .t-min, .t-hour { transform-box: view-box; transform-origin: 118px 130px; }
-    .t-min { --a: t-min; }
-    .t-hour { --a: t-hour; }
-    .t-r1 { --a: t-r1; }
-    .t-r2 { --a: t-r2; }
-    .t-r3 { --a: t-r3; }
-    .t-c1 { --a: t-c1; }
-    .t-c2 { --a: t-c2; }
-    .t-c3 { --a: t-c3; }
-
-    .k-cursor { --a: k-cursor; transform-origin: 0 0; }
-    .k-knob { --a: k-knob; }
-    .k-track { --a: k-track; }
-    .k-photo { --a: k-photo; }
-    .k-price { --a: k-price; transform-origin: left center; }
-    .k-save { --a: k-save; }
-    .k-toast { --a: k-toast; }
-
-    .o-center { --a: o-center; }
-    .o-pulse { --a: o-pulse; }
-    .o-l1 { --a: o-l1; }
-    .o-l2 { --a: o-l2; }
-    .o-l3 { --a: o-l3; }
-    .o-l4 { --a: o-l4; }
-    .o-n1 { --a: o-n1; }
-    .o-n2 { --a: o-n2; }
-    .o-n3 { --a: o-n3; }
-    .o-n4 { --a: o-n4; }
-    .o-d1 { --a: o-d1; }
-    .o-d2 { --a: o-d2; }
-    .o-d3 { --a: o-d3; }
-    .o-d4 { --a: o-d4; }
+  [data-playing] .art :is(.f-query, .t-domain, .k-price) { transform-origin: left center; }
+  [data-playing] .art :is(.c-cursor, .k-cursor) { transform-origin: 0 0; }
+  [data-playing] .art :is(.t-min, .t-hour) {
+    transform-box: view-box;
+    transform-origin: 118px 130px;
   }
 }
 
-/* ---------- Carousel keyframes (one slide = 16.667% of the cycle) ---------- */
-@keyframes benefit-slide {
-  0% { opacity: 0; }
-  1.5%, 15.4% { opacity: 1; }
-  16.4%, 100% { opacity: 0; }
-}
-@keyframes benefit-bar {
-  0% { scale: 0 1; }
-  16.66% { scale: 1 1; }
-  16.67%, 100% { scale: 0 1; }
-}
-@keyframes benefit-stop {
-  0%, 16.6% { visibility: visible; }
-  16.7%, 100% { visibility: hidden; }
-}
-@keyframes benefit-in {
-  from { opacity: 0; }
-}
-@keyframes benefit-text {
-  0% { opacity: 0; translate: 0 0.75rem; }
-  12%, 100% { opacity: 1; translate: 0 0; }
-}
-
-/* ---------- Illustration keyframes (one loop = one --dwell) ---------- */
+/* ---------- Illustration keyframes (one pass per selected slide) ---------- */
 /* Clients find you first: a search, then your result climbs to the top and gets the pin. */
 @keyframes f-query {
   0%, 6% { transform: scaleX(0); animation-timing-function: steps(10, end); }

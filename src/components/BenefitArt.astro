@@ -3,9 +3,10 @@
 // reduced motion); the classes on `.an` elements give each its animation in benefits.css.
 // CSS transforms replace an SVG transform attribute, so animated parts never carry one: when
 // they need an offset, a wrapping <g transform> holds it.
-import type { BenefitId } from '../data/site';
-interface Props { id: BenefitId }
-const { id } = Astro.props;
+import { benefitVisuals, type BenefitId, type Lang } from '../data/site';
+interface Props { id: BenefitId; lang: Lang }
+const { id, lang } = Astro.props;
+const labels = benefitVisuals[lang];
 
 const ticks = Array.from({ length: 12 }, (_, i) => {
   const a = (i * Math.PI) / 6;
@@ -26,7 +27,7 @@ const hub = [
       <rect class="win" x="40" y="22" width="320" height="42" rx="21" />
       <circle class="stk" cx="65" cy="43" r="7" />
       <path class="stk" d="M70 48l6 6" />
-      <rect class="an f-query ink-f" x="88" y="38" width="150" height="10" rx="5" />
+      <text class="an f-query ink-f" x="88" y="48">{labels.search}</text>
       <g class="an f-o1">
         <rect class="win" x="40" y="136" width="320" height="42" rx="10" />
         <circle class="line-f" cx="62" cy="157" r="9" />
@@ -42,7 +43,7 @@ const hub = [
       <g class="an f-you">
         <rect class="soft stk-acc" x="40" y="84" width="320" height="42" rx="10" />
         <circle class="acc" cx="62" cy="105" r="9" />
-        <rect class="ink-f" x="80" y="96" width="150" height="8" rx="4" />
+        <text class="ink-f" x="80" y="105">{labels.business}</text>
         <rect class="acc faint" x="80" y="109" width="200" height="6" rx="3" />
         <g class="an f-pin">
           <path class="acc" d="M334 116c-7-8-11-13-11-19a11 11 0 0 1 22 0c0 6-4 11-11 19z" />
@@ -68,11 +69,11 @@ const hub = [
       <circle class="an c-ripple stk-acc" cx="101" cy="184" r="24" />
       <g class="an c-btn">
         <rect class="acc" x="46" y="168" width="110" height="32" rx="16" />
-        <rect class="pap" x="68" y="181" width="66" height="6" rx="3" />
+        <text class="pap" x="101" y="189" text-anchor="middle">{labels.book}</text>
       </g>
       <g class="an c-card">
         <rect class="win" x="282" y="58" width="92" height="150" rx="12" />
-        <rect class="ink-f" x="296" y="72" width="50" height="6" rx="3" />
+        <text class="ink-f small-art-text" x="328" y="78" text-anchor="middle">{labels.booking}</text>
         {[0, 1, 2].map((r) => [0, 1, 2].map((c) => (
           <rect class={r === 1 && c === 1 ? 'acc' : 'line-f'} x={296 + c * 22} y={92 + r * 20} width="16" height="14" rx="3" />
         )))}
@@ -93,7 +94,7 @@ const hub = [
       <rect class="box" x="56" y="38" width="288" height="28" rx="14" />
       <rect class="acc" x="70" y="51" width="14" height="11" rx="2" />
       <path class="an t-shackle stk-acc" d="M73 51v-4a4 4 0 0 1 8 0v4" />
-      <rect class="an t-domain ink-f" x="94" y="48" width="120" height="8" rx="4" />
+      <text class="an t-domain ink-f" x="94" y="57">{labels.domain}</text>
       <g class="an t-b1">
         <circle class="acc" cx="68" cy="96" r="12" />
         <rect class="ink-f" x="88" y="92" width="64" height="8" rx="4" />
@@ -134,7 +135,7 @@ const hub = [
           {k === 0 && <path class="stk-acc" d={`M246 ${y + 16}h12M246 ${y + 22}h12M246 ${y + 28}h7`} />}
           {k === 1 && <path class="stk-acc" d={`M252 ${y + 15}c-4 0-6 3-6 7v4l-2 3h16l-2-3v-4c0-4-2-7-6-7zM250 ${y + 32}h4`} />}
           {k === 2 && <path class="stk-acc" d={`M245 ${y + 17}h14v11h-14zM245 ${y + 18}l7 5l7-5`} />}
-          <rect class="muted-f" x="274" y={y + 14} width="56" height="7" rx="3.5" />
+          <text class="ink-f small-art-text" x="271" y={y + 20}>{labels.tasks[k]}</text>
           <rect class="line-f" x="274" y={y + 26} width="40" height="5" rx="2.5" />
           <g class={`an t-c${k + 1}`}>
             <circle class="acc" cx="356" cy={y + 22} r="10" />
@@ -172,13 +173,13 @@ const hub = [
       <rect class="line-f" x="252" y="126" width="76" height="6" rx="3" />
       <g class="an k-save">
         <rect class="ink-f" x="252" y="150" width="106" height="26" rx="13" />
-        <rect class="pap" x="280" y="160" width="50" height="6" rx="3" />
+        <text class="pap" x="305" y="167" text-anchor="middle">{labels.save}</text>
       </g>
       <g class="an k-toast">
         <rect class="soft stk-acc" x="252" y="192" width="106" height="28" rx="14" />
         <circle class="acc" cx="268" cy="206" r="8" />
         <path class="stk-pap" d="M264 206l3 3l5-5.5" />
-        <rect class="acc faint" x="282" y="203" width="60" height="6" rx="3" />
+        <text class="ink-f small-art-text" x="281" y="210">{labels.published}</text>
       </g>
       <g transform="translate(300 166)">
         <path class="an k-cursor cursor" d="M0 0v20l5-5l4 9l4-2l-4-9h7z" />
@@ -202,6 +203,7 @@ const hub = [
           {k === 1 && <path class="stk" d="M302 50h20a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-20a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM302 64h20a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-20a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2zM305 55h2M305 69h2" />}
           {k === 2 && <path class="stk" d="M88 185l11 4v8c0 7-5 12-11 14c-6-2-11-7-11-14v-8zM83 197l4 4l7-7" />}
           {k === 3 && <path class="stk" d="M302 196a10 10 0 0 1 18-6M322 200a10 10 0 0 1-18 6M320 184v6h-6M304 212v-6h6" />}
+          <text class="ink-f small-art-text" x={n.x} y={n.y + 44} text-anchor="middle">{labels.services[k]}</text>
           <g class={`an o-d${k + 1}`}>
             <circle class="acc ring" cx={n.x + 22} cy={n.y - 21} r="7" />
           </g>

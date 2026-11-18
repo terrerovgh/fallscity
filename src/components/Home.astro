@@ -17,8 +17,8 @@ const { lang } = Astro.props;
   <Header lang={lang} paths={homePath} />
   <main id="main">
     <Hero lang={lang} />
-    <Benefits lang={lang} />
     <Work lang={lang} />
+    <Benefits lang={lang} />
     <Services lang={lang} />
     <Process lang={lang} />
     <Faq lang={lang} />
@@ -26,3 +26,7 @@ const { lang } = Astro.props;
   </main>
   <Footer lang={lang} />
 </Base>
+
+<script>
+  import '../scripts/site-motion';
+</script>

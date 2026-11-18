@@ -46,7 +46,6 @@ export function shot(site: string, page: string, device: 'desktop' | 'mobile'): 
 // ---- Benefits ------------------------------------------------------------
 export type BenefitId = 'found' | 'convert' | 'trust' | 'time' | 'control' | 'one';
 
-/** `id` picks the animated illustration in src/components/BenefitArt.astro. */
 export const benefits: { id: BenefitId; title: L; body: L }[] = [
   {
     id: 'found',
@@ -97,6 +96,19 @@ export const benefits: { id: BenefitId; title: L; body: L }[] = [
     },
   },
 ];
+
+export const benefitVisuals = {
+  en: {
+    search: 'barbershop near me', business: 'Your business', book: 'Book now', booking: 'Booking',
+    domain: 'yourbusiness.com', tasks: ['Quote', 'Reminder', 'Follow-up'], save: 'Save', published: 'Published',
+    services: ['Design', 'Hosting', 'Security', 'Updates'],
+  },
+  es: {
+    search: 'barbería cerca de mí', business: 'Tu negocio', book: 'Reservar', booking: 'Reserva',
+    domain: 'tunegocio.com', tasks: ['Cotización', 'Recordatorio', 'Seguimiento'], save: 'Guardar', published: 'Publicado',
+    services: ['Diseño', 'Hosting', 'Seguridad', 'Actualizaciones'],
+  },
+};
 
 // ---- Work ----------------------------------------------------------------
 export interface ProjectPage {
@@ -351,8 +363,8 @@ export const ui = {
       es: 'Webs que te traen clientes y te ahorran tiempo: diseño a medida, SEO, hosting, automatizaciones y gestión de clientes, en español e inglés.',
     },
     ogAlt: {
-      en: 'Falls City Dev Studio: client websites shown on three phones',
-      es: 'Falls City Dev Studio: webs de clientes en tres teléfonos',
+      en: 'Falls City Dev Studio: a blue ribbon inspired by the studio logo',
+      es: 'Falls City Dev Studio: una cinta azul inspirada en el logotipo del estudio',
     },
   },
   skip: { en: 'Skip to content', es: 'Saltar al contenido' },
@@ -361,24 +373,24 @@ export const ui = {
     work: { en: 'Work', es: 'Trabajos' },
     services: { en: 'Services', es: 'Servicios' },
     faq: { en: 'FAQ', es: 'Preguntas' },
-    cta: { en: 'Get a quote', es: 'Pedir cotización' },
+    cta: { en: 'Request a proposal', es: 'Pedir una propuesta' },
+    menu: { en: 'Menu', es: 'Menú' },
     langLabel: { en: 'Language', es: 'Idioma' },
   },
   hero: {
     title: {
-      en: 'A website that wins you clients and gives you your time back',
-      es: 'Una web que te consigue clientes y te devuelve tu tiempo',
+      en: 'A website built to win you',
+      es: 'Una web para conseguir',
     },
+    titleAccent: { en: 'more clients.', es: 'más clientes.' },
     lead: {
-      en: 'Designed for your brand, fast on any phone, and connected to tools that handle bookings, follow-ups, quotes and messages for you. Built, launched and cared for by one person you can always reach.',
-      es: 'Diseñada para tu marca, rápida en cualquier teléfono y conectada a herramientas que se encargan de reservas, seguimientos, cotizaciones y mensajes por ti. La construye, publica y cuida una sola persona a la que siempre puedes contactar.',
+      en: 'I design custom websites for small businesses that turn visits into bookings, calls, and quote requests.',
+      es: 'Diseño webs a medida para pequeños negocios que convierten las visitas en reservas, llamadas y solicitudes de presupuesto.',
     },
-    cta: { en: 'Get a quote', es: 'Pedir cotización' },
-    secondary: { en: 'See live sites', es: 'Ver webs publicadas' },
-    where: {
-      en: 'Louisville, KY · English & Español',
-      es: 'Louisville, KY · Español & English',
-    },
+    cta: { en: 'Request a proposal', es: 'Pedir una propuesta' },
+    secondary: { en: 'See the work', es: 'Ver proyectos' },
+    pause: { en: 'Pause background animation', es: 'Pausar animación de fondo' },
+    resume: { en: 'Resume background animation', es: 'Reanudar animación de fondo' },
   },
   benefits: {
     title: { en: 'What changes when your website works for you', es: 'Lo que cambia cuando tu web trabaja para ti' },
@@ -386,19 +398,19 @@ export const ui = {
       en: 'A good website is not an expense. It is the employee that never closes.',
       es: 'Una buena web no es un gasto. Es el empleado que nunca cierra.',
     },
-    pick: { en: 'Show a benefit', es: 'Mostrar un beneficio' },
+    previous: { en: 'Previous benefit', es: 'Beneficio anterior' },
+    next: { en: 'Next benefit', es: 'Siguiente beneficio' },
+    replay: { en: 'Replay illustration', es: 'Repetir ilustración' },
+    pick: { en: 'Choose a benefit', es: 'Elegir un beneficio' },
   },
   work: {
-    title: { en: 'Real sites, working today', es: 'Webs reales, funcionando hoy' },
+    title: { en: 'Websites out in the world.', es: 'Webs para negocios reales.' },
     lead: {
-      en: 'Each one designed for its business. Switch pages to see them on a computer and on a phone.',
-      es: 'Cada una diseñada para su negocio. Cambia de página para verlas en una computadora y en un teléfono.',
+      en: 'See how each site looks on desktop and mobile.',
+      es: 'Mira cómo se ve cada web en computadora y en móvil.',
     },
-    pageLegend: { en: 'Page shown', es: 'Página mostrada' },
     visit: { en: 'Visit', es: 'Visitar' },
     newTab: { en: '(opens in a new tab)', es: '(se abre en una pestaña nueva)' },
-    desktopAlt: { en: 'on a computer screen', es: 'en la pantalla de una computadora' },
-    mobileAlt: { en: 'on a phone', es: 'en un teléfono' },
   },
   services: {
     title: { en: 'Everything your business needs online', es: 'Todo lo que tu negocio necesita en internet' },

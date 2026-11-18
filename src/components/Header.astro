@@ -1,40 +1,24 @@
 ---
-import Logo from './Logo.astro';
-import { homePath, langs, ui, type Lang } from '../data/site';
+import { SiteHeader } from './Site';
+import GradualBlur from './react-bits/GradualBlur';
+import type { Lang } from '../data/site';
 
-interface Props {
-  lang: Lang;
-  /** This page's path in each language, for the language switch. */
-  paths: Record<Lang, string>;
-}
+interface Props { lang: Lang; paths: Record<Lang, string> }
 const { lang, paths } = Astro.props;
-const home = homePath[lang];
-const links = [
-  ['work', ui.nav.work],
-  ['services', ui.nav.services],
-  ['faq', ui.nav.faq],
-] as const;
 ---
-<header class="site-header">
-  <div class="wrap">
-    <Logo href={home} />
-    <nav class="nav" aria-label={ui.nav.label[lang]}>
-      <ul>
-        {links.map(([id, label]) => (
-          <li><a href={`${home}#${id}`}>{label[lang]}</a></li>
-        ))}
-      </ul>
-      <a class="btn primary small" href={`${home}#contact`}>{ui.nav.cta[lang]}</a>
-      <div class="lang" role="group" aria-label={ui.nav.langLabel[lang]}>
-        {
-          langs.map((l) => (
-            <a href={`${paths[l]}?lang=${l}`} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>
-              <span aria-hidden="true">{l.toUpperCase()}</span>
-              <span class="sr-only">{l === 'en' ? 'English' : 'Español'}</span>
-            </a>
-          ))
-        }
-      </div>
-    </nav>
-  </div>
-</header>
+<SiteHeader lang={lang} paths={paths}>
+  <GradualBlur position="bottom" height="100%" strength={0.65} layers={4} curve="bezier" zIndex={0} />
+</SiteHeader>
+
+<script>
+  for (const menu of document.querySelectorAll<HTMLDetailsElement>('.mobile-nav')) {
+    menu.addEventListener('click', (event) => {
+      if (event.target instanceof Element && event.target.closest('a')) menu.open = false;
+    });
+    menu.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || !menu.open) return;
+      menu.open = false;
+      menu.querySelector('summary')?.focus();
+    });
+  }
+</script>

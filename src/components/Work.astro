@@ -1,59 +1,27 @@
 ---
+import { SectionHeading } from './Site';
 import DeviceStage from './DeviceStage.astro';
+import GlareHover from './react-bits/GlareHover';
 import { projects, ui, type Lang } from '../data/site';
+
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 ---
 <section class="section" id="work" aria-labelledby="work-title">
   <div class="wrap">
-    <header class="section-head">
-      <h2 id="work-title">{ui.work.title[lang]}</h2>
-      <p>{ui.work.lead[lang]}</p>
-    </header>
+    <SectionHeading id="work-title" title={ui.work.title[lang]} lead={ui.work.lead[lang]} />
     <div class="work-list">
-      {
-        projects.map((p) => (
-          <article class="project reveal" aria-labelledby={`p-${p.id}`}>
-            <div class="project-stage">
-              {p.pages.map((pg, i) => (
-                <div data-page={i}>
-                  <DeviceStage
-                    site={p.id}
-                    page={pg.id}
-                    domain={p.domain}
-                    label={`${p.domain}, ${pg.label[lang]}`}
-                    desktopAlt={ui.work.desktopAlt[lang]}
-                    mobileAlt={ui.work.mobileAlt[lang]}
-                  />
-                </div>
-              ))}
-            </div>
-            <div>
-              <p class="kind">{p.kind[lang]}</p>
-              <h3 id={`p-${p.id}`}>{p.name}</h3>
-              <p class="summary">{p.summary[lang]}</p>
-              <fieldset class="pages">
-                <legend class="sr-only">{ui.work.pageLegend[lang]}</legend>
-                <div class="options">
-                  {p.pages.map((pg, i) => (
-                    <label>
-                      <input type="radio" name={`page-${p.id}`} value={i} checked={i === 0} />
-                      {pg.label[lang]}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-              <p>
-                <a class="visit" href={p.url} target="_blank" rel="noopener">
-                  {ui.work.visit[lang]} {p.domain}
-                  <span aria-hidden="true">↗</span>
-                  <span class="sr-only">{ui.work.newTab[lang]}</span>
-                </a>
-              </p>
-            </div>
-          </article>
-        ))
-      }
+      {projects.map(project => (
+        <article class="project" data-scroll-project>
+          <a class="project-link" href={project.url} target="_blank" rel="noopener"
+            aria-label={`${ui.work.visit[lang]} ${project.name} (${project.domain}) ${ui.work.newTab[lang]}`}>
+            <GlareHover client:media="(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)" className="project-art"
+              width="100%" borderRadius="var(--radius)" glareColor="#d5e0ff" glareOpacity={0.2} glareSize={42} variant="sheen" transitionDuration={800}>
+              <DeviceStage project={project} />
+            </GlareHover>
+          </a>
+        </article>
+      ))}
     </div>
   </div>
 </section>
