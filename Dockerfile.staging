@@ -9,4 +9,7 @@ RUN npm ci --no-audit --no-fund
 COPY . .
 RUN npm run build
 EXPOSE 8080
-CMD ["npx", "wrangler", "dev", "--ip", "0.0.0.0", "--port", "8080", "--show-interactive-dev-session=false", "--log-level", "warn"]
+# Traefik terminates TLS and forwards plain HTTP; present requests to the Worker as https://<mirror host> so its
+# canonical-host redirect (http → https://fallscity.dev) does not fire on the mirror.
+ENV MIRROR_HOST=fallscity.terrerov.com
+CMD ["sh", "-c", "exec npx wrangler dev --ip 0.0.0.0 --port 8080 --local-upstream \"$MIRROR_HOST\" --upstream-protocol https --show-interactive-dev-session=false --log-level warn"]
