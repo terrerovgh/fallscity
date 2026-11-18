@@ -28,10 +28,15 @@ motion.add('(prefers-reduced-motion: no-preference)', () => {
   }
 
   for (const visual of gsap.utils.toArray<HTMLElement>('[data-visual]')) {
-    gsap.from(visual.querySelectorAll('[data-visual-part]'), {
-      y: 14, scale: 0.94, opacity: 0.42, stagger: 0.19, duration: 0.66, ease: 'power3.out',
+    const image = visual.querySelector<HTMLElement>('.editorial-image');
+    const labels = visual.querySelectorAll<HTMLElement>('.visual-legend [data-visual-part]');
+    const reveal = gsap.timeline({
       scrollTrigger: { trigger: visual, start: 'top 88%', once: true },
     });
+    if (image) reveal.from(image, { opacity: 0.7, duration: 0.65, ease: 'power2.out' });
+    const artwork = image?.querySelector('img');
+    if (artwork) reveal.from(artwork, { scale: 1.075, duration: 1.05, ease: 'power3.out' }, 0);
+    if (labels.length) reveal.from(labels, { y: 9, opacity: 0.6, stagger: 0.1, duration: 0.5, ease: 'power2.out' }, 0.18);
   }
 
   const process = document.querySelector<HTMLElement>('[data-process-timeline]');

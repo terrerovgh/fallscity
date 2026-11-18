@@ -25,6 +25,10 @@ Bilingual page copy and illustration labels are maintained in `src/data/site.ts`
 
 React Bits components and their license live in `src/components/react-bits/`. The optional React Bits Starter registry requires `REACTBITS_LICENSE_KEY` for future component installation. The production build has no dependency on Starter credentials.
 
+### Service and process illustrations
+
+The twelve editorial illustrations live in `src/assets/illustrations/`. Astro serves responsive AVIF and WebP versions. Service labels stay in HTML so they can be localized, and the illustrations render before their scroll effects start.
+
 ### Screenshots
 `src/assets/work/<site>-<page>-<desktop|mobile>.jpg`, made by `scripts/capture.mjs` (1440×900 @1.5x and 390×844 @2x). Astro turns them into AVIF/WebP at build time. To add a project: add its pages to `SITES` in the capture script, run it, then add the project to `projects` in `site.ts`.
 

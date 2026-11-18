@@ -176,23 +176,25 @@ for (const width of [320, 390, 768, 1024, 1440]) {
   check(await page.locator('#benefits button, #work button').count() === 0, 'both carousels omit visible controls');
   await page.locator('.visual-design').scrollIntoViewIfNeeded();
   await page.waitForFunction(() => document.querySelector('.visual-design [data-visual-part]').style.opacity === '1');
-  check(await page.locator('#services [data-visual]').count() === 9, 'each service and tool has a visual');
+  check(await page.locator('#services [data-visual] img').count() === 9, 'each service and tool has its own image');
+  const artLoaded = await page.locator('.visual-design img').evaluate(image => image.decode().then(() => image.naturalWidth > 0));
+  const visualLabels = await page.locator('.visual-design .visual-legend span').allTextContents();
+  check(artLoaded && visualLabels.join(' / ') === 'Escritorio / Móvil',
+    'responsive service art loads with localized labels');
   await page.locator('[data-process-step]').last().scrollIntoViewIfNeeded();
   await page.locator('[data-process-step][data-step-lit]').last().waitFor();
-  check(await page.locator('[data-process-step]').count() === 3, 'process shows three illustrated steps');
+  check(await page.locator('[data-process-step] picture img').count() === 3, 'each process step has a responsive image');
   const mail = page.locator('#contact .mail');
   await mail.scrollIntoViewIfNeeded();
   await page.waitForFunction(() => document.querySelector('.star-border__light').width > 300);
-  const hasStar = () => mail.locator('canvas').evaluate(canvas => {
+  const star = await mail.locator('canvas').elementHandle();
+  const canvasHasInk = ([canvas, expected]) => {
     const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
-    return pixels.some((value, index) => index % 4 === 3 && value > 0);
-  });
-  await page.waitForFunction(() => {
-    const canvas = document.querySelector('.star-border__light');
-    return canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data.some((value, index) => index % 4 === 3 && value > 0);
-  });
-  await page.waitForTimeout(1800);
-  check(!(await hasStar()), 'Star Border finishes one pass and clears its drawing');
+    return pixels.some((value, index) => index % 4 === 3 && value > 0) === expected;
+  };
+  await page.waitForFunction(canvasHasInk, [star, true]);
+  await page.waitForFunction(canvasHasInk, [star, false]);
+  check(true, 'Star Border finishes one pass and clears its drawing');
   check(errors.length === 0, `no browser runtime errors (${errors.join('; ')})`);
   await ctx.close();
 }

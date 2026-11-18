@@ -25,7 +25,7 @@ const { lang } = Astro.props;
       <ul class="service-gallery service-gallery-compact" role="list">
         {tools.map(service => (
           <li class="service-card">
-            <ServiceVisual id={service.id} lang={lang} />
+            <ServiceVisual id={service.id} lang={lang} compact />
             <div class="service-copy">
               <h4>{service.title[lang]}</h4>
               <p>{service.body[lang]}</p>

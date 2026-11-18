@@ -1,0 +1,21 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  scene: string;
+  compact?: boolean;
+}
+
+const { scene, compact = false } = Astro.props;
+const illustrations = import.meta.glob<{ default: ImageMetadata }>('../assets/illustrations/*.webp', { eager: true });
+const source = illustrations[`../assets/illustrations/${scene}.webp`]?.default;
+if (!source) throw new Error(`Missing editorial illustration: ${scene}`);
+
+const sizes = compact
+  ? '(min-width: 82rem) 380px, (min-width: 66rem) 29vw, (min-width: 48rem) 44vw, 88vw'
+  : '(min-width: 82rem) 590px, (min-width: 48rem) 46vw, 90vw';
+---
+<div class="editorial-image" data-visual-part>
+  <Picture src={source} formats={['avif']} fallbackFormat="webp" widths={[360, 640, 960]} {sizes} alt="" loading="lazy" decoding="async" />
+</div>
